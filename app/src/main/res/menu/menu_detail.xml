@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.amrendra.popularmovies.app.activities.DetailActivity">
+
+    <item
+        android:id="@+id/detail_favourite"
+        android:icon="@drawable/favourite"
+        android:title="@string/action_favourite"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/detail_share"
+        android:icon="@drawable/share"
+        android:title="@string/action_share"
+        app:showAsAction="always"/>
+</menu>

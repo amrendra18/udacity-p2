@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@android:integer/config_shortAnimTime">
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/grid_card_view_corner_radius"/>
+        </shape>
+    </item>
+
+</selector>

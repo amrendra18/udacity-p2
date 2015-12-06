@@ -1,0 +1,53 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="spinner_width">125dp</dimen>
+
+    <!-- Grid Recycler View :: Main Fragment-->
+    <dimen name="grid_screen_parent_padding">2dp</dimen>
+    <dimen name="grid_column_height">250dp</dimen>
+    <dimen name="grid_column_bottom_nav_height">48dp</dimen>
+    <dimen name="grid_column_move_name_text_size">14sp</dimen>
+    <dimen name="grid_card_view_padding">3dp</dimen>
+    <dimen name="grid_card_view_elevation">3dp</dimen>
+    <dimen name="grid_card_view_corner_radius">3dp</dimen>
+    <dimen name="grid_card_view_nav_stroke_width">1dp</dimen>
+    <dimen name="grid_card_view_margin">2dp</dimen>
+    <dimen name="grid_card_textview_margin">2dp</dimen>
+
+
+    <dimen name="detail_poster_height">400dp</dimen>
+
+    <!-- CardViews : Detail Fragment -->
+    <dimen name="detail_card_view_margin_left">8dp</dimen>
+    <dimen name="detail_card_view_margin_right">8dp</dimen>
+    <dimen name="detail_card_view_margin_top">8dp</dimen>
+    <dimen name="detail_card_view_margin_bottom">8dp</dimen>
+    <dimen name="detail_card_view_padding">8dp</dimen>
+
+    <dimen name="detail_card_view_text_content_padding">8dp</dimen>
+    <dimen name="detail_card_table_padding">4dp</dimen>
+
+
+    <dimen name="divider_margin_left">4dp</dimen>
+    <dimen name="divider_margin_right">4dp</dimen>
+    <dimen name="divider_height">2dp</dimen>
+    <dimen name="divider_content_height">1dp</dimen>
+
+    <!-- card view :  star rating -->
+    <dimen name="rating_star_width">16dp</dimen>
+    <dimen name="rating_star_height">16dp</dimen>
+
+
+    <dimen name="trailer_height">140dp</dimen>
+
+    <dimen name="progressbar_margin_right">8dp</dimen>
+
+    <dimen name="trailerview_width">135dp</dimen>
+    <dimen name="trailerview_height">100dp</dimen>
+    <dimen name="trailerlayout_padding">8dp</dimen>
+
+
+</resources>

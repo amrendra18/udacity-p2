@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:id="@+id/trailerview_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/grid_card_view_margin"
+    android:clickable="true"
+    android:foreground="@drawable/grid_item_selector"
+    card_view:cardCornerRadius="@dimen/grid_card_view_corner_radius"
+    card_view:cardElevation="@dimen/grid_card_view_elevation"
+    card_view:contentPadding="@dimen/grid_card_view_padding">
+
+    <ImageView
+        android:id="@+id/trailerview_image"
+        android:layout_width="@dimen/trailerview_width"
+        android:layout_height="@dimen/trailerview_height"
+        android:scaleType="fitXY"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <ImageView
+            android:layout_width="@dimen/trailerview_width"
+            android:layout_height="@dimen/trailerview_height"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"
+            android:src="@drawable/play_button"/>
+
+    </FrameLayout>
+
+</android.support.v7.widget.CardView>

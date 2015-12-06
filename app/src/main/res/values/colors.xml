@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryTransparent">#903F51B5</color>
+    <color name="colorSemiTransparent">#403F51B5</color>
+    <color name="colorTransparent">#00FFFFFF</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorPrimaryTransparentNav">#75000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="background">#CCCCCC</color>
+    <color name="colorBB">#50BBBBBB</color>
+    <color name="colorDD">#60DDDDDD</color>
+    <color name="black">#000000</color>
+    <color name="rating_color">#f68d25</color>
+    <color name="yellow">#FFFF00</color>
+
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorSecondaryText">#727272</color>
+
+</resources>

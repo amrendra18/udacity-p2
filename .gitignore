@@ -25,7 +25,7 @@ local.properties
 .gradle/
 
 # iml files
-udacity-p1.iml
+udacity-p2.iml
 app/app.iml
 
 # Misc

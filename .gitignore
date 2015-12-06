@@ -1,7 +1,32 @@
-.gradle
-/local.properties
+# apk files
+*.apk
+*.ap_
+
+# dex files
+*.dex
+
+# built/generate files
+bin/
+gen/
+build/
+app/build/
+
+# local configuration files
+local.properties
+
+# AndroidStudio project files
+/.idea/libraries/
+/.idea/misc.xml
 /.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
+.idea/libraries/
+.idea/misc.xml
+.idea/workspace.xml
+/.gradle/
+.gradle/
+
+# iml files
+udacity-p1.iml
+app/app.iml
+
+# Misc
+.DS_STORE

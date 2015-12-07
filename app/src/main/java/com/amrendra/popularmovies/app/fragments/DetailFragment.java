@@ -191,7 +191,7 @@ public class DetailFragment extends Fragment implements TrailerCallback {
                 return true;
 
             case R.id.detail_favourite:
-                addFavourite();
+                addFavourite(item);
                 return true;
             default:
                 break;
@@ -199,7 +199,8 @@ public class DetailFragment extends Fragment implements TrailerCallback {
         return super.onOptionsItemSelected(item);
     }
 
-    private void addFavourite() {
+    private void addFavourite(MenuItem menu) {
+        menu.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.fav_selected));
         Debug.showToastShort("Coming Soon : Part-2", getActivity());
     }
 

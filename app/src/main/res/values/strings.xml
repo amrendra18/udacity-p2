@@ -33,8 +33,9 @@
     <string name="no_detail_reviews" translatable="false">No reviews!!</string>
     <string name="no_detail_trailers" translatable="false">No Trailers!!</string>
 
-    <string name="error_detail_reviews" translatable="false">Error fetching reviews. <xliff:g example="Network Error" id="review_error">%1$s</xliff:g></string>
-    <string name="error_detail_trailers" translatable="false">Error fetching Trailers. <xliff:g example="Network Error" id="review_error">%1$s</xliff:g></string>
+    <string name="error_movie_list" translatable="false">Error fetching movies.(<xliff:g example="Network Error" id="movie_error">%1$s</xliff:g>)</string>
+    <string name="error_detail_reviews" translatable="false">Error fetching reviews.(<xliff:g example="Network Error" id="review_error">%1$s</xliff:g>)</string>
+    <string name="error_detail_trailers" translatable="false">Error fetching Trailers.(<xliff:g example="Network Error" id="trailer_error">%1$s</xliff:g>)</string>
 
     <string name="release_date" translatable="false">Release Date</string>
     <string name="original_title" translatable="false">Original Title</string>

@@ -12,4 +12,11 @@ public class AppConstants {
     public static final String SHARED_IMAGE_VIEW = "shared_poster_image";
     public static final String MOVIE_SHARE = "movie_share";
     public static final String MOVIE_BITMAP_SHARE = "movie_bitmap_share";
+
+
+    public static final int SUCCESS = 0;
+    public static final int CONNECTION_ERROR = SUCCESS + 1;
+    public static final int SERVER_ERROR = CONNECTION_ERROR + 1;
+    public static final int OTHER_ERROR = SERVER_ERROR + 1;
+
 }

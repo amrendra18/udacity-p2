@@ -257,7 +257,7 @@ public class MainFragment extends Fragment implements LoaderManager
             movieList.addAll(list);
             mMovieGridAdapter.resetMovieList(list);
         } else {
-            Debug.showSnackbarLong(getActivity().findViewById(R.id.main_activity_coordinator_layout), data.getError().getDescription());
+            Debug.showSnackbarLong(getActivity().findViewById(R.id.main_activity_coordinator_layout), getResources().getString(R.string.error_movie_list, data.getError().getDescription()));
         }
         // hide refresh at last
         mSwipeRefreshLayout.setRefreshing(false);

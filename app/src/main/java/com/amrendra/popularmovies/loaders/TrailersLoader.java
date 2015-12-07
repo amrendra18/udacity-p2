@@ -19,7 +19,6 @@ import retrofit.Response;
 public class TrailersLoader extends CustomLoader<TrailerList> {
 
     // Note: Be careful not to leak resources here
-    private TrailerList mData;
     long movieId;
 
     public TrailersLoader(Context context, long movieId) {

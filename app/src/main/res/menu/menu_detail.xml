@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/detail_share"
-        android:icon="@drawable/share"
+        android:icon="@drawable/share_menu_selector"
         android:title="@string/action_share"
         app:showAsAction="always"/>
 </menu>

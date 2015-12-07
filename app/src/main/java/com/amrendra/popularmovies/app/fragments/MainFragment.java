@@ -322,7 +322,6 @@ public class MainFragment extends Fragment implements LoaderManager
             parent.setSelection(lastSelection);
         }
         lastSelection = position;
-
     }
 
 

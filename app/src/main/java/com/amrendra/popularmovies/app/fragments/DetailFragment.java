@@ -136,7 +136,7 @@ public class DetailFragment extends Fragment implements TrailerCallback {
     }
 
     public interface ColorCallback {
-        public void onBackgroundChange(int color);
+        void onBackgroundChange(int color);
     }
 
     private ColorCallback mColorCallback;

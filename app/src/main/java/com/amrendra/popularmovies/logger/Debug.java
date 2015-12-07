@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -70,6 +72,18 @@ public class Debug {
         }
     }
 
+    public static void showSnackbarLong(View view, String str) {
+        Snackbar.make(view, str, Snackbar.LENGTH_LONG).show();
+    }
+
+    public static void showSnackbarShort(View view, String str) {
+        Snackbar.make(view, str, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public static void showSnackbar(View view, String str, int len) {
+        Snackbar.make(view, str, len).show();
+    }
+
     public static void showToastShort(String msg, Context context) {
         showToastShort(msg, context, false);
     }
@@ -101,6 +115,16 @@ public class Debug {
     public static void array(Object[] arr) {
         if (DEBUG) {
             Log.i(TAG, getMsg(Arrays.deepToString(arr)));
+        }
+    }
+
+    public static void object(Object obj, String desc) {
+        if (DEBUG) {
+            if (obj == null) {
+                Log.e(TAG, getMsg("Error : " + desc + " is NULL"));
+            } else {
+                Log.e(TAG, getMsg(obj.toString()));
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
     <!-- Until we plan to release it in multiple language, using translatable=false -->
     <string name="app_name" translatable="false">Filmie</string>
     <string name="title_activity_main" translatable="false">MainActivity</string>
@@ -32,8 +32,9 @@
     <string name="review_by" translatable="false">By:</string>
     <string name="no_detail_reviews" translatable="false">No reviews!!</string>
     <string name="no_detail_trailers" translatable="false">No Trailers!!</string>
-    <string name="error_detail_reviews" translatable="false">Error fetching reviews!!</string>
-    <string name="error_detail_trailers" translatable="false">Error fetching Trailers!!</string>
+
+    <string name="error_detail_reviews" translatable="false">Error fetching reviews. <xliff:g example="Network Error" id="review_error">%1$s</xliff:g></string>
+    <string name="error_detail_trailers" translatable="false">Error fetching Trailers. <xliff:g example="Network Error" id="review_error">%1$s</xliff:g></string>
 
     <string name="release_date" translatable="false">Release Date</string>
     <string name="original_title" translatable="false">Original Title</string>

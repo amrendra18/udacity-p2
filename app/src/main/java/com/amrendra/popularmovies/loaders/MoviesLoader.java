@@ -1,9 +1,9 @@
 package com.amrendra.popularmovies.loaders;
 
 import android.content.Context;
-import android.support.v4.content.AsyncTaskLoader;
 
 import com.amrendra.popularmovies.BuildConfig;
+import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.api.MovieClientService;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.MovieList;
@@ -17,11 +17,9 @@ import retrofit.Response;
 /**
  * Created by Amrendra Kumar on 28/11/15.
  */
-public class MoviesLoader extends AsyncTaskLoader<MovieList> {
+public class MoviesLoader extends CustomLoader<MovieList> {
 
     // Note: Be careful not to leak resources here
-
-
     private MovieList mData;
     String sortBy;
     int page;
@@ -37,71 +35,22 @@ public class MoviesLoader extends AsyncTaskLoader<MovieList> {
     public MovieList loadInBackground() {
         Call<MovieList> call = MovieClientService.getInstance().getMovieList(BuildConfig
                 .THE_MOVIE_DB_API_KEY_TOKEN, sortBy, page, vote_count);
-        Response<MovieList> response = null;
-        MovieList data = null;
+        MovieList data = new MovieList();
         try {
-            response = call.execute();
-            Debug.i(response.raw().toString(), false);
-            data = response.body();
+            Response<MovieList> response = call.execute();
+            if (response.isSuccess()) {
+                data.results = response.body().results;
+            } else {
+                Debug.e("REST call for MOVIES fails : " + response.errorBody().toString(), false);
+                data.setError(Error.SERVER_ERROR);
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.e("IOError fetching the MOVIES list : " + e.getMessage(), true);
+            data.setError(Error.CONNECTION_ERROR);
+        } catch (Exception e) {
+            Debug.e("Error fetching the MOVIES list : " + e.getMessage(), true);
+            data.setError(Error.OTHER);
         }
-
         return data;
-    }
-
-
-    @Override
-    public void deliverResult(MovieList data) {
-        if (isReset()) {
-            releaseResources(data);
-            return;
-        }
-
-        MovieList oldData = mData;
-        mData = data;
-
-        if (isStarted()) {
-            super.deliverResult(data);
-        }
-
-        if (oldData != null && oldData != data) {
-            releaseResources(oldData);
-        }
-    }
-
-    private void releaseResources(MovieList oldData) {
-    }
-
-    @Override
-    protected void onStartLoading() {
-        if (mData != null) {
-            deliverResult(mData);
-        }
-
-        if (takeContentChanged() || mData == null) {
-            forceLoad();
-        }
-    }
-
-
-    @Override
-    protected void onStopLoading() {
-        cancelLoad();
-    }
-
-    @Override
-    protected void onReset() {
-        onStopLoading();
-        if (mData != null) {
-            releaseResources(mData);
-            mData = null;
-        }
-    }
-
-    @Override
-    public void onCanceled(MovieList data) {
-        super.onCanceled(data);
-        releaseResources(data);
     }
 }

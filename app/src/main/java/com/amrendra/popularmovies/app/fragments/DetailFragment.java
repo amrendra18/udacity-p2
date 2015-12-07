@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -34,6 +35,7 @@ import android.widget.TextView;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter.TrailerCallback;
+import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.loaders.ReviewsLoader;
 import com.amrendra.popularmovies.loaders.TrailersLoader;
 import com.amrendra.popularmovies.logger.Debug;
@@ -62,6 +64,9 @@ public class DetailFragment extends Fragment implements TrailerCallback {
 
     @Bind(R.id.full_content_detail_fragment)
     LinearLayout fullContainer;
+
+    @Bind(R.id.detail_fragment_coordinator_layout)
+    CoordinatorLayout mDetailFragmentCoordinatorLayout;
 
     @Nullable
     @Bind((R.id.collapsing_toolbar))
@@ -410,68 +415,66 @@ public class DetailFragment extends Fragment implements TrailerCallback {
 
 
     private void addReviews(ReviewList result) {
-        reviewsProgressbar.setVisibility(ProgressBar.INVISIBLE);
-        Debug.e(result.toString(), false);
-        if (result == null) {
-            noReviewsTv.setText(getResources().getText(R.string.error_detail_reviews));
-            noReviewsTv.setVisibility(View.VISIBLE);
-            return;
-        }
-        final LayoutInflater inflater = LayoutInflater.from(getActivity());
-        List<Review> reviewList = result.results;
-
-        if (!(reviewList == null || reviewList.isEmpty())) {
-            int len = reviewList.size();
-            mReviewList = reviewList;
-
-            for (int i = 0; i < len; i++) {
-                Review review = reviewList.get(i);
-                final View reviewView = inflater.inflate(R.layout.review_layout, reviewsContainer, false);
-                TextView reviewAuthor = ButterKnife.findById(reviewView, R.id.review_by);
-                TextView reviewContent = ButterKnife.findById(reviewView, R.id.review_content);
-                reviewAuthor.setText(review.author);
-                reviewContent.setText(review.content);
-                reviewsContainer.addView(reviewView);
-                if (i < len - 1) {
-                    final View dividerView = inflater.inflate(R.layout.divider_content,
-                            reviewsContainer, false);
-                    View divider = ButterKnife.findById(dividerView, R.id.divider_content);
-                    reviewsContainer.addView(divider);
+        Debug.object(result, "reviewlist");
+        if (result.getError() == Error.SUCCESS) {
+            final LayoutInflater inflater = LayoutInflater.from(getActivity());
+            List<Review> reviewList = result.results;
+            if (!(reviewList == null || reviewList.isEmpty())) {
+                int len = reviewList.size();
+                mReviewList = reviewList;
+                for (int i = 0; i < len; i++) {
+                    Review review = reviewList.get(i);
+                    final View reviewView = inflater.inflate(R.layout.review_layout, reviewsContainer, false);
+                    TextView reviewAuthor = ButterKnife.findById(reviewView, R.id.review_by);
+                    TextView reviewContent = ButterKnife.findById(reviewView, R.id.review_content);
+                    reviewAuthor.setText(review.author);
+                    reviewContent.setText(review.content);
+                    reviewsContainer.addView(reviewView);
+                    if (i < len - 1) {
+                        final View dividerView = inflater.inflate(R.layout.divider_content,
+                                reviewsContainer, false);
+                        View divider = ButterKnife.findById(dividerView, R.id.divider_content);
+                        reviewsContainer.addView(divider);
+                    }
                 }
+                noReviewsTv.setVisibility(View.GONE);
+            } else {
+                noReviewsTv.setText(getResources().getText(R.string.no_detail_reviews));
+                noReviewsTv.setVisibility(View.VISIBLE);
             }
-            noReviewsTv.setVisibility(View.GONE);
         } else {
-            noReviewsTv.setText(getResources().getText(R.string.no_detail_reviews));
+            noReviewsTv.setText(getResources().getString(R.string
+                    .error_detail_reviews, result.getError().getDescription()));
             noReviewsTv.setVisibility(View.VISIBLE);
         }
-
+        reviewsProgressbar.setVisibility(ProgressBar.INVISIBLE);
     }
 
 
     private void addTrailers(TrailerList result) {
-        trailerProgressbar.setVisibility(ProgressBar.INVISIBLE);
-        //Debug.e(result.toString(), false);
-        if (result == null) {
-            noTrailerTv.setText(getResources().getText(R.string.error_detail_trailers));
-            noTrailerTv.setVisibility(View.VISIBLE);
-            trailerRecyclerView.setVisibility(View.GONE);
-            return;
-        }
-        List<Trailer> trailerList = result.results;
-        mTrailerList = trailerList;
-        if (!(trailerList == null || trailerList.isEmpty())) {
-            Debug.c();
-            noTrailerTv.setVisibility(View.GONE);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
-                    .HORIZONTAL, false);
-            trailerRecyclerView.setLayoutManager(layoutManager);
-            TrailerViewAdapter adapter = new TrailerViewAdapter(trailerList, getActivity(), this);
-            trailerRecyclerView.setAdapter(adapter);
+        Debug.object(result, "trailerlist");
+        if (result.getError() == Error.SUCCESS) {
+            List<Trailer> trailerList = result.results;
+            mTrailerList = trailerList;
+            if (!(trailerList == null || trailerList.isEmpty())) {
+                noTrailerTv.setVisibility(View.GONE);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
+                        .HORIZONTAL, false);
+                trailerRecyclerView.setLayoutManager(layoutManager);
+                TrailerViewAdapter adapter = new TrailerViewAdapter(trailerList, getActivity(), this);
+                trailerRecyclerView.setAdapter(adapter);
+            } else {
+                noTrailerTv.setText(getResources().getText(R.string.no_detail_trailers));
+                noTrailerTv.setVisibility(View.VISIBLE);
+                trailerRecyclerView.setVisibility(View.GONE);
+            }
         } else {
-            noTrailerTv.setText(getResources().getText(R.string.no_detail_trailers));
+            noTrailerTv.setText(getResources().getString(R.string.error_detail_trailers, result
+                    .getError().getDescription()));
             noTrailerTv.setVisibility(View.VISIBLE);
             trailerRecyclerView.setVisibility(View.GONE);
         }
+        trailerProgressbar.setVisibility(ProgressBar.INVISIBLE);
     }
 
     private void playTrailer(String key) {

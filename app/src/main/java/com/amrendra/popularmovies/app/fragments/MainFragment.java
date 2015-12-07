@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.CustomSpinnerAdapter;
 import com.amrendra.popularmovies.adapter.MovieGridAdapter;
+import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.listener.EndlessScrollListener;
 import com.amrendra.popularmovies.loaders.MoviesLoader;
 import com.amrendra.popularmovies.logger.Debug;
@@ -72,7 +73,6 @@ public class MainFragment extends Fragment implements LoaderManager
         movieClickCallback.onClickMovieThumbnail(movie, bitmap, view);
 
     }
-
 
 
     public interface MovieClickCallback {
@@ -249,20 +249,18 @@ public class MainFragment extends Fragment implements LoaderManager
     @Override
     public void onLoadFinished(Loader<MovieList> loader, MovieList data) {
         Debug.c();
-        mSwipeRefreshLayout.setRefreshing(false);
-        if (data == null) {
-            Debug.showToastShort("Error", getActivity());
-            return;
+        if (data.getError() == Error.SUCCESS) {
+            List<Movie> list = data.results;
+            int newPage = data.page;
+
+            movieList.clear();
+            movieList.addAll(list);
+            mMovieGridAdapter.resetMovieList(list);
+        } else {
+            Debug.showSnackbarLong(getActivity().findViewById(R.id.main_activity_coordinator_layout), data.getError().getDescription());
         }
-
-        List<Movie> list = data.results;
-        int newPage = data.page;
-
-        movieList.clear();
-        movieList.addAll(list);
-        mMovieGridAdapter.resetMovieList(list);
-
-
+        // hide refresh at last
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -334,7 +332,7 @@ public class MainFragment extends Fragment implements LoaderManager
 
     }
 
-    public void changeBackgroundColor(int color){
+    public void changeBackgroundColor(int color) {
         mainFragmentFrameLayout.setBackgroundColor(color);
     }
 

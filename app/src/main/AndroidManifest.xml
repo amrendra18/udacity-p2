@@ -35,6 +35,12 @@
         <service
             android:name=".services.FetchGenresService"
             android:enabled="true"/>
+
+        <provider
+            android:authorities="@string/contentprovider"
+            android:name=".db.MovieProvider"
+            android:exported="false"
+            android:syncable="true" />
     </application>
 
 </manifest>

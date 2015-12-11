@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Amrendra Kumar on 24/11/15.
  */
@@ -53,6 +56,9 @@ public class Movie implements Parcelable {
     @SerializedName("tagline")
     public String tagline;
 
+    @SerializedName("genre_ids")
+    public ArrayList<Integer> genreIds;
+
     protected Movie(Parcel in) {
         id = in.readLong();
         votesCount = in.readLong();
@@ -70,6 +76,8 @@ public class Movie implements Parcelable {
         revenue = in.readLong();
         runtime = in.readInt();
         tagline = in.readString();
+
+        genreIds = in.readArrayList(List.class.getClassLoader());
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -97,6 +105,11 @@ public class Movie implements Parcelable {
         sb.append("[backdrop_path=" + backdropPath + "]");
         sb.append("[poster_path=" + posterPath + "]");
         sb.append("[overview=" + overview + "]");
+        if (genreIds != null) {
+            for (Integer i : genreIds) {
+                sb.append("[genreids=" + i + "]");
+            }
+        }
         sb.append("}");
         return sb.toString();
     }
@@ -124,5 +137,6 @@ public class Movie implements Parcelable {
         dest.writeLong(revenue);
         dest.writeInt(runtime);
         dest.writeString(tagline);
+        dest.writeList(genreIds);
     }
 }

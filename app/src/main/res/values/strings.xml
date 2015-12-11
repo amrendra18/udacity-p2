@@ -6,6 +6,7 @@
     <string name="action_settings" translatable="false">Settings</string>
     <string name="action_share" translatable="false">Share</string>
     <string name="action_favourite" translatable="false">Favourite</string>
+    <string name="contentprovider" translatable="false">com.amrendra.popularmovies</string>
 
     <!-- Menu Items -->
     <string name="action_sort_popularity" translatable="false">Sort By Popularity</string>

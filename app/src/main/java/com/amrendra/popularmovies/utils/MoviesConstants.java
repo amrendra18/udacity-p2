@@ -18,7 +18,7 @@ public class MoviesConstants {
     public static final String GET_REVIEWS_URL = "/3/movie/{id}/reviews";
     public static final String GET_TRAILERS_URL = "/3/movie/{id}/videos";
     public static final String GET_GENRES_URL = "/3/genre/movie/list";
-    public static final String GET_MOVIE_DETAIL_URL = "/3/genre/movie/{id}";
+    public static final String GET_MOVIE_DETAIL_URL = "/3/movie/{id}";
 
     // api parameters
     public static final String API_KEY = "api_key";

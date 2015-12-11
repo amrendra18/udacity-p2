@@ -61,6 +61,11 @@ public class MovieContract {
         public static Uri buildGenreWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        public static final String[] GENRE_PROJECTION = new String[]{
+                COLUMN_GENRE_ID,
+                COLUMN_GENRE_NAME
+        };
     }
 
     public static final class TrailerEntry implements BaseColumns {
@@ -79,6 +84,12 @@ public class MovieContract {
         public static Uri buildTrailerWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        public static final String[] TRAILER_PROJECTION = new String[]{
+                COLUMN_MOVIE_ID,
+                COLUMN_YOUTUBE_KEY,
+                COLUMN_TITLE
+        };
     }
 
     public static final class ReviewEntry implements BaseColumns {
@@ -97,6 +108,13 @@ public class MovieContract {
         public static Uri buildReviewWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        public static final String[] REVIEW_PROJECTION = new String[]{
+                COLUMN_MOVIE_ID,
+                COLUMN_AUTHOR,
+                COLUMN_CONTENT,
+                COLUMN_URL
+        };
     }
 
 }

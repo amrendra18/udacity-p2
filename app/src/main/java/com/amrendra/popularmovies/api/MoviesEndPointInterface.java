@@ -1,5 +1,6 @@
 package com.amrendra.popularmovies.api;
 
+import com.amrendra.popularmovies.model.GenreList;
 import com.amrendra.popularmovies.model.MovieList;
 import com.amrendra.popularmovies.model.ReviewList;
 import com.amrendra.popularmovies.model.TrailerList;
@@ -28,6 +29,14 @@ public interface MoviesEndPointInterface {
     Call<TrailerList> getTrailersList(@Path(MoviesConstants.ID) long movie, @Query(MoviesConstants
             .API_KEY)
     String apiKey);
+
+    @GET(MoviesConstants.GET_GENRES_URL)
+    Call<GenreList> getGenresList(@Query(MoviesConstants
+            .API_KEY) String apiKey);
+
+    @GET(MoviesConstants.GET_MOVIE_DETAIL_URL)
+    Call<GenreList> getMovieDetails(@Path(MoviesConstants.ID) long movie, @Query(MoviesConstants
+            .API_KEY) String apiKey);
 
 
 }

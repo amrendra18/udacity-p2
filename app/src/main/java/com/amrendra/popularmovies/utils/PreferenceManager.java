@@ -37,6 +37,14 @@ public class PreferenceManager {
         mEditor.putInt(key, value).commit();
     }
 
+    public boolean readValue(String key, boolean defaultValue) {
+        return mSharedPreference.getBoolean(key, defaultValue);
+    }
+
+    public void writeValue(String key, boolean value) {
+        mEditor.putBoolean(key, value).commit();
+    }
+
     public String readValue(String key, String defaultValue) {
         return mSharedPreference.getString(key, defaultValue);
     }
@@ -45,7 +53,7 @@ public class PreferenceManager {
         mEditor.putString(key, value).commit();
     }
 
-    public void clear(){
+    public void clear() {
         mEditor.clear().commit();
     }
 

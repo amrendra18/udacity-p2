@@ -16,7 +16,9 @@ import com.amrendra.popularmovies.app.fragments.DetailFragment;
 import com.amrendra.popularmovies.app.fragments.MainFragment;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
+import com.amrendra.popularmovies.services.FetchGenresService;
 import com.amrendra.popularmovies.utils.AppConstants;
+import com.amrendra.popularmovies.utils.PreferenceManager;
 
 import butterknife.ButterKnife;
 
@@ -52,6 +54,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
             tablet = false;
         }
         Debug.e("TABLET : " + tablet, false);
+
+        // check if genre list exists or not
+        boolean downloadedGenres = PreferenceManager.getInstance(this).readValue(AppConstants.FETCHED_GENRES, false);
+        Debug.e("Genres downloaded status : " + downloadedGenres, false);
+        if (!downloadedGenres) {
+            startService(new Intent(this, FetchGenresService.class));
+        }
     }
 
     private void addDetailFragment(DetailFragment fragment) {

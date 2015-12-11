@@ -34,9 +34,24 @@ public class Movie implements Parcelable {
 
     @SerializedName("popularity")
     public double popularity;
+
     @SerializedName("vote_average")
     public double averageVote;
 
+    @SerializedName("homepage")
+    public String homepage;
+
+    @SerializedName("imdb_id")
+    public String imdbid;
+
+    @SerializedName("revenue")
+    public long revenue;
+
+    @SerializedName("runtime")
+    public int runtime;
+
+    @SerializedName("tagline")
+    public String tagline;
 
     protected Movie(Parcel in) {
         id = in.readLong();
@@ -50,6 +65,11 @@ public class Movie implements Parcelable {
         averageVote = in.readDouble();
         originalTitle = in.readString();
         originalLanguage = in.readString();
+        homepage = in.readString();
+        imdbid = in.readString();
+        revenue = in.readLong();
+        runtime = in.readInt();
+        tagline = in.readString();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -99,5 +119,10 @@ public class Movie implements Parcelable {
         dest.writeDouble(averageVote);
         dest.writeString(originalTitle);
         dest.writeString(originalLanguage);
+        dest.writeString(homepage);
+        dest.writeString(imdbid);
+        dest.writeLong(revenue);
+        dest.writeInt(runtime);
+        dest.writeString(tagline);
     }
 }

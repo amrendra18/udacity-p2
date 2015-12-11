@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.amrendra.popularmovies"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="com.amrendra.popularmovies"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -23,13 +24,17 @@
         <activity
             android:name=".app.activities.DetailActivity"
             android:label="@string/title_activity_detail"
-            android:windowSoftInputMode="adjustResize"
             android:parentActivityName="com.amrendra.popularmovies.app.activities.MainActivity"
-            android:theme="@style/Theme.DetailActivity">
+            android:theme="@style/Theme.DetailActivity"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.amrendra.popularmovies.app.activities.MainActivity"/>
         </activity>
+
+        <service
+            android:name=".services.FetchGenresService"
+            android:enabled="true"/>
     </application>
 
 </manifest>

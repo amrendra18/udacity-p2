@@ -3,6 +3,7 @@ package com.amrendra.popularmovies.app.fragments;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -20,13 +21,13 @@ import android.widget.Spinner;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.CustomSpinnerAdapter;
 import com.amrendra.popularmovies.adapter.MovieGridAdapter;
-import com.amrendra.popularmovies.utils.AppConstants;
-import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.listener.EndlessScrollListener;
 import com.amrendra.popularmovies.loaders.MoviesLoader;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
 import com.amrendra.popularmovies.model.MovieList;
+import com.amrendra.popularmovies.utils.AppConstants;
+import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.utils.MoviesConstants;
 import com.amrendra.popularmovies.utils.PreferenceManager;
 
@@ -50,6 +51,7 @@ public class MainFragment extends Fragment implements LoaderManager
 
     private int mSelectedPosition = -1;
     private int mCurrentPage = 1;
+    private int pageToBeLoaded = -1;
     private MovieGridAdapter mMovieGridAdapter;
 
 
@@ -287,6 +289,7 @@ public class MainFragment extends Fragment implements LoaderManager
         if (args != null) {
             page = args.getInt(AppConstants.CURRENT_PAGE);
         }
+        pageToBeLoaded = page;
         Debug.e("REQUESTING  :" + page, false);
         return new MoviesLoader(getActivity(), sortBy, page);
     }
@@ -301,7 +304,26 @@ public class MainFragment extends Fragment implements LoaderManager
             Debug.e(data.toString(), false);
             mMovieGridAdapter.addMovies(list);
         } else {
-            Debug.showSnackbarLong(getActivity().findViewById(R.id.main_activity_coordinator_layout), getResources().getString(R.string.error_movie_list, data.getError().getDescription()));
+            String errorMessage;
+            if (pageToBeLoaded > 1) {
+                errorMessage = getResources().getString(R.string.error_movie_list_more, data.getError
+                        ().getDescription());
+            } else {
+                errorMessage = getResources().getString(R.string.error_movie_list, data.getError
+                        ().getDescription());
+            }
+            Snackbar snackbar = Snackbar
+                    .make(getActivity().findViewById(R.id.main_activity_coordinator_layout), errorMessage,
+                            Snackbar.LENGTH_INDEFINITE)
+                    .setAction("RETRY", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(AppConstants.CURRENT_PAGE, pageToBeLoaded);
+                            restartLoader(bundle);
+                        }
+                    });
+            snackbar.show();
         }
         // hide refresh at last
         mSwipeRefreshLayout.setRefreshing(false);

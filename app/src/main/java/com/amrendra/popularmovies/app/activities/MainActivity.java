@@ -3,7 +3,6 @@ package com.amrendra.popularmovies.app.activities;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -29,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
 
     boolean tablet = false;
     int movieSelection = 0;
-    public int backgroundColor = Color.WHITE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
 
     @Override
     public void onBackgroundChange(int color) {
-        this.backgroundColor = color;
         if (tablet && mMainFragment != null) {
             mMainFragment.changeBackgroundColor(color);
         }

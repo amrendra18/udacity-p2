@@ -36,7 +36,7 @@ public class TrailersLoader extends CustomLoader<TrailerList> {
         try {
             Response<TrailerList> response = call.execute();
             if (response.isSuccess()) {
-                data.results = response.body().results;
+                data = response.body();
             } else {
                 Debug.e("REST call for TRAILERS fails : " + response.errorBody().toString(), false);
                 error = Error.SERVER_ERROR;

@@ -158,11 +158,11 @@ public class MovieProvider extends ContentProvider {
             case TRAILERS:
                 return MovieContract.TrailerEntry.CONTENT_TYPE;
             case TRAILERS_WITH_ID:
-                return MovieContract.TrailerEntry.CONTENT_ITEM_TYPE;
+                return MovieContract.TrailerEntry.CONTENT_TYPE;
             case REVIEWS:
                 return MovieContract.ReviewEntry.CONTENT_TYPE;
             case REVIEWS_WITH_ID:
-                return MovieContract.ReviewEntry.CONTENT_ITEM_TYPE;
+                return MovieContract.ReviewEntry.CONTENT_TYPE;
             default:
                 Debug.e("ERROR : " + uri, false);
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -187,6 +187,42 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
-        return super.bulkInsert(uri, values);
+        final int match = sUriMatcher.match(uri);
+        Debug.e("CP bulkInsert : " + uri + " match : " + match, false);
+        String tableName = null;
+        switch (match) {
+            case MOVIES:
+                tableName = MovieContract.MovieEntry.TABLE_NAME;
+                break;
+            case GENRES:
+                tableName = MovieContract.GenreEntry.TABLE_NAME;
+                break;
+            case TRAILERS:
+                tableName = MovieContract.TrailerEntry.TABLE_NAME;
+                break;
+            case REVIEWS:
+                tableName = MovieContract.ReviewEntry.TABLE_NAME;
+                break;
+            default:
+                Debug.e("ERROR : " + uri, false);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        int inserted = 0;
+        Debug.e("Bulk Insertion into " + tableName, false);
+        final SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (ContentValues value : values) {
+                long _id = db.insert(tableName, null, value);
+                if (_id != -1) {
+                    inserted++;
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return inserted;
     }
 }

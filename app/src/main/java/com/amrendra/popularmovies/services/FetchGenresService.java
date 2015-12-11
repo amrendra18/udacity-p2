@@ -3,12 +3,10 @@ package com.amrendra.popularmovies.services;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.amrendra.popularmovies.BuildConfig;
 import com.amrendra.popularmovies.api.MovieClientService;
-import com.amrendra.popularmovies.db.DBHelper;
-import com.amrendra.popularmovies.db.MovieContract.GenreEntry;
+import com.amrendra.popularmovies.db.MovieContract;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Genre;
 import com.amrendra.popularmovies.model.GenreList;
@@ -55,7 +53,7 @@ public class FetchGenresService extends IntentService {
         }
         Debug.e("" + data, false);
         if (data != null && data.genres != null) {
-            DBHelper dbHelper = new DBHelper(getApplicationContext());
+            /*DBHelper dbHelper = new DBHelper(getApplicationContext());
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             db.beginTransaction();
             int added = 0;
@@ -72,9 +70,22 @@ public class FetchGenresService extends IntentService {
                 db.setTransactionSuccessful();
             } finally {
                 db.endTransaction();
+            }*/
+            int count = data.genres.size();
+            ContentValues[] genreValues = new ContentValues[count];
+            for (int i = 0; i < count; i++) {
+                ContentValues cv = new ContentValues();
+                Genre genre = data.genres.get(i);
+                cv.put(MovieContract.GenreEntry.COLUMN_GENRE_ID, genre.id);
+                cv.put(MovieContract.GenreEntry.COLUMN_GENRE_NAME, genre.name);
+                genreValues[i] = cv;
             }
+            int added = getApplicationContext().getContentResolver().bulkInsert(
+                    MovieContract.GenreEntry.CONTENT_URI,
+                    genreValues
+            );
             Debug.e("Added genres : " + added, false);
-            if(added > 0){
+            if (added > 0) {
                 PreferenceManager.getInstance(getApplicationContext()).writeValue(AppConstants
                         .FETCHED_GENRES, true);
             }

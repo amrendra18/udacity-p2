@@ -81,6 +81,7 @@ public class MoviesConstants {
                         Debug.e("NFE : " + cursor.getString(0) + " " + e.getMessage(), false);
                     }
                 }
+                cursor.close();
             } else {
                 Debug.e("Cursor is null", false);
             }

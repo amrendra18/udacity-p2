@@ -2,7 +2,6 @@ package com.amrendra.popularmovies.app.activities;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,11 +14,11 @@ import android.view.View;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.app.fragments.DetailFragment;
 import com.amrendra.popularmovies.app.fragments.MainFragment;
-import com.amrendra.popularmovies.db.MovieContract;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
 import com.amrendra.popularmovies.services.FetchGenresService;
 import com.amrendra.popularmovies.utils.AppConstants;
+import com.amrendra.popularmovies.utils.MoviesConstants;
 import com.amrendra.popularmovies.utils.PreferenceManager;
 
 import butterknife.ButterKnife;
@@ -58,24 +57,16 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
         Debug.e("TABLET : " + tablet, false);
 
         // check if genre list exists or not
-        boolean downloadedGenres = PreferenceManager.getInstance(this).readValue(AppConstants.FETCHED_GENRES, false);
+        boolean downloadedGenres = PreferenceManager.getInstance(this).readValue(AppConstants.FETCHED_GENRES_FROM_SERVER, false);
         Debug.e("Genres downloaded status : " + downloadedGenres, false);
         if (!downloadedGenres) {
             startService(new Intent(this, FetchGenresService.class));
         }
 
 
-        // lets list down all genres
-        Cursor cursor = this.getContentResolver().query(MovieContract.GenreEntry.CONTENT_URI,
-                MovieContract
-                        .GenreEntry.GENRE_PROJECTION, null, null, null);
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                Debug.e("GENRE : " + cursor.getString(0) + " " + cursor.getString(1), false);
-            }
-        } else {
-            Debug.e("Cursor is null", false);
+        int genre[] = new int[]{28, 12, 16, 35, 80, 99, 10749, 10752, 98};
+        for (int i = 0; i < genre.length; i++) {
+            Debug.e("GENRE : " + genre[i] + " " + MoviesConstants.getGenreName(this, genre[i]), false);
         }
     }
 

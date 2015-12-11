@@ -14,5 +14,6 @@ public class AppConstants {
     public static final String MOVIE_BITMAP_SHARE = "movie_bitmap_share";
 
 
-    public static final String FETCHED_GENRES = "fetched_genres";
+    public static final String FETCHED_GENRES_FROM_SERVER = "fetched_genres_from_server";
+    public static final String READ_GENRES_FROM_DB = "read_genres_from_db";
 }

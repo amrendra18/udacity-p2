@@ -87,7 +87,7 @@ public class FetchGenresService extends IntentService {
             Debug.e("Added genres : " + added, false);
             if (added > 0) {
                 PreferenceManager.getInstance(getApplicationContext()).writeValue(AppConstants
-                        .FETCHED_GENRES, true);
+                        .FETCHED_GENRES_FROM_SERVER, true);
             }
         }
     }

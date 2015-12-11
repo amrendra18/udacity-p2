@@ -25,8 +25,6 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements MainFragment.MovieClickCallback,
         DetailFragment.ColorCallback {
 
-    private static final String TAG_MAIN_FRAGMENT = "main_fragment";
-
     MainFragment mMainFragment;
 
     boolean tablet = false;

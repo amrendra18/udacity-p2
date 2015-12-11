@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.CustomSpinnerAdapter;
 import com.amrendra.popularmovies.adapter.MovieGridAdapter;
+import com.amrendra.popularmovies.utils.AppConstants;
 import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.listener.EndlessScrollListener;
 import com.amrendra.popularmovies.loaders.MoviesLoader;
@@ -43,11 +44,12 @@ public class MainFragment extends Fragment implements LoaderManager
         .LoaderCallbacks<MovieList>, /*SwipeRefreshLayout.OnRefreshListener,*/ AdapterView
         .OnItemSelectedListener, MovieGridAdapter.OnMovieViewClickListener {
 
+    public static final String TAG_MAIN_FRAGMENT = "main_fragment";
 
     private static final int MOVIE_LOADER = 0;
 
-    private ArrayList<Movie> movieList;
-
+    private int mSelectedPosition = -1;
+    private int mCurrentPage = 1;
     private MovieGridAdapter mMovieGridAdapter;
 
 
@@ -85,15 +87,16 @@ public class MainFragment extends Fragment implements LoaderManager
     2. onAttach()
     3. onCreate()
     4. onCreateView()
+    5. onViewCreated()
        Activity.onCreate()
-    5. onActivityCreated()
-    6. onStart()
-    7. onResume() Fragment is visible now
-    8. onPause()
-    9. onStop()
-    10. onDestroyView();
-    11. onDestroy()
-    12. onDetach
+    6. onActivityCreated()
+    7. onStart()
+    8. onResume() Fragment is visible now
+    9. onPause()
+    10. onStop()
+    11. onDestroyView();
+    12. onDestroy()
+    13. onDetach
      */
 
 
@@ -104,7 +107,12 @@ public class MainFragment extends Fragment implements LoaderManager
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        movieClickCallback = (MovieClickCallback) context;
+        try {
+            movieClickCallback = (MovieClickCallback) context;
+        } catch (ClassCastException ex) {
+            throw new IllegalStateException("Any Activity having Main Fragment must implement " +
+                    "MainFragment.MovieClickCallback");
+        }
         Debug.c();
     }
 
@@ -112,7 +120,17 @@ public class MainFragment extends Fragment implements LoaderManager
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Debug.c();
-        //setRetainInstance(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Debug.c();
+        outState.putInt(AppConstants.CURRENT_PAGE, mCurrentPage);
+        outState.putInt(AppConstants.SCROLL_POSITION, mSelectedPosition);
+        outState.putParcelableArrayList(AppConstants.MOVIE_LIST_PARCEL, new ArrayList<>(mMovieGridAdapter
+                .getItemList()));
+        Debug.bundle(outState);
     }
 
 
@@ -123,15 +141,19 @@ public class MainFragment extends Fragment implements LoaderManager
         Debug.c();
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
-
-
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Debug.c();
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Debug.c();
 
         int gridColumns = getResources().getInteger(R.integer.grid_columns);
         navColor = ContextCompat.getColor(getActivity(), (R.color.colorPrimaryTransparentNav));
@@ -141,20 +163,42 @@ public class MainFragment extends Fragment implements LoaderManager
         mSwipeRefreshLayout.setEnabled(false);
 
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(getActivity(), gridColumns);
-        endlessScrollListener = new EndlessScrollListener(mGridLayoutManager) {
-            @Override
-            public void onLoadMore(int current_page) {
-            }
-        };
+
 
         movieGridRecyleView.setLayoutManager(mGridLayoutManager);
         movieGridRecyleView.setHasFixedSize(true);
-        mMovieGridAdapter = new MovieGridAdapter(movieList, navColor, getActivity(),
+
+        // restore the list and scroll position
+        List<Movie> restoredMovies;
+        boolean restored = false;
+        if (savedInstanceState != null) {
+
+            mSelectedPosition = savedInstanceState.getInt(AppConstants.SCROLL_POSITION);
+            restoredMovies = savedInstanceState.getParcelableArrayList(AppConstants
+                    .MOVIE_LIST_PARCEL);
+            mCurrentPage = savedInstanceState.getInt(AppConstants.CURRENT_PAGE);
+            Debug.e("restoring state : " + mSelectedPosition + " size : " + restoredMovies.size()
+                    + " page : " + mCurrentPage, false);
+            restored = true;
+        } else {
+            restoredMovies = new ArrayList<>();
+            mSelectedPosition = -1;
+            mCurrentPage = 1;
+        }
+        endlessScrollListener = new EndlessScrollListener(mGridLayoutManager, mCurrentPage) {
+            @Override
+            public void onLoadMore(int current_page) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(AppConstants.CURRENT_PAGE, current_page);
+                restartLoader(bundle);
+            }
+        };
+        mMovieGridAdapter = new MovieGridAdapter(restoredMovies, navColor, getActivity(),
                 this);
         movieGridRecyleView.setAdapter(mMovieGridAdapter);
 
         // Will add later :P
-        // movieGridRecyleView.addOnScrollListener(endlessScrollListener);
+        movieGridRecyleView.addOnScrollListener(endlessScrollListener);
 
         Spinner spinner = (Spinner) getActivity().findViewById(R.id.toolbar_spinner);
         final CustomSpinnerAdapter spinnerAdapter = new CustomSpinnerAdapter(getActivity());
@@ -168,17 +212,16 @@ public class MainFragment extends Fragment implements LoaderManager
                 currentSortingBy);
         spinner.setSelection(0, false);
         spinner.setOnItemSelectedListener(this);
-
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-    }
-
-    private void restoreSavedInstance(Bundle savedInstanceState) {
+        Debug.c();
+        if (!restored) {
+            // Calling LoaderManager.init in onCreate makes call to onLoadingFinished twice.
+            // hence check if loader already exists
+            if (getLoaderManager().getLoader(MOVIE_LOADER) == null) {
+                getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+            } else {
+                getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+            }
+        }
     }
 
 
@@ -192,9 +235,6 @@ public class MainFragment extends Fragment implements LoaderManager
     public void onResume() {
         super.onResume();
         Debug.c();
-        movieList = new ArrayList<>();
-        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
-
     }
 
     @Override
@@ -243,7 +283,12 @@ public class MainFragment extends Fragment implements LoaderManager
             return null;
         }
         mSwipeRefreshLayout.setRefreshing(true);
-        return new MoviesLoader(getActivity(), sortBy, 1);
+        int page = 1;
+        if (args != null) {
+            page = args.getInt(AppConstants.CURRENT_PAGE);
+        }
+        Debug.e("REQUESTING  :" + page, false);
+        return new MoviesLoader(getActivity(), sortBy, page);
     }
 
     @Override
@@ -251,11 +296,10 @@ public class MainFragment extends Fragment implements LoaderManager
         Debug.c();
         if (data.getError() == Error.SUCCESS) {
             List<Movie> list = data.results;
-            int newPage = data.page;
-
-            movieList.clear();
-            movieList.addAll(list);
-            mMovieGridAdapter.resetMovieList(list);
+            mCurrentPage = data.page;
+            Debug.e("LOADED page : " + mCurrentPage, false);
+            Debug.e(data.toString(), false);
+            mMovieGridAdapter.addMovies(list);
         } else {
             Debug.showSnackbarLong(getActivity().findViewById(R.id.main_activity_coordinator_layout), getResources().getString(R.string.error_movie_list, data.getError().getDescription()));
         }
@@ -266,21 +310,12 @@ public class MainFragment extends Fragment implements LoaderManager
     @Override
     public void onLoaderReset(Loader<MovieList> loader) {
         Debug.c();
-        movieList = null;
-        mMovieGridAdapter.resetMovieList(null);
+        mMovieGridAdapter.clearMovies();
     }
 
-/*    @Override
-    public void onRefresh() {
+    public void restartLoader(Bundle bundle) {
         Debug.c();
-        requestPage = 1;
-        restartLoader();
-    }*/
-
-    public void restartLoader() {
-        Debug.c();
-        getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
-        //mSwipeRefreshLayout.setRefreshing(true);
+        getLoaderManager().restartLoader(MOVIE_LOADER, bundle, this);
     }
 
     int lastSelection = 0;
@@ -312,7 +347,7 @@ public class MainFragment extends Fragment implements LoaderManager
                 nextSortingBy);
         if (nextSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES) == false) {
             if (nextSortingBy != currentSortingBy) {
-                restartLoader();
+                restartLoader(null);
                 movieGridRecyleView.scrollToPosition(0);
             }
             currentSortingBy = nextSortingBy;

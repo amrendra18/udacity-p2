@@ -3,10 +3,10 @@ package com.amrendra.popularmovies.loaders;
 import android.content.Context;
 
 import com.amrendra.popularmovies.BuildConfig;
-import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.api.MovieClientService;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.ReviewList;
+import com.amrendra.popularmovies.utils.Error;
 
 import java.io.IOException;
 
@@ -30,21 +30,26 @@ public class ReviewsLoader extends CustomLoader<ReviewList> {
     public ReviewList loadInBackground() {
         Call<ReviewList> call = MovieClientService.getInstance().getReviewsList(movieId, BuildConfig
                 .THE_MOVIE_DB_API_KEY_TOKEN);
-        ReviewList data = new ReviewList();
+        ReviewList data = null;
+        Error error = Error.SUCCESS;
         try {
             Response<ReviewList> response = call.execute();
             if (response.isSuccess()) {
-                data.results = response.body().results;
+                data = response.body();
             } else {
                 Debug.e("REST call for REVIEWS fails : " + response.errorBody().toString(), false);
-                data.setError(Error.SERVER_ERROR);
+                error = Error.SERVER_ERROR;
             }
         } catch (IOException e) {
             Debug.e("IOError fetching the REVIEWS list : " + e.getMessage(), true);
-            data.setError(Error.CONNECTION_ERROR);
+            error = Error.CONNECTION_ERROR;
         } catch (Exception e) {
             Debug.e("Error fetching the REVIEWS list : " + e.getMessage(), true);
-            data.setError(Error.OTHER);
+            error = Error.OTHER;
+        }
+        if (data == null) {
+            data = new ReviewList();
+            data.setError(error);
         }
         return data;
     }

@@ -160,8 +160,9 @@ public class DetailFragment extends Fragment implements TrailerCallback {
         super.onAttach(context);
         try {
             mColorCallback = (ColorCallback) context;
-        } catch (Exception e) {
-
+        } catch (ClassCastException ex) {
+            throw new IllegalStateException("Any Activity having DetailFragment must implement " +
+                    "DetailFragment.ColorCallback");
         }
     }
 

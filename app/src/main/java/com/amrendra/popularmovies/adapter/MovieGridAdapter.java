@@ -3,6 +3,7 @@ package com.amrendra.popularmovies.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.logger.Debug;
@@ -42,7 +42,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     private OnMovieViewClickListener onMovieViewClickListener;
 
 
-    public MovieGridAdapter(List<Movie> movieList, int defaultColor, Context context,
+    public MovieGridAdapter(@NonNull List<Movie> movieList, int defaultColor, @NonNull Context context,
                             OnMovieViewClickListener listener) {
         this.movieList = movieList;
         this.defaultColor = defaultColor;
@@ -65,7 +65,6 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
         //holder.gridMovieNameTv.setText(movie.title);
         String imageUrl = MoviesConstants.API_IMAGE_BASE_URL + MoviesConstants.IMAGE_SIZE_SMALL +
                 movie.posterPath;
-        holder.ratingBar.setRating(((float) movie.averageVote) / 2.0f);
 /*        LayerDrawable bgDrawable = (LayerDrawable) holder.gridMovieNameTv.getBackground();
         final GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.shape_id);*/
 
@@ -113,45 +112,40 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
 
     @Override
     public int getItemCount() {
-        return ((movieList == null) ? (0) : (movieList.size()));
+        return movieList.size();
     }
 
-    public void resetMovieList(List<Movie> data) {
-        if (data == null) {
-            data = new ArrayList<>();
-        }
+    public void resetMovieList(@NonNull List<Movie> data) {
         movieList = data;
         notifyDataSetChanged();
     }
 
-    public void addMovies(List<Movie> data) {
-        if (data == null) {
-            return;
+    @NonNull
+    public List<Movie> getItemList() {
+        return movieList;
+    }
+
+    public void addMovies(@NonNull List<Movie> data) {
+        if (!data.isEmpty()) {
+            int currentSize = movieList.size();
+            int added = data.size();
+            movieList.addAll(data);
+            notifyItemRangeInserted(currentSize, added);
         }
-        if (movieList == null) {
-            movieList = new ArrayList<>();
-        }
-        movieList.addAll(data);
-        notifyDataSetChanged();
+
     }
 
     public void clearMovies() {
-        if (movieList != null) {
+        if (!movieList.isEmpty()) {
             movieList.clear();
+            notifyDataSetChanged();
         }
-        notifyDataSetChanged();
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder /*implements View.OnClickListener */ {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.grid_item_movie_poster_image)
         ImageView gridMoviePosterImage;
-
-/*        @Bind(R.id.grid_item_movie_name_text_view)
-        TextView gridMovieNameTv;*/
-
-        @Bind(R.id.rating)
-        RatingBar ratingBar;
 
         @Bind(R.id.grid_item_container)
         CardView cardView;
@@ -159,13 +153,6 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
-            //itemView.setOnClickListener(this);
         }
-
-/*        @Override
-        public void onClick(View v) {
-            Debug.e("onClick " + get() + " " + mItem););
-        }*/
     }
 }

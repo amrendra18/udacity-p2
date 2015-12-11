@@ -4,6 +4,9 @@ package com.amrendra.popularmovies.model;
  * Created by Amrendra Kumar on 24/11/15.
  */
 public class ReviewList extends CommonList<Review> {
+
+    public int id;
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[Page: " + page + "]");

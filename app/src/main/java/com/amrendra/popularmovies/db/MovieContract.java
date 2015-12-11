@@ -115,7 +115,7 @@ public class MovieContract {
         public static final String COLUMN_TRAILER_ID = "trailer_id";
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_YOUTUBE_KEY = "youtube_key";
-        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_NAME = "title";
 
         public static Uri buildTrailerWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -124,7 +124,7 @@ public class MovieContract {
         public static final String[] TRAILER_PROJECTION = new String[]{
                 COLUMN_MOVIE_ID,
                 COLUMN_YOUTUBE_KEY,
-                COLUMN_TITLE
+                COLUMN_NAME
         };
     }
 

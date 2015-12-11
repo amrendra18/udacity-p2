@@ -51,7 +51,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + TrailerEntry.COLUMN_TRAILER_ID + " TEXT NOT NULL,"
             + TrailerEntry.COLUMN_MOVIE_ID + " INTEGER  NOT NULL,"
             + TrailerEntry.COLUMN_YOUTUBE_KEY + " TEXT,"
-            + TrailerEntry.COLUMN_TITLE + " TEXT,"
+            + TrailerEntry.COLUMN_NAME + " TEXT,"
             + "UNIQUE (" + TrailerEntry.COLUMN_TRAILER_ID + ") ON CONFLICT REPLACE)";
 
     private static final String SQL_CREATE_REVIEW_TABLE = "CREATE TABLE " + ReviewEntry.TABLE_NAME + "("

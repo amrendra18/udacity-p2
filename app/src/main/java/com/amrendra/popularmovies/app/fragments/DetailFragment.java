@@ -1,7 +1,6 @@
 package com.amrendra.popularmovies.app.fragments;
 
 import android.content.ActivityNotFoundException;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,8 +35,6 @@ import android.widget.TextView;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter.TrailerCallback;
-import com.amrendra.popularmovies.db.MovieContract;
-import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.loaders.ReviewsLoader;
 import com.amrendra.popularmovies.loaders.TrailersLoader;
 import com.amrendra.popularmovies.logger.Debug;
@@ -47,6 +44,7 @@ import com.amrendra.popularmovies.model.ReviewList;
 import com.amrendra.popularmovies.model.Trailer;
 import com.amrendra.popularmovies.model.TrailerList;
 import com.amrendra.popularmovies.utils.AppConstants;
+import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.utils.MoviesConstants;
 
 import java.util.List;
@@ -425,27 +423,6 @@ public class DetailFragment extends Fragment implements TrailerCallback {
             List<Review> reviewList = result.results;
             if (!(reviewList == null || reviewList.isEmpty())) {
                 int len = reviewList.size();
-                //// DEBUG START
-                int count = len;
-                ContentValues[] reviewValues = new ContentValues[count];
-                for (int i = 0; i < count; i++) {
-                    ContentValues cv = new ContentValues();
-                    Review review = reviewList.get(i);
-
-                    cv.put(MovieContract.ReviewEntry.COLUMN_MOVIE_ID, result.id);
-                    cv.put(MovieContract.ReviewEntry.COLUMN_REVIEW_ID, review.id);
-                    cv.put(MovieContract.ReviewEntry.COLUMN_AUTHOR, review.author);
-                    cv.put(MovieContract.ReviewEntry.COLUMN_CONTENT, review.content);
-                    cv.put(MovieContract.ReviewEntry.COLUMN_URL, review.url);
-                    reviewValues[i] = cv;
-                }
-                Debug.c();
-                int added = getContext().getContentResolver().bulkInsert(
-                        MovieContract.ReviewEntry.CONTENT_URI,
-                        reviewValues
-                );
-                Debug.e("Added Reviews : " + added, false);
-                //// DEBUG END
                 mReviewList = reviewList;
                 for (int i = 0; i < len; i++) {
                     Review review = reviewList.get(i);
@@ -480,27 +457,6 @@ public class DetailFragment extends Fragment implements TrailerCallback {
         Debug.object(result, "trailerlist");
         if (result.getError() == Error.SUCCESS) {
             List<Trailer> trailerList = result.results;
-            //// DEBUG START
-            int count = trailerList.size();
-            ContentValues[] trailerValues = new ContentValues[count];
-            for (int i = 0; i < count; i++) {
-                ContentValues cv = new ContentValues();
-                Trailer trailer = trailerList.get(i);
-
-                cv.put(MovieContract.TrailerEntry.COLUMN_MOVIE_ID, result.id);
-                cv.put(MovieContract.TrailerEntry.COLUMN_TRAILER_ID, trailer.id);
-                cv.put(MovieContract.TrailerEntry.COLUMN_YOUTUBE_KEY, trailer.key);
-                cv.put(MovieContract.TrailerEntry.COLUMN_NAME, trailer.name);
-                trailerValues[i] = cv;
-            }
-            Debug.c();
-            int added = getContext().getContentResolver().bulkInsert(
-                    MovieContract.TrailerEntry.CONTENT_URI,
-                    trailerValues
-            );
-            Debug.e("Added Trailers : " + added, false);
-            //// DEBUG END
-
             mTrailerList = trailerList;
             if (!(trailerList == null || trailerList.isEmpty())) {
                 noTrailerTv.setVisibility(View.GONE);

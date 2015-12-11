@@ -18,7 +18,6 @@ import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
 import com.amrendra.popularmovies.services.FetchGenresService;
 import com.amrendra.popularmovies.utils.AppConstants;
-import com.amrendra.popularmovies.utils.MoviesConstants;
 import com.amrendra.popularmovies.utils.PreferenceManager;
 
 import butterknife.ButterKnife;
@@ -61,12 +60,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
         Debug.e("Genres downloaded status : " + downloadedGenres, false);
         if (!downloadedGenres) {
             startService(new Intent(this, FetchGenresService.class));
-        }
-
-
-        int genre[] = new int[]{28, 12, 16, 35, 80, 99, 10749, 10752, 98};
-        for (int i = 0; i < genre.length; i++) {
-            Debug.e("GENRE : " + genre[i] + " " + MoviesConstants.getGenreName(this, genre[i]), false);
         }
     }
 

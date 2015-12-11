@@ -1,6 +1,5 @@
 package com.amrendra.popularmovies.app.fragments;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import android.widget.Spinner;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.CustomSpinnerAdapter;
 import com.amrendra.popularmovies.adapter.MovieGridAdapter;
-import com.amrendra.popularmovies.db.MovieContract;
 import com.amrendra.popularmovies.listener.EndlessScrollListener;
 import com.amrendra.popularmovies.loaders.MoviesLoader;
 import com.amrendra.popularmovies.logger.Debug;
@@ -304,36 +302,6 @@ public class MainFragment extends Fragment implements LoaderManager
             mCurrentPage = data.page;
             Debug.e("LOADED page : " + mCurrentPage, false);
             Debug.e(data.toString(), false);
-            //// DEBUG START
-
-            int count = list.size();
-            ContentValues[] genreValues = new ContentValues[count];
-            for (int i = 0; i < count; i++) {
-                ContentValues cv = new ContentValues();
-                Movie movie = list.get(i);
-
-                cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.id);
-                cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH, movie.posterPath);
-                cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW, movie.overview);
-                cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, movie.releaseDate);
-                cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_GENRE_IDS, MoviesConstants
-                        .getGenresList(getContext(), movie
-                                .genreIds));
-                cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, movie.title);
-                cv.put(MovieContract.MovieEntry.COLUMN_ORIGNAL_LANGUAGE, movie.originalLanguage);
-                cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_BACKDROP_PATH, movie.backdropPath);
-                cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_POPULARITY, movie.popularity);
-                cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_COUNT, movie.votesCount);
-                cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE, movie.averageVote);
-                genreValues[i] = cv;
-            }
-            Debug.c();
-            int added = getContext().getContentResolver().bulkInsert(
-                    MovieContract.MovieEntry.CONTENT_URI,
-                    genreValues
-            );
-            Debug.e("Added movies : " + added, false);
-            //// DEBUG END
             mMovieGridAdapter.addMovies(list);
         } else {
             String errorMessage;

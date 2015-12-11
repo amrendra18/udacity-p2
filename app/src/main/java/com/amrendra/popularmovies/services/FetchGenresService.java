@@ -53,24 +53,6 @@ public class FetchGenresService extends IntentService {
         }
         Debug.e("" + data, false);
         if (data != null && data.genres != null) {
-            /*DBHelper dbHelper = new DBHelper(getApplicationContext());
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            db.beginTransaction();
-            int added = 0;
-            try {
-                for (Genre genre : data.genres) {
-                    ContentValues value = new ContentValues();
-                    value.put(GenreEntry.COLUMN_GENRE_ID, genre.id);
-                    value.put(GenreEntry.COLUMN_GENRE_NAME, genre.name);
-                    long _id = db.insert(GenreEntry.TABLE_NAME, null, value);
-                    if (_id != -1) {
-                        added++;
-                    }
-                }
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
-            }*/
             int count = data.genres.size();
             ContentValues[] genreValues = new ContentValues[count];
             for (int i = 0; i < count; i++) {

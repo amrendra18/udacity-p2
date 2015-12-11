@@ -29,6 +29,7 @@ public class MovieContract {
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_MOVIE_TITLE = "title";
         public static final String COLUMN_MOVIE_OVERVIEW = "overview";
+        public static final String COLUMN_ORIGNAL_LANGUAGE = "original_lang";
         public static final String COLUMN_MOVIE_POPULARITY = "popularity";
         public static final String COLUMN_MOVIE_GENRE_IDS = "genre_ids";
         public static final String COLUMN_MOVIE_VOTE_COUNT = "vote_count";
@@ -46,6 +47,41 @@ public class MovieContract {
         public static Uri buildMovieWithId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        public static final String[] MOVIE_PROJECTION = new String[]{
+                COLUMN_MOVIE_ID,
+                COLUMN_MOVIE_TITLE,
+                COLUMN_MOVIE_OVERVIEW,
+                COLUMN_ORIGNAL_LANGUAGE,
+                COLUMN_MOVIE_POPULARITY,
+                COLUMN_MOVIE_GENRE_IDS,
+                COLUMN_MOVIE_VOTE_COUNT,
+                COLUMN_MOVIE_VOTE_AVERAGE,
+                COLUMN_MOVIE_RELEASE_DATE,
+                COLUMN_MOVIE_FAVOURITE,
+                COLUMN_MOVIE_POSTER_PATH,
+                COLUMN_MOVIE_BACKDROP_PATH
+        };
+
+        public static final String[] MOVIE_PROJECTION_DETAIL = new String[]{
+                COLUMN_MOVIE_ID,
+                COLUMN_MOVIE_TITLE,
+                COLUMN_MOVIE_OVERVIEW,
+                COLUMN_ORIGNAL_LANGUAGE,
+                COLUMN_MOVIE_POPULARITY,
+                COLUMN_MOVIE_GENRE_IDS,
+                COLUMN_MOVIE_VOTE_COUNT,
+                COLUMN_MOVIE_VOTE_AVERAGE,
+                COLUMN_MOVIE_RELEASE_DATE,
+                COLUMN_MOVIE_FAVOURITE,
+                COLUMN_MOVIE_POSTER_PATH,
+                COLUMN_MOVIE_BACKDROP_PATH,
+                COLUMN_MOVIE_HOMEPAGE,
+                COLUMN_MOVIE_IMDB,
+                COLUMN_MOVIE_REVENUE,
+                COLUMN_MOVIE_RUNTIME,
+                COLUMN_MOVIE_TAGLINE
+        };
     }
 
     public static final class GenreEntry implements BaseColumns {

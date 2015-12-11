@@ -15,7 +15,7 @@ import com.amrendra.popularmovies.logger.Debug;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private static final String DB_NAME = "filmie.db";
 
 
@@ -27,10 +27,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + "("
             + MovieEntry._ID + " INTEGER NOT NULL PRIMARY KEY,"
-            + MovieEntry.COLUMN_MOVIE_ID + " TEXT NOT NULL,"
+            + MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL,"
             + MovieEntry.COLUMN_MOVIE_TITLE + " TEXT NOT NULL,"
             + MovieEntry.COLUMN_MOVIE_OVERVIEW + " TEXT,"
             + MovieEntry.COLUMN_MOVIE_GENRE_IDS + " TEXT,"
+            + MovieEntry.COLUMN_ORIGNAL_LANGUAGE + " TEXT, "
             + MovieEntry.COLUMN_MOVIE_POPULARITY + " REAL,"
             + MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE + " REAL,"
             + MovieEntry.COLUMN_MOVIE_VOTE_COUNT + " INTEGER,"
@@ -78,10 +79,10 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Debug.c();
-        db.execSQL("DROP TABLE IF EXISTS " + SQL_CREATE_MOVIE_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + SQL_CREATE_GENRE_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + SQL_CREATE_TRAILER_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + SQL_CREATE_REVIEW_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + GenreEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + ReviewEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TrailerEntry.TABLE_NAME);
         onCreate(db);
     }
 }

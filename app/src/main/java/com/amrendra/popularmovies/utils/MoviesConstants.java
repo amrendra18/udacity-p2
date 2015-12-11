@@ -7,6 +7,7 @@ import com.amrendra.popularmovies.db.MovieContract;
 import com.amrendra.popularmovies.logger.Debug;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Amrendra Kumar on 24/11/15.
@@ -91,5 +92,15 @@ public class MoviesConstants {
             val = "";
         }
         return val;
+    }
+
+    public static String getGenresList(Context context, List<Integer> list) {
+        StringBuilder sb = new StringBuilder();
+        if (list != null) {
+            for (Integer i : list) {
+                sb.append(getGenreName(context, i) + " ");
+            }
+        }
+        return sb.toString().trim();
     }
 }

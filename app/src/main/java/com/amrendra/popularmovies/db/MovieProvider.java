@@ -63,6 +63,7 @@ public class MovieProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         Cursor retCursor;
         Debug.e("CP Query : " + uri + " match : " + match, false);
+        SQLiteDatabase db = mDBHelper.getReadableDatabase();
         switch (match) {
             case MOVIES:
                 retCursor = getMovieList(uri, projection, selection, selectionArgs, sortOrder);
@@ -70,9 +71,18 @@ public class MovieProvider extends ContentProvider {
             case MOVIE_WITH_ID:
                 retCursor = getMovieDetail(uri, projection, selection, selectionArgs, sortOrder);
                 break;
-            case GENRES:
-                retCursor = getGenreList(uri, projection, selection, selectionArgs, sortOrder);
-                break;
+            case GENRES: {
+                retCursor = db.query(
+                        MovieContract.GenreEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+            }
+            break;
             case GENRE_WITH_ID:
                 retCursor = getGenreDetail(uri, projection, selection, selectionArgs, sortOrder);
                 break;
@@ -119,21 +129,6 @@ public class MovieProvider extends ContentProvider {
         return null;
     }
 
-    private Cursor getGenreList(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Debug.c();
-        SQLiteDatabase db = mDBHelper.getReadableDatabase();
-        Cursor cursor = db.query(
-                MovieContract.GenreEntry.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                sortOrder
-        );
-        return cursor;
-    }
-
     private Cursor getMovieDetail(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         return null;
     }
@@ -172,7 +167,55 @@ public class MovieProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        //Generally shouldn't come here, we are not adding genre one at a time
+        final int match = sUriMatcher.match(uri);
+        Debug.e("CP insert : " + uri + " match : " + match, false);
+        final SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        Uri returnUri;
+        switch (match) {
+            case MOVIES: {
+                long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
+                if (_id > 0) {
+                    returnUri = MovieContract.MovieEntry.buildMovieWithId(_id);
+                } else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+            }
+            break;
+            case GENRES: {
+                long _id = db.insert(MovieContract.GenreEntry.TABLE_NAME, null, values);
+                if (_id > 0) {
+                    returnUri = MovieContract.GenreEntry.buildGenreWithId(_id);
+                } else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+            }
+            break;
+            case TRAILERS: {
+                long _id = db.insert(MovieContract.TrailerEntry.TABLE_NAME, null, values);
+                if (_id > 0) {
+                    returnUri = MovieContract.TrailerEntry.buildTrailerWithId(_id);
+                } else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+            }
+            break;
+            case REVIEWS: {
+                long _id = db.insert(MovieContract.ReviewEntry.TABLE_NAME, null, values);
+                if (_id > 0) {
+                    returnUri = MovieContract.ReviewEntry.buildReviewWithId(_id);
+                } else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+            }
+            break;
+            default:
+                Debug.e("ERROR : " + uri, false);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnUri;
     }
 
     @Override

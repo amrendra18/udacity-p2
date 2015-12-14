@@ -65,9 +65,18 @@ public class MovieProvider extends ContentProvider {
         Debug.e("CP Query : " + uri + " match : " + match, false);
         SQLiteDatabase db = mDBHelper.getReadableDatabase();
         switch (match) {
-            case MOVIES:
-                retCursor = getMovieList(uri, projection, selection, selectionArgs, sortOrder);
-                break;
+            case MOVIES: {
+                retCursor = db.query(
+                        MovieContract.MovieEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+            }
+            break;
             case MOVIE_WITH_ID:
                 retCursor = getMovieDetail(uri, projection, selection, selectionArgs, sortOrder);
                 break;
@@ -86,16 +95,34 @@ public class MovieProvider extends ContentProvider {
             case GENRE_WITH_ID:
                 retCursor = getGenreDetail(uri, projection, selection, selectionArgs, sortOrder);
                 break;
-            case TRAILERS:
-                retCursor = getAllTrailerList(uri, projection, selection, selectionArgs, sortOrder);
-                break;
+            case TRAILERS: {
+                retCursor = db.query(
+                        MovieContract.TrailerEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+            }
+            break;
             case TRAILERS_WITH_ID:
                 retCursor = getTrailersForMovie(uri, projection, selection, selectionArgs,
                         sortOrder);
                 break;
-            case REVIEWS:
-                retCursor = getAllReviewsList(uri, projection, selection, selectionArgs, sortOrder);
-                break;
+            case REVIEWS: {
+                retCursor = db.query(
+                        MovieContract.ReviewEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+            }
+            break;
             case REVIEWS_WITH_ID:
                 retCursor = getReviewsForMovie(uri, projection, selection, selectionArgs,
                         sortOrder);
@@ -113,27 +140,17 @@ public class MovieProvider extends ContentProvider {
         return null;
     }
 
-    private Cursor getAllReviewsList(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
-    }
 
     private Cursor getTrailersForMovie(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         return null;
     }
 
-    private Cursor getAllTrailerList(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
-    }
 
     private Cursor getGenreDetail(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         return null;
     }
 
     private Cursor getMovieDetail(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
-    }
-
-    private Cursor getMovieList(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         return null;
     }
 

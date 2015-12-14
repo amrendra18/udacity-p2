@@ -7,6 +7,7 @@
     <string name="action_share" translatable="false">Share</string>
     <string name="action_favourite" translatable="false">Favourite</string>
     <string name="contentprovider" translatable="false">com.amrendra.popularmovies</string>
+    <string name="sync_account_type" translatable="false">popularmovies.amrendra.com</string>
 
     <!-- Menu Items -->
     <string name="action_sort_popularity" translatable="false">Sort By Popularity</string>

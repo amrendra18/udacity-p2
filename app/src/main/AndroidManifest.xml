@@ -43,7 +43,7 @@
 
         <provider
             android:name=".db.MovieProvider"
-            android:authorities="@string/contentprovider"
+            android:authorities="@string/contentauthority"
             android:exported="false"
             android:syncable="true"/>
 

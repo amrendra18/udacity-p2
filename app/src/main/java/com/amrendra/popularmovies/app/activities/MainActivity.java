@@ -17,6 +17,7 @@ import com.amrendra.popularmovies.app.fragments.MainFragment;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
 import com.amrendra.popularmovies.services.FetchGenresService;
+import com.amrendra.popularmovies.sync.MovieSyncAdapter;
 import com.amrendra.popularmovies.utils.AppConstants;
 import com.amrendra.popularmovies.utils.PreferenceManager;
 
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
         if (!downloadedGenres) {
             startService(new Intent(this, FetchGenresService.class));
         }
+
+        Debug.c();
+        MovieSyncAdapter.initializeSyncAdapter(this);
     }
 
     private void addDetailFragment(DetailFragment fragment) {

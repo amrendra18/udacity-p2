@@ -2,6 +2,7 @@ package com.amrendra.popularmovies.db;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -77,9 +78,19 @@ public class MovieProvider extends ContentProvider {
                 );
             }
             break;
-            case MOVIE_WITH_ID:
-                retCursor = getMovieDetail(uri, projection, selection, selectionArgs, sortOrder);
-                break;
+            case MOVIE_WITH_ID: {
+                long movieId = MovieContract.MovieEntry.getMovieIdFromUri(uri);
+                retCursor = db.query(
+                        MovieContract.MovieEntry.TABLE_NAME,
+                        projection,
+                        MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
+                        new String[]{Long.toString(movieId)},
+                        null,
+                        null,
+                        sortOrder
+                );
+            }
+            break;
             case GENRES: {
                 retCursor = db.query(
                         MovieContract.GenreEntry.TABLE_NAME,
@@ -123,17 +134,32 @@ public class MovieProvider extends ContentProvider {
                 );
             }
             break;
-            case REVIEWS_WITH_ID:
-                retCursor = getReviewsForMovie(uri, projection, selection, selectionArgs,
-                        sortOrder);
-                break;
+            case REVIEWS_WITH_ID: {
+                long movieId = MovieContract.ReviewEntry.getMovieIdFromUri(uri);
+                retCursor = db.query(
+                        MovieContract.ReviewEntry.TABLE_NAME,
+                        projection,
+                        MovieContract.ReviewEntry.COLUMN_MOVIE_ID + " = ?",
+                        new String[]{Long.toString(movieId)},
+                        null,
+                        null,
+                        sortOrder
+                );
+            }
+            break;
             default:
                 Debug.e("ERROR : " + uri, false);
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        notifyChange(retCursor, getContext(), uri);
         return retCursor;
+    }
+
+    private void notifyChange(Cursor retCursor, Context context, Uri uri) {
+        if (retCursor != null) {
+            retCursor.setNotificationUri(context.getContentResolver(), uri);
+        }
     }
 
     private Cursor getReviewsForMovie(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
@@ -147,10 +173,6 @@ public class MovieProvider extends ContentProvider {
 
 
     private Cursor getGenreDetail(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
-    }
-
-    private Cursor getMovieDetail(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         return null;
     }
 

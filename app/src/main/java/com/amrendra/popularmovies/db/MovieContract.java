@@ -48,7 +48,17 @@ public class MovieContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static long getMovieIdFromUri(Uri uri) {
+            return ContentUris.parseId(uri);
+        }
+
+        public static final String[] MOVIE_PROJECTION_GRID = new String[]{
+                COLUMN_MOVIE_ID, //0
+                COLUMN_MOVIE_POSTER_PATH,//1
+        };
+
         public static final String[] MOVIE_PROJECTION = new String[]{
+                _ID,//0
                 COLUMN_MOVIE_ID,
                 COLUMN_MOVIE_TITLE,
                 COLUMN_MOVIE_OVERVIEW,
@@ -64,23 +74,24 @@ public class MovieContract {
         };
 
         public static final String[] MOVIE_PROJECTION_DETAIL = new String[]{
-                COLUMN_MOVIE_ID,
-                COLUMN_MOVIE_TITLE,
-                COLUMN_MOVIE_OVERVIEW,
-                COLUMN_ORIGNAL_LANGUAGE,
-                COLUMN_MOVIE_POPULARITY,
-                COLUMN_MOVIE_GENRE_IDS,
-                COLUMN_MOVIE_VOTE_COUNT,
-                COLUMN_MOVIE_VOTE_AVERAGE,
-                COLUMN_MOVIE_RELEASE_DATE,
-                COLUMN_MOVIE_FAVOURITE,
-                COLUMN_MOVIE_POSTER_PATH,
-                COLUMN_MOVIE_BACKDROP_PATH,
-                COLUMN_MOVIE_HOMEPAGE,
-                COLUMN_MOVIE_IMDB,
-                COLUMN_MOVIE_REVENUE,
-                COLUMN_MOVIE_RUNTIME,
-                COLUMN_MOVIE_TAGLINE
+                _ID,
+                COLUMN_MOVIE_ID, //0
+                COLUMN_MOVIE_TITLE, //1
+                COLUMN_MOVIE_OVERVIEW, //2
+                COLUMN_ORIGNAL_LANGUAGE, //3
+                COLUMN_MOVIE_POPULARITY, //4
+                COLUMN_MOVIE_GENRE_IDS, //5
+                COLUMN_MOVIE_VOTE_COUNT, //6
+                COLUMN_MOVIE_VOTE_AVERAGE,//7
+                COLUMN_MOVIE_RELEASE_DATE,//8
+                COLUMN_MOVIE_FAVOURITE,//9
+                COLUMN_MOVIE_POSTER_PATH,//10
+                COLUMN_MOVIE_BACKDROP_PATH,//11
+                COLUMN_MOVIE_HOMEPAGE,//12
+                COLUMN_MOVIE_IMDB,//13
+                COLUMN_MOVIE_REVENUE,//14
+                COLUMN_MOVIE_RUNTIME,//15
+                COLUMN_MOVIE_TAGLINE//16
         };
     }
 
@@ -121,7 +132,12 @@ public class MovieContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static long getMovieIdFromUri(Uri uri) {
+            return ContentUris.parseId(uri);
+        }
+
         public static final String[] TRAILER_PROJECTION = new String[]{
+                _ID,
                 COLUMN_MOVIE_ID,
                 COLUMN_YOUTUBE_KEY,
                 COLUMN_NAME
@@ -146,11 +162,16 @@ public class MovieContract {
         }
 
         public static final String[] REVIEW_PROJECTION = new String[]{
+                _ID,
                 COLUMN_MOVIE_ID,
                 COLUMN_AUTHOR,
                 COLUMN_CONTENT,
                 COLUMN_URL
         };
+
+        public static long getMovieIdFromUri(Uri uri) {
+            return ContentUris.parseId(uri);
+        }
     }
 
 }

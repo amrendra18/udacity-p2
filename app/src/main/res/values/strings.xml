@@ -43,6 +43,11 @@
     <string name="release_date" translatable="false">Release Date</string>
     <string name="original_title" translatable="false">Original Title</string>
     <string name="original_language" translatable="false">Original Language</string>
-
+    <string name="imdb" translatable="false">IMDB</string>
+    <string name="homepage" translatable="false">Homepage</string>
+    <string name="revenue" translatable="false">Revenue</string>
+    <string name="time" translatable="false">Length</string>
+    <string name="tagline" translatable="false">Tagline</string>
+    <string name="genre" translatable="false">Genre</string>
 
 </resources>

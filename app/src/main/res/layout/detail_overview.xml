@@ -33,8 +33,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginRight="@dimen/progressbar_margin_right"
                 android:layout_marginEnd="@dimen/progressbar_margin_right"
+                android:layout_marginRight="@dimen/progressbar_margin_right"
                 android:gravity="center"
                 android:textSize="18dp"
                 android:textStyle="bold"/>
@@ -88,12 +88,94 @@
 
                 <TextView
                     style="@style/TableEntry1"
+                    android:text="@string/imdb"/>
+
+                <TextView
+                    android:id="@+id/detail_imdb_tv"
+                    style="@style/TableEntry2"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                style="@style/FillContainer"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TableEntry1"
+                    android:text="@string/homepage"/>
+
+                <TextView
+                    android:id="@+id/detail_homepage_tv"
+                    style="@style/TableEntry2"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                style="@style/FillContainer"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TableEntry1"
+                    android:text="@string/revenue"/>
+
+                <TextView
+                    android:id="@+id/detail_revenue_tv"
+                    style="@style/TableEntry2"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/FillContainer"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TableEntry1"
+                    android:text="@string/time"/>
+
+                <TextView
+                    android:id="@+id/detail_time_tv"
+                    style="@style/TableEntry2"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/FillContainer"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TableEntry1"
+                    android:text="@string/tagline"/>
+
+                <TextView
+                    android:id="@+id/detail_tagline_tv"
+                    style="@style/TableEntry2"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/FillContainer"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TableEntry1"
                     android:text="@string/original_language"/>
 
                 <TextView
                     android:id="@+id/detail_orginal_language_tv"
                     style="@style/TableEntry2"/>
             </LinearLayout>
+
+
+            <LinearLayout
+                style="@style/FillContainer"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TableEntry1"
+                    android:text="@string/genre"/>
+
+                <TextView
+                    android:id="@+id/detail_genre_tv"
+                    style="@style/TableEntry2"/>
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

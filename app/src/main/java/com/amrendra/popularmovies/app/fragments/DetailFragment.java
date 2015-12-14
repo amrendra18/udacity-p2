@@ -59,8 +59,9 @@ public class DetailFragment extends Fragment implements TrailerCallback {
 
     public static final String TAG = "detailFragment";
 
-    private static final int REVIEWS_LOADER = 0;
-    private static final int TRAILER_LOADER = 1;
+    private static final int DETAIL_LOADER = 0;
+    private static final int REVIEWS_LOADER = 1;
+    private static final int TRAILER_LOADER = 2;
 
     @Bind(R.id.full_content_detail_fragment)
     LinearLayout fullContainer;
@@ -98,6 +99,25 @@ public class DetailFragment extends Fragment implements TrailerCallback {
 
     @Bind(R.id.detail_orginal_language_tv)
     TextView movieOriginalLanguageTv;
+
+    @Bind(R.id.detail_imdb_tv)
+    TextView movieImdbTv;
+
+    @Bind(R.id.detail_homepage_tv)
+    TextView movieHomepageTv;
+
+    @Bind(R.id.detail_revenue_tv)
+    TextView movieRevenueTv;
+
+    @Bind(R.id.detail_time_tv)
+    TextView movieTimeTv;
+
+    @Bind(R.id.detail_tagline_tv)
+    TextView movieTaglineTv;
+
+    @Bind(R.id.detail_genre_tv)
+    TextView movieGenreTv;
+
     // End Overview Card
 
 
@@ -267,6 +287,14 @@ public class DetailFragment extends Fragment implements TrailerCallback {
             movieOriginalTitleTv.setText(mMovie.originalTitle);
             movieReleaseDateTv.setText(mMovie.releaseDate);
             movieOriginalLanguageTv.setText(mMovie.originalLanguage);
+
+
+            movieImdbTv.setText(mMovie.imdbid);
+            movieHomepageTv.setText(mMovie.homepage);
+            movieRevenueTv.setText(Long.toString(mMovie.revenue));
+            movieTimeTv.setText(Integer.toString(mMovie.runtime));
+            movieTaglineTv.setText(mMovie.tagline);
+            //movieGenreTv.setText(mMovie.genresToShow);
         }
     }
 
@@ -335,6 +363,11 @@ public class DetailFragment extends Fragment implements TrailerCallback {
 
     private void initLoaders() {
         if (mMovie != null) {
+
+            Debug.e("detail loader init", false);
+            getLoaderManager().initLoader(DETAIL_LOADER, null, movieDetailsLoaderCallbacks);
+
+
             if (mReviewList == null || mReviewList.size() == 0) {
                 Debug.e("Requesting for reviews", false);
                 getLoaderManager().initLoader(REVIEWS_LOADER, null, reviewListLoaderCallbacks);
@@ -371,6 +404,26 @@ public class DetailFragment extends Fragment implements TrailerCallback {
 
     }
 
+    private LoaderManager.LoaderCallbacks<Movie> movieDetailsLoaderCallbacks
+            = new LoaderManager.LoaderCallbacks<Movie>() {
+
+        @Override
+        public Loader<Movie> onCreateLoader(int id, Bundle args) {
+            Debug.c();
+            return null;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Movie> loader, Movie data) {
+            Debug.c();
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Movie> loader) {
+            Debug.c();
+            mMovie = null;
+        }
+    };
 
     private LoaderManager.LoaderCallbacks<ReviewList> reviewListLoaderCallbacks
             = new LoaderManager.LoaderCallbacks<ReviewList>() {

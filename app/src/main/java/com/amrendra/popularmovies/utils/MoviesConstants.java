@@ -6,6 +6,7 @@ import android.database.Cursor;
 import com.amrendra.popularmovies.db.MovieContract;
 import com.amrendra.popularmovies.logger.Debug;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -100,6 +101,34 @@ public class MoviesConstants {
         if (list != null) {
             for (Integer i : list) {
                 sb.append(getGenreName(context, i) + " ");
+            }
+        }
+        return sb.toString().trim();
+    }
+
+    public static ArrayList<Integer> getGenresIntList(String dbLine) {
+        ArrayList<Integer> list = new ArrayList<>();
+        if (dbLine != null) {
+            dbLine = dbLine.trim();
+            String[] ints = dbLine.split(" ");
+            for (String si : ints) {
+                try {
+                    list.add(Integer.parseInt(si));
+                } catch (NumberFormatException nfe) {
+                    Debug.e("NFE : fetching back list from db : " + nfe.getMessage(), false);
+                }
+            }
+        }
+        Debug.e("to fetch back : " + dbLine, false);
+        Debug.array(list.toArray());
+        return list;
+    }
+
+    public static String getGenresStringList(List<Integer> list) {
+        StringBuilder sb = new StringBuilder();
+        if (list != null) {
+            for (Integer i : list) {
+                sb.append(Integer.toString(i) + " ");
             }
         }
         return sb.toString().trim();

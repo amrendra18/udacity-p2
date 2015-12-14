@@ -132,7 +132,6 @@ public class MainFragment extends Fragment implements LoaderManager
         outState.putInt(AppConstants.SCROLL_POSITION, mSelectedPosition);
         outState.putParcelableArrayList(AppConstants.MOVIE_LIST_PARCEL, new ArrayList<>(mMovieGridAdapter
                 .getItemList()));
-        Debug.bundle(outState);
     }
 
 

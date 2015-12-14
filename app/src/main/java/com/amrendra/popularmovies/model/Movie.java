@@ -104,7 +104,12 @@ public class Movie implements Parcelable {
         sb.append("[vote_average=" + averageVote + "]");
         sb.append("[backdrop_path=" + backdropPath + "]");
         sb.append("[poster_path=" + posterPath + "]");
-        sb.append("[overview=" + overview + "]");
+        sb.append("[revenue=" + revenue + "]");
+        sb.append("[imdbid=" + imdbid + "]");
+        sb.append("[tagline=" + tagline + "]");
+        sb.append("[runtime=" + runtime + "]");
+        sb.append("[homepage=" + homepage + "]");
+        //sb.append("[overview=" + overview + "]");
         if (genreIds != null) {
             for (Integer i : genreIds) {
                 sb.append("[genreids=" + i + "]");

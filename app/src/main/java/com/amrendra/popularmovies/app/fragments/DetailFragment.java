@@ -1,9 +1,9 @@
 package com.amrendra.popularmovies.app.fragments;
 
 import android.content.ActivityNotFoundException;
-import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -38,6 +38,7 @@ import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter.TrailerCallback;
 import com.amrendra.popularmovies.db.MovieContract;
+import com.amrendra.popularmovies.handler.FavouriteQueryHandler;
 import com.amrendra.popularmovies.loaders.MovieDetailLoader;
 import com.amrendra.popularmovies.loaders.ReviewsLoader;
 import com.amrendra.popularmovies.loaders.TrailersLoader;
@@ -59,7 +60,7 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailFragment extends Fragment implements TrailerCallback {
+public class DetailFragment extends Fragment implements TrailerCallback, FavouriteQueryHandler.OnQueryCompleteListener {
 
     public static final String TAG = "detailFragment";
 
@@ -160,9 +161,12 @@ public class DetailFragment extends Fragment implements TrailerCallback {
 
     private boolean isTablet = false;
 
+    private FavouriteQueryHandler mFavouriteQueryHandler;
+
     public DetailFragment() {
         Debug.c();
     }
+
 
     public interface ColorCallback {
         void onBackgroundChange(int color);
@@ -186,6 +190,7 @@ public class DetailFragment extends Fragment implements TrailerCallback {
 
     @Override
     public void onAttach(Context context) {
+        mFavouriteQueryHandler = new FavouriteQueryHandler(context.getContentResolver(), this);
         super.onAttach(context);
         try {
             mColorCallback = (ColorCallback) context;
@@ -240,40 +245,8 @@ public class DetailFragment extends Fragment implements TrailerCallback {
 
 
     private void addFavourite(MenuItem menu) {
-        Debug.showToastShort("Fav clicked", getActivity());
-        AsyncQueryHandler query = new AsyncQueryHandler(getActivity().getContentResolver()) {
-            @Override
-            protected void onInsertComplete(int token, Object cookie, Uri retUri) {
-                Debug.e("Add fav : " + retUri, false);
-                String message = "";
-                if (retUri == null) {
-                    message = "Error in adding " + mMovie.title + " from favourites!";
-                } else {
-                    isAlreadyFavouriteMovie = true;
-                    message = mMovie.title + " added to favourites!";
-                }
-                setFavouriteButtonImage();
-                Snackbar snackbar = Snackbar.make(mDetailFragmentCoordinatorLayout, message, Snackbar.LENGTH_LONG);
-                snackbar.show();
-            }
-
-            @Override
-            protected void onDeleteComplete(int token, Object cookie, int result) {
-                Debug.e("Del fav : " + result, false);
-                String message = "";
-                if (result == 1) {
-                    message = mMovie.title + " removed from favourites!";
-                    isAlreadyFavouriteMovie = false;
-                } else {
-                    message = "Error in removing " + mMovie.title + " from favourites!";
-                }
-                setFavouriteButtonImage();
-                Snackbar snackbar = Snackbar.make(mDetailFragmentCoordinatorLayout, message, Snackbar.LENGTH_LONG);
-                snackbar.show();
-            }
-        };
         if (isAlreadyFavouriteMovie) {
-            query.startDelete(
+            mFavouriteQueryHandler.startDelete(
                     0,
                     null,
                     MovieContract.MovieEntry.CONTENT_URI,
@@ -281,7 +254,7 @@ public class DetailFragment extends Fragment implements TrailerCallback {
                     new String[]{Long.toString(mMovie.id)}
             );
         } else {
-            query.startInsert(
+            mFavouriteQueryHandler.startInsert(
                     0,
                     null,
                     MovieContract.MovieEntry.CONTENT_URI, mMovie.movieToContentValue()
@@ -447,8 +420,21 @@ public class DetailFragment extends Fragment implements TrailerCallback {
 
     private void initLoaders() {
         if (mMovie != null) {
-
             isAlreadyFavouriteMovie = MoviesConstants.isFavouriteMovie(mMovie.id, getActivity());
+            // Todo : check why below implementation causes lag, though its not on ui thread, but
+            // above one is.
+/*            Uri uri = MovieContract.MovieEntry.buildMovieWithId(mMovie.id);
+            Debug.e("check fav uri: " + uri, false);
+            mFavouriteQueryHandler.startQuery(
+                    0,
+                    0,
+                    uri,
+                    MovieContract.MovieEntry.MOVIE_PROJECTION_GRID,
+                    MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? LIMIT 1",
+                    new String[]{Long.toString(mMovie.id)},
+                    null
+            );*/
+
 
             if (mMovie.tagline == null) {
                 Debug.e("detail loader init", false);
@@ -643,4 +629,55 @@ public class DetailFragment extends Fragment implements TrailerCallback {
         Debug.e(key, false);
         playTrailer(key);
     }
+
+    // START FavouriteQueryHandler.OnQueryCompleteListener
+    @Override
+    public void onQueryComplete(Cursor cursor) {
+        Debug.e("Check fav : ", false);
+        boolean found = false;
+        if (cursor != null) {
+            if (cursor.moveToNext()) {
+                found = true;
+            }
+            cursor.close();
+        }
+        isAlreadyFavouriteMovie = found;
+        Debug.e("result : " + found, false);
+    }
+
+    @Override
+    public void onInsertComplete(Uri retUri) {
+        Debug.e("Add fav : " + retUri, false);
+        String message = "";
+        if (retUri == null) {
+            message = "Error in adding " + mMovie.title + " from favourites!";
+        } else {
+            isAlreadyFavouriteMovie = true;
+            message = mMovie.title + " added to favourites!";
+        }
+        setFavouriteButtonImage();
+        Snackbar snackbar = Snackbar.make(mDetailFragmentCoordinatorLayout, message, Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    @Override
+    public void onDeleteComplete(int result) {
+        Debug.e("Del fav : " + result, false);
+        String message = "";
+        if (result == 1) {
+            message = mMovie.title + " removed from favourites!";
+            isAlreadyFavouriteMovie = false;
+        } else {
+            message = "Error in removing " + mMovie.title + " from favourites!";
+        }
+        setFavouriteButtonImage();
+        Snackbar snackbar = Snackbar.make(mDetailFragmentCoordinatorLayout, message, Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    @Override
+    public void onUpdateComplete(int result) {
+
+    }
+    // END
 }

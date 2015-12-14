@@ -53,6 +53,7 @@ public class MovieContract {
         }
 
         public static final String[] MOVIE_PROJECTION_GRID = new String[]{
+                _ID,
                 COLUMN_MOVIE_ID, //0
                 COLUMN_MOVIE_POSTER_PATH,//1
         };

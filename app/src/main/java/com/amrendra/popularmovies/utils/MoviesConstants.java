@@ -1,10 +1,13 @@
 package com.amrendra.popularmovies.utils;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 
 import com.amrendra.popularmovies.db.MovieContract;
 import com.amrendra.popularmovies.logger.Debug;
+import com.amrendra.popularmovies.model.Movie;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,5 +135,46 @@ public class MoviesConstants {
             }
         }
         return sb.toString().trim();
+    }
+
+    public static boolean isFavouriteMovie(long movieId, Context context) {
+        Uri uri = MovieContract.MovieEntry.buildMovieWithId(movieId);
+        Debug.e("uri: " + uri, false);
+        Cursor cursor = context.getContentResolver().query(
+                uri,
+                MovieContract.MovieEntry.MOVIE_PROJECTION,
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? LIMIT 1",
+                new String[]{Long.toString(movieId)},
+                null
+        );
+        boolean found = false;
+        if (cursor != null) {
+            if (cursor.moveToNext()) {
+                found = true;
+            }
+            cursor.close();
+        }
+        Debug.e("result : " + found, false);
+        return found;
+    }
+
+    public static int removeFavouriteMovie(Movie movie, Context context) {
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+        int delete = context.getContentResolver().delete(
+                uri,
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
+                new String[]{Long.toString(movie.id)}
+        );
+        return delete;
+    }
+
+    public static Uri addFavouriteMovie(Movie movie, Context context) {
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+        ContentValues cv = movie.movieToContentValue();
+        Uri retUri = context.getContentResolver().insert(
+                uri,
+                cv
+        );
+        return retUri;
     }
 }

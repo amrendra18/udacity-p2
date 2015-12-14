@@ -1,6 +1,7 @@
 package com.amrendra.popularmovies.app.fragments;
 
 import android.content.ActivityNotFoundException;
+import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -35,6 +37,8 @@ import android.widget.TextView;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter.TrailerCallback;
+import com.amrendra.popularmovies.db.MovieContract;
+import com.amrendra.popularmovies.loaders.MovieDetailLoader;
 import com.amrendra.popularmovies.loaders.ReviewsLoader;
 import com.amrendra.popularmovies.loaders.TrailersLoader;
 import com.amrendra.popularmovies.logger.Debug;
@@ -62,6 +66,8 @@ public class DetailFragment extends Fragment implements TrailerCallback {
     private static final int DETAIL_LOADER = 0;
     private static final int REVIEWS_LOADER = 1;
     private static final int TRAILER_LOADER = 2;
+
+    boolean isAlreadyFavouriteMovie = false;
 
     @Bind(R.id.full_content_detail_fragment)
     LinearLayout fullContainer;
@@ -145,6 +151,9 @@ public class DetailFragment extends Fragment implements TrailerCallback {
     // End : Trailer Card
 
 
+    MenuItem favMenu = null;
+
+
     Movie mMovie = null;
     List<Review> mReviewList = null;
     List<Trailer> mTrailerList = null;
@@ -190,7 +199,6 @@ public class DetailFragment extends Fragment implements TrailerCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     public void selectMovie() {
@@ -202,6 +210,8 @@ public class DetailFragment extends Fragment implements TrailerCallback {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Debug.c();
         inflater.inflate(R.menu.menu_detail, menu);
+        favMenu = menu.findItem(R.id.detail_favourite);
+        setFavouriteButtonImage();
     }
 
     @Override
@@ -220,9 +230,65 @@ public class DetailFragment extends Fragment implements TrailerCallback {
         return super.onOptionsItemSelected(item);
     }
 
+    private void setFavouriteButtonImage() {
+        if (isAlreadyFavouriteMovie) {
+            favMenu.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.fav_selected));
+        } else {
+            favMenu.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.favourite));
+        }
+    }
+
+
     private void addFavourite(MenuItem menu) {
-        menu.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.fav_selected));
-        Debug.showToastShort("Coming Soon : Part-2", getActivity());
+        Debug.showToastShort("Fav clicked", getActivity());
+        AsyncQueryHandler query = new AsyncQueryHandler(getActivity().getContentResolver()) {
+            @Override
+            protected void onInsertComplete(int token, Object cookie, Uri retUri) {
+                Debug.e("Add fav : " + retUri, false);
+                String message = "";
+                if (retUri == null) {
+                    message = "Error in adding " + mMovie.title + " from favourites!";
+                } else {
+                    isAlreadyFavouriteMovie = true;
+                    message = mMovie.title + " added to favourites!";
+                }
+                setFavouriteButtonImage();
+                Snackbar snackbar = Snackbar.make(mDetailFragmentCoordinatorLayout, message, Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+
+            @Override
+            protected void onDeleteComplete(int token, Object cookie, int result) {
+                Debug.e("Del fav : " + result, false);
+                String message = "";
+                if (result == 1) {
+                    message = mMovie.title + " removed from favourites!";
+                    isAlreadyFavouriteMovie = false;
+                } else {
+                    message = "Error in removing " + mMovie.title + " from favourites!";
+                }
+                setFavouriteButtonImage();
+                Snackbar snackbar = Snackbar.make(mDetailFragmentCoordinatorLayout, message, Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+        };
+        if (isAlreadyFavouriteMovie) {
+            query.startDelete(
+                    0,
+                    null,
+                    MovieContract.MovieEntry.CONTENT_URI,
+                    MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
+                    new String[]{Long.toString(mMovie.id)}
+            );
+        } else {
+            query.startInsert(
+                    0,
+                    null,
+                    MovieContract.MovieEntry.CONTENT_URI, mMovie.movieToContentValue()
+            );
+        }
+
+
     }
 
     private void shareMovie() {
@@ -257,7 +323,8 @@ public class DetailFragment extends Fragment implements TrailerCallback {
         } else {
             mMovie = (Movie) passedBundle.get(AppConstants.MOVIE_SHARE);
             if (mMovie != null) {
-                setupDetails(passedBundle);
+                setupPosterImage(passedBundle);
+                setupDetails();
             } else {
                 selectMovie();
             }
@@ -266,7 +333,7 @@ public class DetailFragment extends Fragment implements TrailerCallback {
         return rootView;
     }
 
-    private void setupDetails(Bundle bundle) {
+    private void setupPosterImage(Bundle bundle) {
         // fetch the movie
         mMovie = (Movie) bundle.get(AppConstants.MOVIE_SHARE);
 
@@ -275,6 +342,12 @@ public class DetailFragment extends Fragment implements TrailerCallback {
             // later get high resolution pic and replace silently ;-)
             posterImageView.setImageBitmap((Bitmap) bundle.get(AppConstants
                     .MOVIE_BITMAP_SHARE));
+        }
+
+    }
+
+    private void setupDetails() {
+        if (mMovie != null) {
             // set the title in the toolbar
             mCollapsingToolbar.setTitle(mMovie.title);
 
@@ -289,6 +362,17 @@ public class DetailFragment extends Fragment implements TrailerCallback {
             movieOriginalLanguageTv.setText(mMovie.originalLanguage);
 
 
+            movieImdbTv.setText(mMovie.imdbid);
+            movieHomepageTv.setText(mMovie.homepage);
+            movieRevenueTv.setText(Long.toString(mMovie.revenue));
+            movieTimeTv.setText(Integer.toString(mMovie.runtime));
+            movieTaglineTv.setText(mMovie.tagline);
+            //movieGenreTv.setText(mMovie.genresToShow);
+        }
+    }
+
+    private void setUpFineDetails() {
+        if (mMovie != null) {
             movieImdbTv.setText(mMovie.imdbid);
             movieHomepageTv.setText(mMovie.homepage);
             movieRevenueTv.setText(Long.toString(mMovie.revenue));
@@ -364,9 +448,12 @@ public class DetailFragment extends Fragment implements TrailerCallback {
     private void initLoaders() {
         if (mMovie != null) {
 
-            Debug.e("detail loader init", false);
-            getLoaderManager().initLoader(DETAIL_LOADER, null, movieDetailsLoaderCallbacks);
+            isAlreadyFavouriteMovie = MoviesConstants.isFavouriteMovie(mMovie.id, getActivity());
 
+            if (mMovie.tagline == null) {
+                Debug.e("detail loader init", false);
+                getLoaderManager().initLoader(DETAIL_LOADER, null, movieDetailsLoaderCallbacks);
+            }
 
             if (mReviewList == null || mReviewList.size() == 0) {
                 Debug.e("Requesting for reviews", false);
@@ -410,18 +497,24 @@ public class DetailFragment extends Fragment implements TrailerCallback {
         @Override
         public Loader<Movie> onCreateLoader(int id, Bundle args) {
             Debug.c();
-            return null;
+            return new MovieDetailLoader(getActivity(), mMovie.id);
         }
 
         @Override
         public void onLoadFinished(Loader<Movie> loader, Movie data) {
             Debug.c();
+            Debug.e("DETAILED MOVIE : " + data.toString(), false);
+            mMovie.imdbid = data.imdbid;
+            mMovie.homepage = data.homepage;
+            mMovie.revenue = data.revenue;
+            mMovie.runtime = data.runtime;
+            mMovie.tagline = data.tagline;
+            setUpFineDetails();
         }
 
         @Override
         public void onLoaderReset(Loader<Movie> loader) {
             Debug.c();
-            mMovie = null;
         }
     };
 

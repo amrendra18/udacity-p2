@@ -1,8 +1,11 @@
 package com.amrendra.popularmovies.model;
 
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.amrendra.popularmovies.db.MovieContract;
+import com.amrendra.popularmovies.utils.MoviesConstants;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -58,6 +61,10 @@ public class Movie implements Parcelable {
 
     @SerializedName("genre_ids")
     public ArrayList<Integer> genreIds;
+
+    public Movie() {
+
+    }
 
     protected Movie(Parcel in) {
         id = in.readLong();
@@ -143,5 +150,27 @@ public class Movie implements Parcelable {
         dest.writeInt(runtime);
         dest.writeString(tagline);
         dest.writeList(genreIds);
+    }
+
+    public ContentValues movieToContentValue() {
+        ContentValues cv = new ContentValues();
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, id);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH, posterPath);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW, overview);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_GENRE_IDS, MoviesConstants
+                .getGenresStringList(genreIds));
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, title);
+        cv.put(MovieContract.MovieEntry.COLUMN_ORIGNAL_LANGUAGE, originalLanguage);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_BACKDROP_PATH, backdropPath);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_POPULARITY, popularity);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_COUNT, votesCount);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE, averageVote);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_HOMEPAGE, homepage);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_IMDB, imdbid);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_REVENUE, revenue);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_RUNTIME, runtime);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_TAGLINE, tagline);
+        return cv;
     }
 }

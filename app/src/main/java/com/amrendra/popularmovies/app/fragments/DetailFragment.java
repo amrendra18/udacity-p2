@@ -324,10 +324,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         if (mMovie != null) {
             // set the title in the toolbar
             mCollapsingToolbar.setTitle(mMovie.title);
-
-            // add the overview
-            // add the rating
-            // add details
             movieOverviewContentTv.setText(mMovie.overview);
             movieRatingsTv.setText(Double.toString(mMovie.averageVote) + "/10");
 
@@ -341,7 +337,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             movieRevenueTv.setText(Long.toString(mMovie.revenue));
             movieTimeTv.setText(Integer.toString(mMovie.runtime));
             movieTaglineTv.setText(mMovie.tagline);
-            //movieGenreTv.setText(mMovie.genresToShow);
+            movieGenreTv.setText(MoviesConstants.getGenresList(mMovie.genreIds));
         }
     }
 
@@ -352,7 +348,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             movieRevenueTv.setText(Long.toString(mMovie.revenue));
             movieTimeTv.setText(Integer.toString(mMovie.runtime));
             movieTaglineTv.setText(mMovie.tagline);
-            //movieGenreTv.setText(mMovie.genresToShow);
+
         }
     }
 
@@ -492,8 +488,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             Debug.c();
             if (data != null) {
                 Debug.e("DETAILED MOVIE : " + data.toString(), false);
-                mMovie.imdbid = "UP" + data.imdbid;
-                mMovie.homepage = "UP" + data.homepage;
+                mMovie.imdbid = data.imdbid;
+                mMovie.homepage = data.homepage;
                 mMovie.revenue = data.revenue;
                 mMovie.runtime = data.runtime;
                 mMovie.tagline = data.tagline;

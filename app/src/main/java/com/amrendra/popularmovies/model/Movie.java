@@ -64,8 +64,6 @@ public class Movie implements Parcelable {
     @SerializedName("genre_ids")
     public ArrayList<Integer> genreIds;
 
-    public String showGenres;
-
     public Movie() {
 
     }
@@ -212,15 +210,15 @@ public class Movie implements Parcelable {
                 movie.popularity = cursor.getDouble(popularityIndex);
                 movie.averageVote = cursor.getDouble(averageVoteIndex);
                 movie.originalLanguage = cursor.getString(originalLanguageIndex);
-                movie.showGenres = cursor.getString(genreIdsIndex);
+                movie.genreIds = MoviesConstants.getGenresIntList(cursor.getString(genreIdsIndex));
 
-                /*
+
                 movie.homepage = cursor.getString(homepageIndex);
                 movie.imdbid = cursor.getString(imdbidIndex);
-                movie.revenue  = cursor.getInt(revenueIndex);
+                movie.revenue = cursor.getInt(revenueIndex);
                 movie.runtime = cursor.getInt(runtimeIndex);
                 movie.tagline = cursor.getString(taglineIndex);
-                 */
+
                 Debug.e(movie.toString(), false);
                 list.add(movie);
             }

@@ -58,52 +58,18 @@ public class MoviesConstants {
     // we are reading all the values and storing in hashmap for faster access
     private static HashMap<Integer, String> genreHashMap = null;
 
-    public static String getGenreName(Context context, int id) {
-        boolean alreadyRead = PreferenceManager.getInstance(context).readValue(AppConstants
-                .READ_GENRES_FROM_DB, false);
-        if (genreHashMap == null || genreHashMap.size() == 0 || (!alreadyRead)) {
-            Debug.e("loading genres, going to read db", false);
-            if (genreHashMap != null) {
-                genreHashMap.clear();
-            } else {
-                genreHashMap = new HashMap<>();
-            }
-
-            Cursor cursor = context.getContentResolver().query(
-                    MovieContract.GenreEntry.CONTENT_URI,
-                    MovieContract.GenreEntry.GENRE_PROJECTION,
-                    null,
-                    null,
-                    null
-            );
-
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    try {
-                        genreHashMap.put(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
-                    } catch (NumberFormatException e) {
-                        Debug.e("NFE : " + cursor.getString(0) + " " + e.getMessage(), false);
-                    }
-                }
-                cursor.close();
-            } else {
-                Debug.e("Cursor is null", false);
-            }
+    public static String getGenreName(int id) {
+        if (genreMap.containsKey(id)) {
+            return genreMap.get(id);
         }
-        PreferenceManager.getInstance(context).writeValue(AppConstants
-                .READ_GENRES_FROM_DB, true);
-        String val = genreHashMap.get(id);
-        if (val == null) {
-            val = "";
-        }
-        return val;
+        return "";
     }
 
-    public static String getGenresList(Context context, List<Integer> list) {
+    public static String getGenresList(List<Integer> list) {
         StringBuilder sb = new StringBuilder();
         if (list != null) {
             for (Integer i : list) {
-                sb.append(getGenreName(context, i) + " ");
+                sb.append(getGenreName(i) + " ");
             }
         }
         return sb.toString().trim();
@@ -177,4 +143,31 @@ public class MoviesConstants {
         );
         return retUri;
     }
+
+    private static HashMap<Integer, String> genreMap = new HashMap<>();
+
+    static {
+        genreMap.put(28, "Action");
+        genreMap.put(12, "Adventure");
+        genreMap.put(16, "Animation");
+        genreMap.put(35, "Comedy");
+        genreMap.put(80, "Crime");
+        genreMap.put(99, "Documentary");
+        genreMap.put(18, "Drama");
+        genreMap.put(10751, "Family");
+        genreMap.put(14, "Fantasy");
+        genreMap.put(10769, "Foreign)");
+        genreMap.put(36, "History");
+        genreMap.put(27, "Horror");
+        genreMap.put(10402, "Music");
+        genreMap.put(9648, "Mystery");
+        genreMap.put(10749, "Romance");
+        genreMap.put(878, "Sci-Fi");
+        genreMap.put(10770, "TV-Movie");
+        genreMap.put(53, "Thriller");
+        genreMap.put(10752, "War");
+        genreMap.put(37, "Western");
+    }
+
+
 }

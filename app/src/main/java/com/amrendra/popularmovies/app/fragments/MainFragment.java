@@ -22,6 +22,7 @@ import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.CustomSpinnerAdapter;
 import com.amrendra.popularmovies.adapter.MovieGridAdapter;
 import com.amrendra.popularmovies.listener.EndlessScrollListener;
+import com.amrendra.popularmovies.loaders.FavouriteLoader;
 import com.amrendra.popularmovies.loaders.MoviesLoader;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
@@ -41,13 +42,13 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainFragment extends Fragment implements LoaderManager
-        .LoaderCallbacks<MovieList>, /*SwipeRefreshLayout.OnRefreshListener,*/ AdapterView
+public class MainFragment extends Fragment implements AdapterView
         .OnItemSelectedListener, MovieGridAdapter.OnMovieViewClickListener {
 
     public static final String TAG_MAIN_FRAGMENT = "main_fragment";
 
     private static final int MOVIE_LOADER = 0;
+    private static final int FAVOURITE_LOADER = MOVIE_LOADER + 1;
 
     private int mSelectedPosition = -1;
     private int mCurrentPage = 1;
@@ -215,13 +216,41 @@ public class MainFragment extends Fragment implements LoaderManager
         spinner.setOnItemSelectedListener(this);
         Debug.c();
         if (!restored) {
-            // Calling LoaderManager.init in onCreate makes call to onLoadingFinished twice.
-            // hence check if loader already exists
-            if (getLoaderManager().getLoader(MOVIE_LOADER) == null) {
-                getLoaderManager().initLoader(MOVIE_LOADER, null, this);
-            } else {
-                getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
-            }
+            initLoadersOnCategory(null);
+        }
+    }
+
+    private void initLoadersOnCategory(Bundle bundle) {
+        Debug.c();
+        Debug.bundle(bundle);
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
+        String sortBy = PreferenceManager.getInstance(getActivity()).readValue(MoviesConstants
+                .SORT_BY, MoviesConstants.SORT_BY_POPULARITY);
+        bundle.putString(AppConstants.GRID_VIEW_SORTING_TYPE, sortBy);
+        if (sortBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
+            Debug.e("will start favourite loader", false);
+            initFavouriteLoader(bundle);
+        } else {
+            Debug.e("will start movie loader", false);
+            initMovieLoader(bundle);
+        }
+    }
+
+    private void initMovieLoader(Bundle bundle) {
+        if (getLoaderManager().getLoader(MOVIE_LOADER) == null) {
+            getLoaderManager().initLoader(MOVIE_LOADER, bundle, movieLoaderCallbacks);
+        } else {
+            getLoaderManager().restartLoader(MOVIE_LOADER, bundle, movieLoaderCallbacks);
+        }
+    }
+
+    private void initFavouriteLoader(Bundle bundle) {
+        if (getLoaderManager().getLoader(FAVOURITE_LOADER) == null) {
+            getLoaderManager().initLoader(FAVOURITE_LOADER, bundle, favouriteLoaderCallbacks);
+        } else {
+            getLoaderManager().restartLoader(FAVOURITE_LOADER, bundle, favouriteLoaderCallbacks);
         }
     }
 
@@ -271,74 +300,6 @@ public class MainFragment extends Fragment implements LoaderManager
     }
 
 
-    @Override
-    public Loader<MovieList> onCreateLoader(int id, Bundle args) {
-        Debug.c();
-        String sortBy = PreferenceManager.getInstance(getActivity()).readValue(MoviesConstants
-                .SORT_BY, MoviesConstants.SORT_BY_POPULARITY);
-        if (sortBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
-            Debug.showToastShort("Coming Up. Part of Stage-2: PopularMovies :)", getActivity(),
-                    true);
-            mMovieGridAdapter.clearMovies();
-            mSwipeRefreshLayout.setRefreshing(false);
-            return null;
-        }
-        mSwipeRefreshLayout.setRefreshing(true);
-        int page = 1;
-        if (args != null) {
-            page = args.getInt(AppConstants.CURRENT_PAGE);
-        }
-        pageToBeLoaded = page;
-        Debug.e("REQUESTING  :" + page, false);
-        return new MoviesLoader(getActivity(), sortBy, page);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<MovieList> loader, MovieList data) {
-        Debug.c();
-        if (data.getError() == Error.SUCCESS) {
-            List<Movie> list = data.results;
-            mCurrentPage = data.page;
-            Debug.e("LOADED page : " + mCurrentPage, false);
-            Debug.e(data.toString(), false);
-            mMovieGridAdapter.addMovies(list);
-        } else {
-            String errorMessage;
-            if (pageToBeLoaded > 1) {
-                errorMessage = getResources().getString(R.string.error_movie_list_more, data.getError
-                        ().getDescription());
-            } else {
-                errorMessage = getResources().getString(R.string.error_movie_list, data.getError
-                        ().getDescription());
-            }
-            Snackbar snackbar = Snackbar
-                    .make(getActivity().findViewById(R.id.main_activity_coordinator_layout), errorMessage,
-                            Snackbar.LENGTH_INDEFINITE)
-                    .setAction("RETRY", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Bundle bundle = new Bundle();
-                            bundle.putInt(AppConstants.CURRENT_PAGE, pageToBeLoaded);
-                            restartLoader(bundle);
-                        }
-                    });
-            snackbar.show();
-        }
-        // hide refresh at last
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<MovieList> loader) {
-        Debug.c();
-        mMovieGridAdapter.clearMovies();
-    }
-
-    public void restartLoader(Bundle bundle) {
-        Debug.c();
-        getLoaderManager().restartLoader(MOVIE_LOADER, bundle, this);
-    }
-
     int lastSelection = 0;
 
     // spinner
@@ -366,17 +327,18 @@ public class MainFragment extends Fragment implements LoaderManager
         }
         PreferenceManager.getInstance(getActivity()).writeValue(MoviesConstants.SORT_BY,
                 nextSortingBy);
-        if (nextSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES) == false) {
-            if (nextSortingBy != currentSortingBy) {
-                restartLoader(null);
-                movieGridRecyleView.scrollToPosition(0);
-            }
-            currentSortingBy = nextSortingBy;
-        } else {
+        // if (nextSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES) == false) {
+        if (!nextSortingBy.equals(currentSortingBy)) {
+            restartLoader(null);
+            movieGridRecyleView.scrollToPosition(0);
+        }
+        currentSortingBy = nextSortingBy;
+/*        } else {
+
             Debug.showToastShort("Coming Up. Part of Stage-2: PopularMovies :)", getActivity(),
                     true);
-            parent.setSelection(lastSelection);
-        }
+            parent.setSelection(lastSelection);*/
+        // }
         lastSelection = position;
     }
 
@@ -390,5 +352,101 @@ public class MainFragment extends Fragment implements LoaderManager
     public void changeBackgroundColor(int color) {
         mainFragmentFrameLayout.setBackgroundColor(color);
     }
+
+    public void restartLoader(Bundle bundle) {
+        Debug.c();
+        initLoadersOnCategory(bundle);
+    }
+
+
+    private LoaderManager.LoaderCallbacks<MovieList> movieLoaderCallbacks
+            = new LoaderManager.LoaderCallbacks<MovieList>() {
+        @Override
+        public Loader<MovieList> onCreateLoader(int id, Bundle args) {
+            Debug.c();
+            mSwipeRefreshLayout.setRefreshing(true);
+            int page = 1;
+            String sortBy = MoviesConstants.SORT_BY_POPULARITY;
+            if (args != null) {
+                page = args.getInt(AppConstants.CURRENT_PAGE, page);
+                sortBy = args.getString(AppConstants.GRID_VIEW_SORTING_TYPE);
+            }
+            pageToBeLoaded = page;
+            Debug.e("REQUESTING  :" + page, false);
+            return new MoviesLoader(getActivity(), sortBy, page);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<MovieList> loader, MovieList data) {
+            Debug.c();
+            if (data.getError() == Error.SUCCESS) {
+                List<Movie> list = data.results;
+                mCurrentPage = data.page;
+                Debug.e("LOADED page : " + mCurrentPage, false);
+                Debug.e(data.toString(), false);
+                if (data.page > 1) {
+                    mMovieGridAdapter.addMovies(list);
+                } else {
+                    mMovieGridAdapter.resetMovieList(list);
+                }
+            } else {
+                String errorMessage;
+                if (pageToBeLoaded > 1) {
+                    errorMessage = getResources().getString(R.string.error_movie_list_more, data.getError
+                            ().getDescription());
+                } else {
+                    errorMessage = getResources().getString(R.string.error_movie_list, data.getError
+                            ().getDescription());
+                }
+                Snackbar snackbar = Snackbar
+                        .make(getActivity().findViewById(R.id.main_activity_coordinator_layout), errorMessage,
+                                Snackbar.LENGTH_INDEFINITE)
+                        .setAction("RETRY", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Bundle bundle = new Bundle();
+                                bundle.putInt(AppConstants.CURRENT_PAGE, pageToBeLoaded);
+                                restartLoader(bundle);
+                            }
+                        });
+                snackbar.show();
+            }
+            // hide refresh at last
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<MovieList> loader) {
+            Debug.c();
+            mMovieGridAdapter.clearMovies();
+        }
+    };
+
+
+    private LoaderManager.LoaderCallbacks<List<Movie>> favouriteLoaderCallbacks
+            = new LoaderManager.LoaderCallbacks<List<Movie>>() {
+
+        @Override
+        public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
+            Debug.c();
+            mSwipeRefreshLayout.setRefreshing(true);
+            return new FavouriteLoader(getActivity());
+        }
+
+        @Override
+        public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+            Debug.c();
+            if (data != null) {
+                mMovieGridAdapter.resetMovieList(data);
+            }
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<List<Movie>> loader) {
+            Debug.c();
+            mMovieGridAdapter.clearMovies();
+        }
+    };
 
 }

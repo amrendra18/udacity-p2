@@ -13,11 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.amrendra.popularmovies.R;
-import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
 import com.amrendra.popularmovies.utils.MoviesConstants;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,6 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Debug.c();
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.moviegrid_column_item, parent, false);
         return new ViewHolder(v);
@@ -60,7 +59,6 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Debug.c();
         final Movie movie = movieList.get(position);
         //holder.gridMovieNameTv.setText(movie.title);
         String imageUrl = MoviesConstants.API_IMAGE_BASE_URL + MoviesConstants.IMAGE_SIZE_SMALL +
@@ -68,14 +66,18 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
 /*        LayerDrawable bgDrawable = (LayerDrawable) holder.gridMovieNameTv.getBackground();
         final GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.shape_id);*/
 
-        Picasso.with(mContext)
-                .load(imageUrl)
+        Glide.with(mContext)
+                .load(imageUrl).asBitmap()
                 .placeholder(R.drawable.place_holder)
-                .into(holder.gridMoviePosterImage, new Callback() {
+                .listener(new RequestListener<String, Bitmap>() {
                     @Override
-                    public void onSuccess() {
-                        Bitmap posterBitmap = ((BitmapDrawable) holder.gridMoviePosterImage.getDrawable()).getBitmap();
-                        Palette.from(posterBitmap).generate(new Palette.PaletteAsyncListener() {
+                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
                             @Override
                             public void onGenerated(Palette palette) {
                                 Palette.Swatch vibrant = palette.getVibrantSwatch();
@@ -92,17 +94,14 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
                                 }
                             }
                         });
+                        return false;
                     }
-
-                    @Override
-                    public void onError() {
-                    }
-                });
+                })
+                .into(holder.gridMoviePosterImage);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Debug.showToastShort("" + movie.title + " clicked", holder.gridMoviePosterImage.getContext());
                 Bitmap posterBitmap = ((BitmapDrawable) holder.gridMoviePosterImage.getDrawable()).getBitmap();
                 onMovieViewClickListener.onClickMovieThumbnail(movieList.get(position), posterBitmap, v);
             }

@@ -292,7 +292,24 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        final int match = sUriMatcher.match(uri);
+        Debug.e("CP update : " + uri + " match : " + match, false);
+        final SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        int rowsUpdated;
+        switch (match) {
+            case MOVIES: {
+                rowsUpdated = db.update(MovieContract.MovieEntry.TABLE_NAME, values, selection,
+                        selectionArgs);
+            }
+            break;
+            default:
+                Debug.e("ERROR : " + uri, false);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 
     @Override

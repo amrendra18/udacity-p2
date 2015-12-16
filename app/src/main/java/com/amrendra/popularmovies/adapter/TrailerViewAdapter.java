@@ -12,7 +12,7 @@ import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Trailer;
 import com.amrendra.popularmovies.utils.MoviesConstants;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class TrailerViewAdapter extends RecyclerView.Adapter<TrailerViewAdapter.
 
 
     public TrailerViewAdapter(List<Trailer> trailers, Context context,
-            TrailerCallback callback) {
+                              TrailerCallback callback) {
         mTrailerList = trailers;
         mContext = context;
         mTrailerCallback = callback;
@@ -54,9 +54,8 @@ public class TrailerViewAdapter extends RecyclerView.Adapter<TrailerViewAdapter.
 
         String imageUrl = String.format(MoviesConstants.TRAILER_IMAGE_URL, trailer.key);
 
-        Picasso.with(mContext)
+        Glide.with(mContext)
                 .load(imageUrl)
-                .fit()
                 .centerCrop()
                 .placeholder(R.drawable.place_holder)
                 .into(holder.trailerImage);

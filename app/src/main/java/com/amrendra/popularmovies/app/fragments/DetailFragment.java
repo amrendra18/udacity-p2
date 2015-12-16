@@ -65,8 +65,9 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     public static final String TAG = "detailFragment";
 
     private static final int DETAIL_LOADER = 0;
-    private static final int REVIEWS_LOADER = 1;
-    private static final int TRAILER_LOADER = 2;
+    private static final int REVIEWS_LOADER = DETAIL_LOADER + 1;
+    private static final int TRAILER_LOADER = REVIEWS_LOADER + 1;
+
 
     boolean isAlreadyFavouriteMovie = false;
 
@@ -436,7 +437,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             );*/
 
 
-            if (mMovie.tagline == null) {
+            if (mMovie.tagline == null && mMovie.runtime == 0 && mMovie.revenue == 0) {
                 Debug.e("detail loader init", false);
                 getLoaderManager().initLoader(DETAIL_LOADER, null, movieDetailsLoaderCallbacks);
             }
@@ -489,13 +490,26 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         @Override
         public void onLoadFinished(Loader<Movie> loader, Movie data) {
             Debug.c();
-            Debug.e("DETAILED MOVIE : " + data.toString(), false);
-            mMovie.imdbid = data.imdbid;
-            mMovie.homepage = data.homepage;
-            mMovie.revenue = data.revenue;
-            mMovie.runtime = data.runtime;
-            mMovie.tagline = data.tagline;
-            setUpFineDetails();
+            if (data != null) {
+                Debug.e("DETAILED MOVIE : " + data.toString(), false);
+                mMovie.imdbid = "UP" + data.imdbid;
+                mMovie.homepage = "UP" + data.homepage;
+                mMovie.revenue = data.revenue;
+                mMovie.runtime = data.runtime;
+                mMovie.tagline = data.tagline;
+                setUpFineDetails();
+                if (isAlreadyFavouriteMovie) {
+                    Debug.e("Already favourite but not in db, so updating db", false);
+                    mFavouriteQueryHandler.startUpdate(
+                            0,
+                            null,
+                            MovieContract.MovieEntry.CONTENT_URI,
+                            mMovie.movieToContentValue(),
+                            MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
+                            new String[]{Long.toString(mMovie.id)}
+                    );
+                }
+            }
         }
 
         @Override
@@ -549,7 +563,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
 
     private void addReviews(ReviewList result) {
-        Debug.object(result, "reviewlist");
         if (result.getError() == Error.SUCCESS) {
             final LayoutInflater inflater = LayoutInflater.from(getActivity());
             List<Review> reviewList = result.results;
@@ -586,7 +599,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
 
     private void addTrailers(TrailerList result) {
-        Debug.object(result, "trailerlist");
         if (result.getError() == Error.SUCCESS) {
             List<Trailer> trailerList = result.results;
             mTrailerList = trailerList;
@@ -663,7 +675,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     @Override
     public void onDeleteComplete(int result) {
         Debug.e("Del fav : " + result, false);
-        String message = "";
+        String message;
         if (result == 1) {
             message = mMovie.title + " removed from favourites!";
             isAlreadyFavouriteMovie = false;
@@ -677,7 +689,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
     @Override
     public void onUpdateComplete(int result) {
-
+        Debug.e("favourite movie details updates : " + result, false);
     }
     // END
 }

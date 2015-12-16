@@ -16,4 +16,8 @@ public class AppConstants {
 
     public static final String FETCHED_GENRES_FROM_SERVER = "fetched_genres_from_server";
     public static final String READ_GENRES_FROM_DB = "read_genres_from_db";
+
+
+    public static final String GRID_VIEW_LOADER_TYPE = "loader_type";
+    public static final String GRID_VIEW_SORTING_TYPE = "sort_type";
 }

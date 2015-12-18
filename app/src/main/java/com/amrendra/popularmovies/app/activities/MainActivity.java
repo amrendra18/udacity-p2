@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         Movie movie = event.getMovie();
         Bitmap bitmap = event.getBitmap();
         View view = event.getView();
+        int positionInAdapter = event.getPosition();
         Debug.e("Movie clicked : " + movie.title, false);
         if (tablet) {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putParcelable(AppConstants.MOVIE_SHARE, movie);
             bundle.putParcelable(AppConstants.MOVIE_BITMAP_SHARE, bitmap);
+            bundle.putInt(AppConstants.MOVIE_IDX_SHARE, positionInAdapter);
             DetailFragment detailFragment = DetailFragment.getInstance(bundle, true);
             fragmentTransaction.replace(R.id.detail_activity_container, detailFragment, DetailFragment.TAG).commit();
         } else {
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra(AppConstants.MOVIE_SHARE, movie);
             intent.putExtra(AppConstants.MOVIE_BITMAP_SHARE, bitmap);
+            intent.putExtra(AppConstants.MOVIE_IDX_SHARE, positionInAdapter);
             if (options != null) {
                 startActivity(intent, options.toBundle());
             } else {

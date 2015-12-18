@@ -40,6 +40,8 @@ import com.amrendra.popularmovies.adapter.TrailerViewAdapter.TrailerCallback;
 import com.amrendra.popularmovies.bus.BusProvider;
 import com.amrendra.popularmovies.db.MovieContract;
 import com.amrendra.popularmovies.events.DetailBackgroundColorChangeEvent;
+import com.amrendra.popularmovies.events.FavouriteMovieAddEvent;
+import com.amrendra.popularmovies.events.FavouriteMovieDeleteEvent;
 import com.amrendra.popularmovies.handler.FavouriteQueryHandler;
 import com.amrendra.popularmovies.loaders.MovieDetailLoader;
 import com.amrendra.popularmovies.loaders.ReviewsLoader;
@@ -70,7 +72,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     private static final int REVIEWS_LOADER = DETAIL_LOADER + 1;
     private static final int TRAILER_LOADER = REVIEWS_LOADER + 1;
 
-
+    private int idx = -1;
     boolean isAlreadyFavouriteMovie = false;
 
     @Bind(R.id.full_content_detail_fragment)
@@ -285,6 +287,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             selectMovie();
         } else {
             mMovie = (Movie) passedBundle.get(AppConstants.MOVIE_SHARE);
+            idx = (int) passedBundle.get(AppConstants.MOVIE_IDX_SHARE);
+            Debug.e("Movie with : " + idx, false);
             if (mMovie != null) {
                 setupPosterImage(passedBundle);
                 setupDetails();
@@ -651,6 +655,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         } else {
             isAlreadyFavouriteMovie = true;
             message = mMovie.title + " added to favourites!";
+            BusProvider.getInstance().post(new FavouriteMovieAddEvent(mMovie, idx));
         }
         setFavouriteButtonImage();
         Snackbar snackbar = Snackbar.make(mDetailFragmentCoordinatorLayout, message, Snackbar.LENGTH_LONG);
@@ -664,6 +669,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         if (result == 1) {
             message = mMovie.title + " removed from favourites!";
             isAlreadyFavouriteMovie = false;
+            BusProvider.getInstance().post(new FavouriteMovieDeleteEvent(idx));
         } else {
             message = "Error in removing " + mMovie.title + " from favourites!";
         }
@@ -677,4 +683,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         Debug.e("favourite movie details updates : " + result, false);
     }
     // END
+
+    public void onBackPressed() {
+        Debug.c();
+    }
 }

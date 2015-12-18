@@ -12,7 +12,7 @@ public class AppConstants {
     public static final String SHARED_IMAGE_VIEW = "shared_poster_image";
     public static final String MOVIE_SHARE = "movie_share";
     public static final String MOVIE_BITMAP_SHARE = "movie_bitmap_share";
-
+    public static final String MOVIE_IDX_SHARE = "movie_idx_share";
 
     public static final String FETCHED_GENRES_FROM_SERVER = "fetched_genres_from_server";
     public static final String READ_GENRES_FROM_DB = "read_genres_from_db";

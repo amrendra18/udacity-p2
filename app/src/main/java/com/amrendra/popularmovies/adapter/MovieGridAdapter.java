@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.amrendra.popularmovies.R;
+import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
 import com.amrendra.popularmovies.utils.MoviesConstants;
 import com.bumptech.glide.Glide;
@@ -36,7 +37,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     private Context mContext;
 
     public interface OnMovieViewClickListener {
-        void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view);
+        void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view, int position);
     }
 
     private OnMovieViewClickListener onMovieViewClickListener;
@@ -98,15 +99,6 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
                     }
                 })
                 .into(holder.gridMoviePosterImage);
-
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bitmap posterBitmap = ((BitmapDrawable) holder.gridMoviePosterImage.getDrawable()).getBitmap();
-                onMovieViewClickListener.onClickMovieThumbnail(movieList.get(position), posterBitmap, v);
-            }
-        });
-
     }
 
     @Override
@@ -141,6 +133,22 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
         }
     }
 
+    public void addMovie(Movie movie) {
+        Debug.c();
+        int pos = movieList.size();
+        movieList.add(movie);
+        notifyItemInserted(pos);
+    }
+
+    public void deleteMovie(int pos) {
+        Debug.c();
+        //if (pos >= 0 && pos <= movieList.size() - 1) {
+        movieList.remove(pos);
+        notifyDataSetChanged();
+        //notifyItemRemoved(pos);
+        //}
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.grid_item_movie_poster_image)
@@ -152,6 +160,18 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    Debug.e("OnClick : " + pos, false);
+                    Bitmap posterBitmap = ((BitmapDrawable) gridMoviePosterImage.getDrawable()).getBitmap();
+                    onMovieViewClickListener.onClickMovieThumbnail(movieList.get(pos),
+                            posterBitmap, v, pos);
+
+                }
+            });
         }
     }
 }

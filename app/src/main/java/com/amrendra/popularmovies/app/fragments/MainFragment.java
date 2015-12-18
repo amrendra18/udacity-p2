@@ -23,6 +23,8 @@ import com.amrendra.popularmovies.adapter.CustomSpinnerAdapter;
 import com.amrendra.popularmovies.adapter.MovieGridAdapter;
 import com.amrendra.popularmovies.bus.BusProvider;
 import com.amrendra.popularmovies.events.DetailBackgroundColorChangeEvent;
+import com.amrendra.popularmovies.events.FavouriteMovieAddEvent;
+import com.amrendra.popularmovies.events.FavouriteMovieDeleteEvent;
 import com.amrendra.popularmovies.events.MovieThumbnailClickEvent;
 import com.amrendra.popularmovies.listener.EndlessScrollListener;
 import com.amrendra.popularmovies.loaders.FavouriteLoader;
@@ -55,6 +57,7 @@ public class MainFragment extends Fragment implements AdapterView
     private static final int FAVOURITE_LOADER = MOVIE_LOADER + 1;
 
     private int mSelectedPosition = -1;
+    private int lastClickedMovieIndex = -1;
     private int mCurrentPage = 1;
     private int pageToBeLoaded = -1;
     private MovieGridAdapter mMovieGridAdapter;
@@ -78,10 +81,11 @@ public class MainFragment extends Fragment implements AdapterView
     private EndlessScrollListener endlessScrollListener;
 
     @Override
-    public void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view) {
+    public void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view, int position) {
         Debug.c();
+        lastClickedMovieIndex = position;
         // Notify to activity that a thumbnail has been clicked
-        BusProvider.getInstance().post(new MovieThumbnailClickEvent(movie, bitmap, view));
+        BusProvider.getInstance().post(new MovieThumbnailClickEvent(movie, bitmap, view, position));
     }
 
         /*
@@ -209,13 +213,11 @@ public class MainFragment extends Fragment implements AdapterView
         spinnerAdapter.addItems(Arrays.asList(sortOptions));
         spinner.setAdapter(spinnerAdapter);
 
-
-        currentSortingBy = MoviesConstants.SORT_BY_POPULARITY;
-        PreferenceManager.getInstance(getActivity()).writeValue(MoviesConstants.SORT_BY,
-                currentSortingBy);
+        currentSortingBy = MoviesConstants.getSortOrder(getActivity());
+        Debug.e("Initial Sorting : " + currentSortingBy, false);
         spinner.setSelection(0, false);
         spinner.setOnItemSelectedListener(this);
-        Debug.c();
+
         if (!restored) {
             initLoadersOnCategory(null);
         }
@@ -227,8 +229,8 @@ public class MainFragment extends Fragment implements AdapterView
         if (bundle == null) {
             bundle = new Bundle();
         }
-        String sortBy = PreferenceManager.getInstance(getActivity()).readValue(MoviesConstants
-                .SORT_BY, MoviesConstants.SORT_BY_POPULARITY);
+        String sortBy = MoviesConstants.getSortOrder(getActivity());
+
         bundle.putString(AppConstants.GRID_VIEW_SORTING_TYPE, sortBy);
         if (sortBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
             Debug.e("will start favourite loader", false);
@@ -326,8 +328,8 @@ public class MainFragment extends Fragment implements AdapterView
                 nextSortingBy = MoviesConstants.SORT_BY_POPULARITY;
                 break;
         }
-        PreferenceManager.getInstance(getActivity()).writeValue(MoviesConstants.SORT_BY,
-                nextSortingBy);
+
+        MoviesConstants.saveSortOrder(getActivity(), nextSortingBy);
         // if (nextSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES) == false) {
         if (!nextSortingBy.equals(currentSortingBy)) {
             restartLoader(null);
@@ -451,4 +453,29 @@ public class MainFragment extends Fragment implements AdapterView
             mMovieGridAdapter.clearMovies();
         }
     };
+
+    @Subscribe
+    public void onFavouriteMovieAdd(FavouriteMovieAddEvent event) {
+        Debug.c();
+        Movie movie = event.getMovie();
+        String currentSortBy = MoviesConstants.getSortOrder(getActivity());
+        if (currentSortBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
+            Debug.c();
+            mMovieGridAdapter.addMovie(movie);
+        }
+
+    }
+
+    @Subscribe
+    public void onFavouriteMovieDelete(FavouriteMovieDeleteEvent event) {
+        Debug.c();
+        int idx = event.getIdx();
+        String currentSortBy = MoviesConstants.getSortOrder(getActivity());
+        if (currentSortBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
+            Debug.e("Deleting movie : " + idx, false);
+            mMovieGridAdapter.deleteMovie(idx);
+        }
+    }
+
+
 }

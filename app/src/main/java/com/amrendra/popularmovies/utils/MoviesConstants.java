@@ -170,4 +170,14 @@ public class MoviesConstants {
     }
 
 
+    public static String getSortOrder(Context context) {
+        return PreferenceManager.getInstance(context).readValue(MoviesConstants.SORT_BY,
+                MoviesConstants.SORT_BY_POPULARITY);
+    }
+
+    public static void saveSortOrder(Context context, String sort) {
+        PreferenceManager.getInstance(context).writeValue(MoviesConstants.SORT_BY,
+                sort);
+    }
+
 }

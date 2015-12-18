@@ -37,7 +37,9 @@ import android.widget.TextView;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter.TrailerCallback;
+import com.amrendra.popularmovies.bus.BusProvider;
 import com.amrendra.popularmovies.db.MovieContract;
+import com.amrendra.popularmovies.events.DetailBackgroundColorChangeEvent;
 import com.amrendra.popularmovies.handler.FavouriteQueryHandler;
 import com.amrendra.popularmovies.loaders.MovieDetailLoader;
 import com.amrendra.popularmovies.loaders.ReviewsLoader;
@@ -169,13 +171,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     }
 
 
-    public interface ColorCallback {
-        void onBackgroundChange(int color);
-    }
-
-    private ColorCallback mColorCallback;
-
-
     public void setTablet(boolean isTablet) {
         this.isTablet = isTablet;
     }
@@ -193,12 +188,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     public void onAttach(Context context) {
         mFavouriteQueryHandler = new FavouriteQueryHandler(context.getContentResolver(), this);
         super.onAttach(context);
-        try {
-            mColorCallback = (ColorCallback) context;
-        } catch (ClassCastException ex) {
-            throw new IllegalStateException("Any Activity having DetailFragment must implement " +
-                    "DetailFragment.ColorCallback");
-        }
     }
 
     @Override
@@ -407,8 +396,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
                         getActivity().getWindow().setNavigationBarColor(navLightColor);
                     }
                     Debug.e("Is tablet : " + isTablet, false);
-                    if (isTablet && mColorCallback != null) {
-                        mColorCallback.onBackgroundChange(backgroundColor);
+                    if (isTablet) {
+                        BusProvider.getInstance().post(new DetailBackgroundColorChangeEvent(backgroundColor));
                     }
                 }
             });

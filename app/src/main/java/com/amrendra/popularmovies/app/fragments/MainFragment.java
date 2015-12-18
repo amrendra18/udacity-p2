@@ -21,6 +21,9 @@ import android.widget.Spinner;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.CustomSpinnerAdapter;
 import com.amrendra.popularmovies.adapter.MovieGridAdapter;
+import com.amrendra.popularmovies.bus.BusProvider;
+import com.amrendra.popularmovies.events.DetailBackgroundColorChangeEvent;
+import com.amrendra.popularmovies.events.MovieThumbnailClickEvent;
 import com.amrendra.popularmovies.listener.EndlessScrollListener;
 import com.amrendra.popularmovies.loaders.FavouriteLoader;
 import com.amrendra.popularmovies.loaders.MoviesLoader;
@@ -31,6 +34,7 @@ import com.amrendra.popularmovies.utils.AppConstants;
 import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.utils.MoviesConstants;
 import com.amrendra.popularmovies.utils.PreferenceManager;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,20 +72,16 @@ public class MainFragment extends Fragment implements AdapterView
     int navColor;
 
     String currentSortingBy;
-    private MovieClickCallback movieClickCallback;
+    //private MovieClickCallback movieClickCallback;
 
 
     private EndlessScrollListener endlessScrollListener;
 
     @Override
     public void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view) {
-        movieClickCallback.onClickMovieThumbnail(movie, bitmap, view);
-
-    }
-
-
-    public interface MovieClickCallback {
-        void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view);
+        Debug.c();
+        // Notify to activity that a thumbnail has been clicked
+        BusProvider.getInstance().post(new MovieThumbnailClickEvent(movie, bitmap, view));
     }
 
         /*
@@ -111,7 +111,7 @@ public class MainFragment extends Fragment implements AdapterView
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            movieClickCallback = (MovieClickCallback) context;
+            //movieClickCallback = (MovieClickCallback) context;
         } catch (ClassCastException ex) {
             throw new IllegalStateException("Any Activity having Main Fragment must implement " +
                     "MainFragment.MovieClickCallback");
@@ -123,6 +123,7 @@ public class MainFragment extends Fragment implements AdapterView
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Debug.c();
+        BusProvider.getInstance().register(this);
     }
 
     @Override
@@ -349,8 +350,10 @@ public class MainFragment extends Fragment implements AdapterView
 
     }
 
-    public void changeBackgroundColor(int color) {
-        mainFragmentFrameLayout.setBackgroundColor(color);
+    @Subscribe
+    public void changeBackgroundColor(DetailBackgroundColorChangeEvent event) {
+        Debug.c();
+        mainFragmentFrameLayout.setBackgroundColor(event.getBgColor());
     }
 
     public void restartLoader(Bundle bundle) {
@@ -448,5 +451,4 @@ public class MainFragment extends Fragment implements AdapterView
             mMovieGridAdapter.clearMovies();
         }
     };
-
 }

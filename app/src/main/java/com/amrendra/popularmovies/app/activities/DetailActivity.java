@@ -11,7 +11,7 @@ import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.app.fragments.DetailFragment;
 import com.amrendra.popularmovies.logger.Debug;
 
-public class DetailActivity extends AppCompatActivity implements DetailFragment.ColorCallback {
+public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,10 +45,5 @@ public class DetailActivity extends AppCompatActivity implements DetailFragment.
         super.onBackPressed();
         Debug.c();
         supportFinishAfterTransition();
-    }
-
-    @Override
-    public void onBackgroundChange(int color) {
-        // dummy : Mainly we require it for tablet, where MainActivity only hosts the DetailFragment
     }
 }

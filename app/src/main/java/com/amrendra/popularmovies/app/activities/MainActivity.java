@@ -14,15 +14,17 @@ import android.view.View;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.app.fragments.DetailFragment;
 import com.amrendra.popularmovies.app.fragments.MainFragment;
+import com.amrendra.popularmovies.bus.BusProvider;
+import com.amrendra.popularmovies.events.MovieThumbnailClickEvent;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
 import com.amrendra.popularmovies.utils.AppConstants;
+import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity implements MainFragment.MovieClickCallback,
-        DetailFragment.ColorCallback {
+public class MainActivity extends AppCompatActivity {
 
     MainFragment mMainFragment;
 
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        BusProvider.getInstance().register(this);
 
         mMainFragment =
                 (MainFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_main);
@@ -67,12 +71,26 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
-    @Override
-    public void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view) {
+    @Subscribe
+    public void onClickMovieThumbnail(MovieThumbnailClickEvent event) {
+        Debug.c();
+        Movie movie = event.getMovie();
+        Bitmap bitmap = event.getBitmap();
+        View view = event.getView();
         Debug.e("Movie clicked : " + movie.title, false);
         if (tablet) {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -99,12 +117,4 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Movi
             }
         }
     }
-
-    @Override
-    public void onBackgroundChange(int color) {
-        if (tablet && mMainFragment != null) {
-            mMainFragment.changeBackgroundColor(color);
-        }
-    }
-
 }

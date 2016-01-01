@@ -11,7 +11,6 @@
         android:id="@+id/app_bar_layout"
         layout="@layout/detail_toolbar"/>
 
-
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/detail_content_fragment_nested_scroll"
         android:layout_width="match_parent"
@@ -40,13 +39,38 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <include
-        android:id="@+id/float_header_view"
-        layout="@layout/title_tagline_layout"
-        android:layout_width="match_parent"
+    <!--    <include
+            android:id="@+id/float_header_view"
+            layout="@layout/title_tagline_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="com.amrendra.popularmovies.app.views.ViewBehavior"
+            />-->
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/favourite_float_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_behavior="com.amrendra.popularmovies.app.views.ViewBehavior"
-        />
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/favourite"
+        app:fabSize="mini"
+        app:layout_anchor="@+id/detail_content_fragment_nested_scroll"
+        app:layout_anchorGravity="top|right|end"
+        app:rippleColor="#F06292"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/share_float_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="64dp"
+        android:src="@drawable/share"
+        app:fabSize="mini"
+        app:layout_anchor="@+id/favourite_float_button"
+        app:layout_anchorGravity="left|center|end"
+        app:borderWidth="0dp"
+        app:rippleColor="#F06292"/>
 
 </android.support.design.widget.CoordinatorLayout>
 

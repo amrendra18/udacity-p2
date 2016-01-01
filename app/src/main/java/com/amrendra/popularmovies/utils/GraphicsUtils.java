@@ -25,7 +25,6 @@ public class GraphicsUtils {
     public static void statusBarTinted(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window w = activity.getWindow();
-            w.setFlags(LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             w.setFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS, LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
     }
@@ -34,7 +33,6 @@ public class GraphicsUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window w = activity.getWindow();
             LayoutParams attrs = w.getAttributes();
-            attrs.flags &= (~LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             attrs.flags &= (~LayoutParams.FLAG_TRANSLUCENT_STATUS);
             w.setAttributes(attrs);
             w.clearFlags(LayoutParams.FLAG_LAYOUT_NO_LIMITS);

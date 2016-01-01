@@ -3,10 +3,10 @@ package com.amrendra.popularmovies.app.fragments;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,21 +14,20 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.graphics.Palette.Swatch;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -69,6 +68,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -87,6 +87,22 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     private int mStatusBarColor = Color.BLUE;
     private int reviewContentColor = Color.WHITE;
     private int reviewAuthorColor = Color.YELLOW;
+
+    @Bind(R.id.favourite_float_button)
+    FloatingActionButton floatingFavouriteActionButton;
+
+    @OnClick(R.id.favourite_float_button)
+    public void favButtonClicked(View view) {
+        addFavourite();
+    }
+
+    @Bind(R.id.share_float_button)
+    FloatingActionButton floatingShareActionButton;
+
+    @OnClick(R.id.share_float_button)
+    public void shareButtonClicked(View view) {
+        shareMovie();
+    }
 
     @Bind(R.id.full_content_detail_fragment)
     LinearLayout fullContainer;
@@ -107,8 +123,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     @Bind(R.id.toolbar_header_view)
     TitleTaglineView toolbarHeaderView;
 
-    @Bind(R.id.float_header_view)
-    TitleTaglineView floatHeaderView;
+/*    @Bind(R.id.float_header_view)
+    TitleTaglineView floatHeaderView;*/
 
     @Bind(R.id.movie_poster_image)
     ImageView posterImageView;
@@ -194,9 +210,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     // End Lists
 
 
-    MenuItem favMenu = null;
-
-
     Movie mMovie = null;
     List<Review> mReviewList = null;
     List<Trailer> mTrailerList = null;
@@ -234,49 +247,28 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
+        //setHasOptionsMenu(true);
     }
 
     public void selectMovie() {
         fullContainer.setVisibility(View.GONE);
-        mCollapsingToolbar.setTitle("Select a movie. #Filmie");
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Debug.c();
-        inflater.inflate(R.menu.menu_detail, menu);
-        favMenu = menu.findItem(R.id.detail_favourite);
-        setFavouriteButtonImage();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.detail_share:
-                shareMovie();
-                return true;
-
-            case R.id.detail_favourite:
-                addFavourite(item);
-                return true;
-            default:
-                break;
+        if (mCollapsingToolbar != null) {
+            mCollapsingToolbar.setTitle("No movie selected. #" + getActivity().getResources()
+                    .getString(R.string.app_name));
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     private void setFavouriteButtonImage() {
         if (isAlreadyFavouriteMovie) {
-            favMenu.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.fav_selected));
+            floatingFavouriteActionButton.setImageResource(R.drawable.fav_selected);
         } else {
-            favMenu.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.favourite));
+            floatingFavouriteActionButton.setImageResource(R.drawable.favourite);
         }
     }
 
 
-    private void addFavourite(MenuItem menu) {
+    private void addFavourite() {
         if (isAlreadyFavouriteMovie) {
             mFavouriteQueryHandler.startDelete(
                     0,
@@ -338,6 +330,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             }
         }
         addBackHomeArrow(rootView);
+        setFavouriteButtonImage();
         return rootView;
     }
 
@@ -403,12 +396,14 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             mStatusBarColor = color;
             ButterKnife.apply(titleLists, titleTextColorChange, color);
             ButterKnife.apply(dividerLists, dividerColorChange, color);
+            floatingFavouriteActionButton.setBackgroundTintList(ColorStateList.valueOf(color));
+            floatingShareActionButton.setBackgroundTintList(ColorStateList.valueOf(color));
             if (mCollapsingToolbar != null) {
                 mCollapsingToolbar.setStatusBarScrimColor(color);
             }
             if (!isTablet && Build.VERSION.SDK_INT >= Build.VERSION_CODES
                     .LOLLIPOP) {
-                getActivity().getWindow().setNavigationBarColor(color);
+                //getActivity().getWindow().setNavigationBarColor(color);
             }
         }
 
@@ -420,9 +415,11 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             int color = swatch.getRgb();
             toolbarHeaderView.getTitle().setTextColor(color);
             toolbarHeaderView.getSubTitle().setTextColor(color);
-            floatHeaderView.getTitle().setTextColor(color);
+            //floatHeaderView.getTitle().setTextColor(color);
             detailContainer.setBackgroundColor(color);
             changeBackgroundColorEvent(color);
+            floatingFavouriteActionButton.setRippleColor(color);
+            floatingShareActionButton.setRippleColor(color);
             reviewAuthorColor = swatch.getBodyTextColor();
             reviewContentColor = swatch.getBodyTextColor();
 
@@ -480,11 +477,9 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     }
 
     private void addBackHomeArrow(View rootView) {
-/*        final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        //final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(toolbar);*/
-        //toolbarHeaderView.bindTo(mMovie.title, mMovie.tagline);
-        //floatHeaderView.bindTo("", "");
+        //activity.setSupportActionBar(mToolbar);
         mAppBarLayout.addOnOffsetChangedListener(this);
         if (!isTablet) {
             //for creating home button
@@ -508,10 +503,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     public void onResume() {
         super.onResume();
         Debug.c();
-
         initLoaders();
-        //changeToDynamicColor();
-
     }
 
     private void changeBackgroundColorEvent(int backgroundColor) {
@@ -520,7 +512,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         }
     }
 
-    private void changeToDynamicColor() {
+/*    private void changeToDynamicColor() {
         if (mMovie != null) {
             Bitmap posterBitmap = ((BitmapDrawable) posterImageView.getDrawable()).getBitmap();
             Palette.from(posterBitmap).generate(new Palette.PaletteAsyncListener() {
@@ -547,14 +539,15 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
                 }
             });
         }
-    }
+    }*/
 
     private void initLoaders() {
         if (mMovie != null) {
-            isAlreadyFavouriteMovie = MoviesConstants.isFavouriteMovie(mMovie.id, getActivity());
+/*            isAlreadyFavouriteMovie = MoviesConstants.isFavouriteMovie(mMovie.id, getActivity());
+            setFavouriteButtonImage();*/
             // Todo : check why below implementation causes lag, though its not on ui thread, but
             // above one is.
-/*            Uri uri = MovieContract.MovieEntry.buildMovieWithId(mMovie.id);
+            Uri uri = MovieContract.MovieEntry.buildMovieWithId(mMovie.id);
             Debug.e("check fav uri: " + uri, false);
             mFavouriteQueryHandler.startQuery(
                     0,
@@ -564,7 +557,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
                     MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? LIMIT 1",
                     new String[]{Long.toString(mMovie.id)},
                     null
-            );*/
+            );
 
 
             if (mMovie.tagline == null && mMovie.runtime == 0 && mMovie.revenue == 0) {
@@ -805,6 +798,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             cursor.close();
         }
         isAlreadyFavouriteMovie = found;
+        setFavouriteButtonImage();
         Debug.e("result : " + found, false);
     }
 
@@ -859,17 +853,19 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             overviewTitleTv.setVisibility(View.INVISIBLE);
             toolbarHeaderView.setVisibility(View.VISIBLE);
             isHideToolbarView = !isHideToolbarView;
-            floatHeaderView.setVisibility(View.INVISIBLE);
+            floatingFavouriteActionButton.setVisibility(View.INVISIBLE);
+            floatingShareActionButton.setVisibility(View.INVISIBLE);
             if (tinted) {
                 tinted = false;
                 GraphicsUtils.statusBarRemoveTint(getActivity());
             }
         } else if (percentage < 1f && !isHideToolbarView) {
-            mToolbar.setVisibility(View.GONE);
+            mToolbar.setVisibility(View.INVISIBLE);
+            floatingFavouriteActionButton.setVisibility(View.VISIBLE);
+            floatingShareActionButton.setVisibility(View.VISIBLE);
             overviewTitleTv.setVisibility(View.VISIBLE);
             toolbarHeaderView.setVisibility(View.INVISIBLE);
             isHideToolbarView = !isHideToolbarView;
-            floatHeaderView.setVisibility(View.VISIBLE);
             if (!tinted) {
                 GraphicsUtils.statusBarTinted(getActivity());
                 tinted = true;

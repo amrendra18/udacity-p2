@@ -83,6 +83,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     boolean isAlreadyFavouriteMovie = false;
 
     private int mStatusBarColor = Color.BLUE;
+    private int reviewContentColor = Color.WHITE;
+    private int reviewAuthorColor = Color.YELLOW;
 
     @Bind(R.id.full_content_detail_fragment)
     LinearLayout fullContainer;
@@ -114,8 +116,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
 
     // Overview Card
-    @Bind(R.id.detail_overview_card_title)
-    TextView movieOverviewTitleTv;
 
     @Bind(R.id.detail_overview_card_ratings)
     TextView movieRatingsTv;
@@ -167,7 +167,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
 
     // Trailers Card
-    @Bind(R.id.trailer_progressbar)
+    @Bind(R.id.trailers_progressbar)
     ProgressBar trailerProgressbar;
 
     @Bind(R.id.no_trailers_tv)
@@ -176,6 +176,29 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     @Bind(R.id.trailer_recyvlerview)
     RecyclerView trailerRecyclerView;
     // End : Trailer Card
+
+
+    // Lists
+
+    @Nullable
+    @Bind({R.id.overview_content_heading, R.id.review_content_heading, R.id.trailers_content_heading})
+    List<TextView> titleLists;
+
+
+    @Nullable
+    @Bind({R.id.detail_overview_card_content,
+            R.id.review_by_text, R.id.review_content,
+            R.id.no_trailers_tv, R.id.no_reviews_tv})
+    List<TextView> contentLists;
+
+
+    @Nullable
+    @Bind({R.id.divider_content, R.id.divider_view, R.id.overview_divider_view_left, R.id
+            .overview_divider_view_right, R.id.review_divider_view_left, R.id
+            .review_divider_view_right, R.id.trailers_divider_view_left, R.id
+            .trailers_divider_view_right})
+    List<View> dividerLists;
+    // End Lists
 
 
     MenuItem favMenu = null;
@@ -384,9 +407,29 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         if (swatch != null) {
             int color = swatch.getRgb();
             mToolbar.setBackgroundColor(color);
-
+            reviewAuthorColor = color;
+            reviewContentColor = color;
+            ButterKnife.apply(titleLists, titleTextColorChange, color);
+            ButterKnife.apply(dividerLists, dividerColorChange, color);
         }
+
     }
+
+    public static final ButterKnife.Setter<TextView, Integer> titleTextColorChange = new ButterKnife
+            .Setter<TextView, Integer>() {
+        @Override
+        public void set(TextView view, Integer value, int index) {
+            view.setTextColor(value);
+        }
+    };
+
+    public static final ButterKnife.Setter<View, Integer> dividerColorChange = new ButterKnife
+            .Setter<View, Integer>() {
+        @Override
+        public void set(View view, Integer value, int index) {
+            view.setBackgroundColor(value);
+        }
+    };
 
     private void setupSubtitle(Swatch swatch) {
         if (swatch != null) {
@@ -398,6 +441,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     private void setupTitleSubtitle(Swatch swatch) {
         if (swatch != null) {
             int color = swatch.getRgb();
+
             toolbarHeaderView.getTitle().setTextColor(color);
             toolbarHeaderView.getSubTitle().setTextColor(color);
             floatHeaderView.getTitle().setTextColor(color);
@@ -412,6 +456,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
                 getActivity().getWindow().setNavigationBarColor(color);
             }
+            ButterKnife.apply(contentLists, titleTextColorChange, Color.WHITE);
+
         }
 
     }
@@ -666,7 +712,9 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
                     TextView reviewAuthor = ButterKnife.findById(reviewView, R.id.review_by);
                     TextView reviewContent = ButterKnife.findById(reviewView, R.id.review_content);
                     reviewAuthor.setText(review.author);
+                    reviewAuthor.setTextColor(reviewAuthorColor);
                     reviewContent.setText(review.content);
+                    reviewContent.setTextColor(reviewContentColor);
                     reviewsContainer.addView(reviewView);
                     if (i < len - 1) {
                         final View dividerView = inflater.inflate(R.layout.divider_content,
@@ -685,7 +733,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
                     .error_detail_reviews, result.getError().getDescription()));
             noReviewsTv.setVisibility(View.VISIBLE);
         }
-        reviewsProgressbar.setVisibility(ProgressBar.INVISIBLE);
+        reviewsProgressbar.setVisibility(View.GONE);
     }
 
 
@@ -711,7 +759,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             noTrailerTv.setVisibility(View.VISIBLE);
             trailerRecyclerView.setVisibility(View.GONE);
         }
-        trailerProgressbar.setVisibility(ProgressBar.INVISIBLE);
+        trailerProgressbar.setVisibility(View.GONE);
     }
 
     private void playTrailer(String key) {

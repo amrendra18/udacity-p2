@@ -44,6 +44,17 @@
         <item name="android:padding">@dimen/detail_card_view_text_content_padding</item>
     </style>
 
+    <style name="CardTitleHeading" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
     <style name="CardContent" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textColor">@color/colorSecondaryText</item>
         <item name="android:padding">@dimen/detail_card_view_text_content_padding</item>

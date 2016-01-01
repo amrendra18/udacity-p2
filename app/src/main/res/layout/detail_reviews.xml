@@ -1,59 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    android:id="@+id/detail_review_card"
-    style="@style/PlayCard"
+<LinearLayout
+    style="@style/FillContainer"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    card_view:cardCornerRadius="@dimen/grid_card_view_corner_radius"
-    card_view:cardElevation="@dimen/grid_card_view_elevation">
+    android:orientation="vertical">
+
+    <include layout="@layout/reviews_heading_layout"/>
+
+    <TextView
+        android:id="@+id/no_reviews_tv"
+        style="@style/CardContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_detail_reviews"
+        android:visibility="invisible"/>
 
     <LinearLayout
-        style="@style/FillContainer"
+        android:id="@+id/reviews_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <LinearLayout
-            style="@style/FillContainer"
-            android:orientation="horizontal">
-
-
-            <TextView
-                android:id="@+id/detail_review_card_title"
-                style="@style/CardTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/detail_reviews"/>
-
-            <ProgressBar
-                android:id="@+id/review_progressbar"
-                style="?android:attr/android:progressBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/progressbar_margin_right"
-                android:layout_marginRight="@dimen/progressbar_margin_right"/>
-
-        </LinearLayout>
-
-        <include layout="@layout/divider"/>
-
-        <TextView
-            android:id="@+id/no_reviews_tv"
-            style="@style/CardContent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/no_detail_reviews"
-            android:visibility="invisible"/>
-
-        <LinearLayout
-            android:id="@+id/reviews_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
-
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</LinearLayout>

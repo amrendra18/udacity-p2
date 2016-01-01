@@ -9,6 +9,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/review_by_text"
             style="@style/CardContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

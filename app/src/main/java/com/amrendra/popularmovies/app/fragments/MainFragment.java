@@ -12,14 +12,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.Spinner;
 
 import com.amrendra.popularmovies.R;
-import com.amrendra.popularmovies.adapter.CustomSpinnerAdapter;
 import com.amrendra.popularmovies.adapter.MovieGridAdapter;
 import com.amrendra.popularmovies.bus.BusProvider;
 import com.amrendra.popularmovies.events.DetailBackgroundColorChangeEvent;
@@ -35,11 +35,9 @@ import com.amrendra.popularmovies.model.MovieList;
 import com.amrendra.popularmovies.utils.AppConstants;
 import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.utils.MoviesConstants;
-import com.amrendra.popularmovies.utils.PreferenceManager;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -48,8 +46,7 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainFragment extends Fragment implements AdapterView
-        .OnItemSelectedListener, MovieGridAdapter.OnMovieViewClickListener {
+public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieViewClickListener {
 
     public static final String TAG_MAIN_FRAGMENT = "main_fragment";
 
@@ -76,7 +73,7 @@ public class MainFragment extends Fragment implements AdapterView
 
     String currentSortingBy;
     //private MovieClickCallback movieClickCallback;
-
+    GridLayoutManager mGridLayoutManager;
 
     private EndlessScrollListener endlessScrollListener;
 
@@ -126,8 +123,72 @@ public class MainFragment extends Fragment implements AdapterView
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         Debug.c();
         BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_fragment_menu, menu);
+        currentSortingBy = MoviesConstants.getSortOrder(getActivity());
+
+        if (currentSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
+            menu.findItem(R.id.action_sort_favourite).setChecked(true);
+        } else if (currentSortingBy.equals(MoviesConstants.SORT_BY_POPULARITY)) {
+            menu.findItem(R.id.action_sort_popularity).setChecked(true);
+        } else {
+            menu.findItem(R.id.action_sort_year).setChecked(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        String nextSorting = null;
+        switch (id) {
+            case R.id.action_sort_favourite:
+                nextSorting = MoviesConstants.SORT_BY_FAVOURITES;
+                break;
+            case R.id.action_sort_popularity:
+                nextSorting = MoviesConstants.SORT_BY_POPULARITY;
+                break;
+            case R.id.action_sort_year:
+                nextSorting = MoviesConstants.SORT_BY_RATINGS;
+                break;
+            default:
+        }
+        item.setChecked(true);
+        Debug.e("current Sorting : " + currentSortingBy, false);
+        Debug.e("next Sorting : " + nextSorting, false);
+        if (nextSorting != null && !nextSorting.equals(currentSortingBy)) {
+            //need to change the loader
+            currentSortingBy = nextSorting;
+            mMovieGridAdapter.clearMovies();
+            initEndlessScroll(1);
+            MoviesConstants.saveSortOrder(getActivity(), nextSorting);
+            restartLoader(null);
+            movieGridRecyleView.scrollToPosition(0);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void initEndlessScroll(int mCurrentPage) {
+        if (endlessScrollListener != null) {
+            movieGridRecyleView.removeOnScrollListener(endlessScrollListener);
+        }
+        endlessScrollListener = new EndlessScrollListener(mGridLayoutManager, mCurrentPage) {
+            @Override
+            public void onLoadMore(int current_page) {
+                Debug.e("Requesting for loading page : " + current_page, false);
+                Bundle bundle = new Bundle();
+                bundle.putInt(AppConstants.CURRENT_PAGE, current_page);
+                restartLoader(bundle);
+            }
+        };
+        // Will add later :P
+        movieGridRecyleView.addOnScrollListener(endlessScrollListener);
     }
 
     @Override
@@ -169,7 +230,7 @@ public class MainFragment extends Fragment implements AdapterView
         mSwipeRefreshLayout.setProgressViewOffset(true, 200, 500);
         mSwipeRefreshLayout.setEnabled(false);
 
-        GridLayoutManager mGridLayoutManager = new GridLayoutManager(getActivity(), gridColumns);
+        mGridLayoutManager = new GridLayoutManager(getActivity(), gridColumns);
 
 
         movieGridRecyleView.setLayoutManager(mGridLayoutManager);
@@ -192,31 +253,12 @@ public class MainFragment extends Fragment implements AdapterView
             mSelectedPosition = -1;
             mCurrentPage = 1;
         }
-        endlessScrollListener = new EndlessScrollListener(mGridLayoutManager, mCurrentPage) {
-            @Override
-            public void onLoadMore(int current_page) {
-                Bundle bundle = new Bundle();
-                bundle.putInt(AppConstants.CURRENT_PAGE, current_page);
-                restartLoader(bundle);
-            }
-        };
+
         mMovieGridAdapter = new MovieGridAdapter(restoredMovies, navColor, getActivity(),
                 this);
         movieGridRecyleView.setAdapter(mMovieGridAdapter);
 
-        // Will add later :P
-        movieGridRecyleView.addOnScrollListener(endlessScrollListener);
-
-        Spinner spinner = (Spinner) getActivity().findViewById(R.id.toolbar_spinner);
-        final CustomSpinnerAdapter spinnerAdapter = new CustomSpinnerAdapter(getActivity());
-        String[] sortOptions = getResources().getStringArray(R.array.string_sort_by);
-        spinnerAdapter.addItems(Arrays.asList(sortOptions));
-        spinner.setAdapter(spinnerAdapter);
-
-        currentSortingBy = MoviesConstants.getSortOrder(getActivity());
-        Debug.e("Initial Sorting : " + currentSortingBy, false);
-        spinner.setSelection(0, false);
-        spinner.setOnItemSelectedListener(this);
+        initEndlessScroll(mCurrentPage);
 
         if (!restored) {
             initLoadersOnCategory(null);
@@ -302,56 +344,6 @@ public class MainFragment extends Fragment implements AdapterView
         ButterKnife.unbind(this);
     }
 
-
-    int lastSelection = 0;
-
-    // spinner
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Debug.c();
-        String selection = parent.getItemAtPosition(position).toString();
-        //Debug.showToastShort(selection, getActivity());
-        Debug.e(selection, false);
-        PreferenceManager.getInstance(getActivity()).debug();
-        String nextSortingBy;
-        switch (position) {
-            case 0: // popularity
-                nextSortingBy = MoviesConstants.SORT_BY_POPULARITY;
-                break;
-            case 1: // ratings
-                nextSortingBy = MoviesConstants.SORT_BY_RATINGS;
-                break;
-            case 2: //favourite
-                nextSortingBy = MoviesConstants.SORT_BY_FAVOURITES;
-                break;
-            default: //popularity
-                nextSortingBy = MoviesConstants.SORT_BY_POPULARITY;
-                break;
-        }
-
-        MoviesConstants.saveSortOrder(getActivity(), nextSortingBy);
-        // if (nextSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES) == false) {
-        if (!nextSortingBy.equals(currentSortingBy)) {
-            restartLoader(null);
-            movieGridRecyleView.scrollToPosition(0);
-        }
-        currentSortingBy = nextSortingBy;
-/*        } else {
-
-            Debug.showToastShort("Coming Up. Part of Stage-2: PopularMovies :)", getActivity(),
-                    true);
-            parent.setSelection(lastSelection);*/
-        // }
-        lastSelection = position;
-    }
-
-
-    // spinner
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
     @Subscribe
     public void changeBackgroundColor(DetailBackgroundColorChangeEvent event) {
         Debug.c();
@@ -377,7 +369,7 @@ public class MainFragment extends Fragment implements AdapterView
                 sortBy = args.getString(AppConstants.GRID_VIEW_SORTING_TYPE);
             }
             pageToBeLoaded = page;
-            Debug.e("REQUESTING  :" + page, false);
+            Debug.e("REQUESTING  : page:" + page + " sort: " + sortBy, false);
             return new MoviesLoader(getActivity(), sortBy, page);
         }
 

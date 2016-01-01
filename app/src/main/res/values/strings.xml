@@ -10,8 +10,8 @@
     <string name="sync_account_type" translatable="false">popularmovies.amrendra.com</string>
 
     <!-- Menu Items -->
-    <string name="action_sort_popularity" translatable="false">Sort By Popularity</string>
-    <string name="action_sort_year" translatable="false">Sort By Year</string>
+    <string name="action_sort_popularity" translatable="false">Popular</string>
+    <string name="action_sort_year" translatable="false">Highest Rated</string>
     <string name="action_sort_favourite" translatable="false">Favourites</string>
 
     <!-- sort by -->

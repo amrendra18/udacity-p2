@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
         BusProvider.getInstance().register(this);
 
-        mMainFragment =
-                (MainFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_main);
+/*        mMainFragment =
+                (MainFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_main);*/
 
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
@@ -71,16 +71,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Debug.c();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Debug.c();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        BusProvider.getInstance().unregister(this);
+        Debug.c();
     }
 
     @Subscribe

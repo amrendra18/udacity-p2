@@ -88,6 +88,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     private int reviewContentColor = Color.WHITE;
     private int reviewAuthorColor = Color.YELLOW;
 
+    boolean toolbarShown = false;
+
     @Bind(R.id.favourite_float_button)
     FloatingActionButton floatingFavouriteActionButton;
 
@@ -503,6 +505,11 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     public void onResume() {
         super.onResume();
         Debug.c();
+        if (toolbarShown) {
+            showToolbar();
+        } else {
+            hideToolbar();
+        }
         initLoaders();
     }
 
@@ -849,27 +856,37 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         float percentage = (float) Math.abs(offset) / (float) maxScroll;
 
         if (percentage == 1f && isHideToolbarView) {
-            mToolbar.setVisibility(View.VISIBLE);
-            overviewTitleTv.setVisibility(View.INVISIBLE);
-            toolbarHeaderView.setVisibility(View.VISIBLE);
-            isHideToolbarView = !isHideToolbarView;
-            floatingFavouriteActionButton.setVisibility(View.INVISIBLE);
-            floatingShareActionButton.setVisibility(View.INVISIBLE);
-            if (tinted) {
-                tinted = false;
-                GraphicsUtils.statusBarRemoveTint(getActivity());
-            }
+            toolbarShown = true;
+            showToolbar();
         } else if (percentage < 1f && !isHideToolbarView) {
-            mToolbar.setVisibility(View.INVISIBLE);
-            floatingFavouriteActionButton.setVisibility(View.VISIBLE);
-            floatingShareActionButton.setVisibility(View.VISIBLE);
-            overviewTitleTv.setVisibility(View.VISIBLE);
-            toolbarHeaderView.setVisibility(View.INVISIBLE);
-            isHideToolbarView = !isHideToolbarView;
-            if (!tinted) {
-                GraphicsUtils.statusBarTinted(getActivity());
-                tinted = true;
-            }
+            toolbarShown = false;
+            hideToolbar();
+        }
+    }
+
+    private void showToolbar() {
+        mToolbar.setVisibility(View.VISIBLE);
+        overviewTitleTv.setVisibility(View.INVISIBLE);
+        toolbarHeaderView.setVisibility(View.VISIBLE);
+        isHideToolbarView = !isHideToolbarView;
+        floatingFavouriteActionButton.setVisibility(View.INVISIBLE);
+        floatingShareActionButton.setVisibility(View.INVISIBLE);
+        if (tinted) {
+            tinted = false;
+            GraphicsUtils.statusBarRemoveTint(getActivity());
+        }
+    }
+
+    private void hideToolbar() {
+        mToolbar.setVisibility(View.INVISIBLE);
+        floatingFavouriteActionButton.setVisibility(View.VISIBLE);
+        floatingShareActionButton.setVisibility(View.VISIBLE);
+        overviewTitleTv.setVisibility(View.VISIBLE);
+        toolbarHeaderView.setVisibility(View.INVISIBLE);
+        isHideToolbarView = !isHideToolbarView;
+        if (!tinted) {
+            GraphicsUtils.statusBarTinted(getActivity());
+            tinted = true;
         }
     }
 }

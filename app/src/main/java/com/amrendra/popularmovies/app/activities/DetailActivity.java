@@ -17,7 +17,6 @@ import com.squareup.otto.Subscribe;
 
 public class DetailActivity extends AppCompatActivity {
 
-    boolean toSupportBackTransition = true;
     Fragment detailFragment;
 
     @Override
@@ -52,29 +51,15 @@ public class DetailActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Debug.c();
-        supportFinishAfterTransition();
-    }
-
-    @Override
-    public void supportFinishAfterTransition() {
-        //toSupportBackTransition = true;
-        if (toSupportBackTransition) {
-            super.supportFinishAfterTransition();
-        } else {
-            finish();
-        }
     }
 
     @Subscribe
     public void onFavouriteMovieAdd(FavouriteMovieAddEvent event) {
         Debug.c();
-        //Todo : Fix this bug
-        //toSupportBackTransition = true;
     }
 
     @Subscribe
     public void onFavouriteMovieDelete(FavouriteMovieDeleteEvent event) {
         Debug.c();
-        toSupportBackTransition = false;
     }
 }

@@ -58,7 +58,11 @@ public class MoviesConstants {
 
 
     public static final String MOVIE_TITLE_FONT = "Lobster.otf";
-    public static final String MOVIE_SUBTITLE_FONT = "Sail.otf";
+    public static final String MOVIE_SUBTITLE_FONT = "Kaushan.otf";//"Sail.otf";
+    public static final String CONTENT_HEADING_FONT = "Tusj.ttf";
+    //public static final String CONTENT_HEADING_FONT = "Seaside.ttf";
+
+    public static final String OVERVIEW_CONTENT_FONT = "bree.otf";
 
 
     // since there are limited genres, and dont change often (read ever)

@@ -57,6 +57,8 @@
 
     <style name="CardContent" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:spacing">2dp</item>
+        <item name="android:layout_gravity">center_vertical|right</item>
         <item name="android:padding">@dimen/detail_card_view_text_content_padding</item>
     </style>
 

@@ -44,6 +44,7 @@
     <dimen name="divider_margin_left">4dp</dimen>
     <dimen name="divider_margin_right">4dp</dimen>
     <dimen name="divider_height">2dp</dimen>
+    <dimen name="divider_heading_height">14dp</dimen>
     <dimen name="divider_content_height">1dp</dimen>
 
     <!-- card view :  star rating -->

@@ -1,3 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <style name="CardContent" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:padding">@dimen/detail_card_view_text_content_padding</item>
+    </style>
 </resources>

@@ -9,11 +9,11 @@
     <View
         android:id="@+id/trailers_divider_view_left"
         android:layout_width="5dp"
-        android:layout_height="@dimen/divider_height"
+        android:layout_height="@dimen/divider_heading_height"
         android:layout_gravity="center"
         android:background="@color/colorBB"/>
 
-    <TextView
+    <com.amrendra.popularmovies.app.views.ContentHeadingTextView
         android:id="@+id/trailers_content_heading"
         style="@style/CardTitleHeading"
         android:text="@string/detail_trailer"/>
@@ -21,7 +21,7 @@
     <View
         android:id="@+id/trailers_divider_view_right"
         android:layout_width="0dp"
-        android:layout_height="@dimen/divider_height"
+        android:layout_height="@dimen/divider_heading_height"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:background="@color/colorBB"/>

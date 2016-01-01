@@ -39,6 +39,8 @@ import android.widget.TextView;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter.TrailerCallback;
+import com.amrendra.popularmovies.app.views.MovieTaglineTextView;
+import com.amrendra.popularmovies.app.views.MovieTitleTextView;
 import com.amrendra.popularmovies.app.views.TitleTaglineView;
 import com.amrendra.popularmovies.bus.BusProvider;
 import com.amrendra.popularmovies.db.MovieContract;
@@ -117,6 +119,15 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
     // Overview Card
 
+    @Bind(R.id.overview_title)
+    MovieTitleTextView overviewTitleTv;
+
+    @Bind(R.id.overview_year)
+    MovieTaglineTextView overviewYearTv;
+
+    @Bind(R.id.preview_details_container)
+    LinearLayout previewDetailsContainer;
+
     @Bind(R.id.detail_overview_card_ratings)
     TextView movieRatingsTv;
 
@@ -124,29 +135,29 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     TextView movieOverviewContentTv;
 
 
-    @Bind(R.id.detail_orginal_title_tv)
-    TextView movieOriginalTitleTv;
+/*    @Bind(R.id.detail_orginal_title_tv)
+    TextView movieOriginalTitleTv;*/
 
-    @Bind(R.id.detail_release_date_tv)
-    TextView movieReleaseDateTv;
+/*    @Bind(R.id.detail_release_date_tv)
+    TextView movieReleaseDateTv;*/
 
-    @Bind(R.id.detail_orginal_language_tv)
-    TextView movieOriginalLanguageTv;
+/*    @Bind(R.id.detail_orginal_language_tv)
+    TextView movieOriginalLanguageTv;*/
 
-    @Bind(R.id.detail_imdb_tv)
+/*    @Bind(R.id.detail_imdb_tv)
     TextView movieImdbTv;
 
     @Bind(R.id.detail_homepage_tv)
     TextView movieHomepageTv;
 
     @Bind(R.id.detail_revenue_tv)
-    TextView movieRevenueTv;
+    TextView movieRevenueTv;*/
 
     @Bind(R.id.detail_time_tv)
     TextView movieTimeTv;
 
-    @Bind(R.id.detail_tagline_tv)
-    TextView movieTaglineTv;
+/*    @Bind(R.id.detail_tagline_tv)
+    TextView movieTaglineTv;*/
 
     @Bind(R.id.detail_genre_tv)
     TextView movieGenreTv;
@@ -181,7 +192,9 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     // Lists
 
     @Nullable
-    @Bind({R.id.overview_content_heading, R.id.review_content_heading, R.id.trailers_content_heading})
+    @Bind({R.id.overview_title, R.id.overview_year, R.id.overview_content_heading, R.id
+            .review_content_heading, R.id
+            .trailers_content_heading})
     List<TextView> titleLists;
 
 
@@ -196,7 +209,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     @Bind({R.id.divider_content, R.id.divider_view, R.id.overview_divider_view_left, R.id
             .overview_divider_view_right, R.id.review_divider_view_left, R.id
             .review_divider_view_right, R.id.trailers_divider_view_left, R.id
-            .trailers_divider_view_right})
+            .trailers_divider_view_right, R.id.preview_details_container})
     List<View> dividerLists;
     // End Lists
 
@@ -402,13 +415,12 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         }
 
     }
-
-    private void setupToolbarStatusBar(Swatch swatch) {
+    private void setupTitleSubtitle(Swatch swatch) {
+/*    private void setupToolbarStatusBar(Swatch swatch) {*/
         if (swatch != null) {
             int color = swatch.getRgb();
             mToolbar.setBackgroundColor(color);
-            reviewAuthorColor = color;
-            reviewContentColor = color;
+
             ButterKnife.apply(titleLists, titleTextColorChange, color);
             ButterKnife.apply(dividerLists, dividerColorChange, color);
         }
@@ -432,13 +444,10 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     };
 
     private void setupSubtitle(Swatch swatch) {
-        if (swatch != null) {
-            int color = swatch.getRgb();
-
-        }
     }
 
-    private void setupTitleSubtitle(Swatch swatch) {
+/*    private void setupTitleSubtitle(Swatch swatch) {*/
+private void setupToolbarStatusBar(Swatch swatch) {
         if (swatch != null) {
             int color = swatch.getRgb();
 
@@ -446,6 +455,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             toolbarHeaderView.getSubTitle().setTextColor(color);
             floatHeaderView.getTitle().setTextColor(color);
             detailContainer.setBackgroundColor(color);
+            reviewAuthorColor = swatch.getTitleTextColor();
+            reviewContentColor = swatch.getBodyTextColor();
             mStatusBarColor = color;
             if (mCollapsingToolbar != null) {
                 //mCollapsingToolbar.setContentScrimColor(swatch.getRgb());
@@ -456,10 +467,10 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
                 getActivity().getWindow().setNavigationBarColor(color);
             }
-            ButterKnife.apply(contentLists, titleTextColorChange, Color.WHITE);
+            ButterKnife.apply(contentLists, titleTextColorChange, reviewContentColor);
 
         }
-
+        initLoaders();
     }
 
     private void setupDetails() {
@@ -467,23 +478,31 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             // set the title in the toolbar
             //mCollapsingToolbar.setTitle(mMovie.title);
             movieOverviewContentTv.setText(mMovie.overview);
-            movieRatingsTv.setText(Double.toString(mMovie.averageVote) + "/10");
+            movieRatingsTv.setText(Double.toString(mMovie.averageVote));
 
-            movieOriginalTitleTv.setText(mMovie.originalTitle);
-            movieReleaseDateTv.setText(mMovie.releaseDate);
-            movieOriginalLanguageTv.setText(mMovie.originalLanguage);
+            //movieOriginalTitleTv.setText(mMovie.originalTitle);
+            //movieReleaseDateTv.setText(mMovie.releaseDate);
+            //movieOriginalLanguageTv.setText(mMovie.originalLanguage);
             movieGenreTv.setText(MoviesConstants.getGenresList(mMovie.genreIds));
+
+            overviewTitleTv.setText(mMovie.title);
+            overviewYearTv.setText(mMovie.releaseDate);
             setUpFineDetails();
         }
     }
 
     private void setUpFineDetails() {
         if (mMovie != null) {
-            movieImdbTv.setText(mMovie.imdbid);
-            movieHomepageTv.setText(mMovie.homepage);
-            movieRevenueTv.setText(Long.toString(mMovie.revenue));
-            movieTimeTv.setText(Integer.toString(mMovie.runtime));
-            movieTaglineTv.setText(mMovie.tagline);
+            //movieImdbTv.setText(mMovie.imdbid);
+            //movieHomepageTv.setText(mMovie.homepage);
+            //movieRevenueTv.setText(Long.toString(mMovie.revenue));
+            int movieTime = mMovie.runtime;
+            String toSet = "-";
+            if (movieTime != 0) {
+                toSet = Integer.toString(movieTime) + " mins";
+            }
+            movieTimeTv.setText(toSet);
+            //movieTaglineTv.setText(mMovie.tagline);
             toolbarHeaderView.bindTo(mMovie.title, mMovie.tagline);
         }
     }
@@ -493,7 +512,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);*/
         toolbarHeaderView.bindTo(mMovie.title, mMovie.tagline);
-        floatHeaderView.bindTo(mMovie.title, "");
+        floatHeaderView.bindTo("", "");
         mAppBarLayout.addOnOffsetChangedListener(this);
         if (!isTablet) {
             //for creating home button
@@ -520,7 +539,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         super.onResume();
         Debug.c();
 
-        initLoaders();
+        //initLoaders();
         //changeToDynamicColor();
 
     }
@@ -848,6 +867,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
         if (percentage == 1f && isHideToolbarView) {
             mToolbar.setVisibility(View.VISIBLE);
+            overviewTitleTv.setVisibility(View.INVISIBLE);
             toolbarHeaderView.setVisibility(View.VISIBLE);
             isHideToolbarView = !isHideToolbarView;
             floatHeaderView.setVisibility(View.INVISIBLE);
@@ -857,6 +877,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             }
         } else if (percentage < 1f && !isHideToolbarView) {
             mToolbar.setVisibility(View.GONE);
+            overviewTitleTv.setVisibility(View.VISIBLE);
             toolbarHeaderView.setVisibility(View.INVISIBLE);
             isHideToolbarView = !isHideToolbarView;
             floatHeaderView.setVisibility(View.VISIBLE);

@@ -125,9 +125,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     @Bind(R.id.overview_year)
     MovieTaglineTextView overviewYearTv;
 
-    @Bind(R.id.preview_details_container)
-    LinearLayout previewDetailsContainer;
-
     @Bind(R.id.detail_overview_card_ratings)
     TextView movieRatingsTv;
 
@@ -135,29 +132,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     TextView movieOverviewContentTv;
 
 
-/*    @Bind(R.id.detail_orginal_title_tv)
-    TextView movieOriginalTitleTv;*/
-
-/*    @Bind(R.id.detail_release_date_tv)
-    TextView movieReleaseDateTv;*/
-
-/*    @Bind(R.id.detail_orginal_language_tv)
-    TextView movieOriginalLanguageTv;*/
-
-/*    @Bind(R.id.detail_imdb_tv)
-    TextView movieImdbTv;
-
-    @Bind(R.id.detail_homepage_tv)
-    TextView movieHomepageTv;
-
-    @Bind(R.id.detail_revenue_tv)
-    TextView movieRevenueTv;*/
-
     @Bind(R.id.detail_time_tv)
     TextView movieTimeTv;
-
-/*    @Bind(R.id.detail_tagline_tv)
-    TextView movieTaglineTv;*/
 
     @Bind(R.id.detail_genre_tv)
     TextView movieGenreTv;
@@ -192,15 +168,19 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     // Lists
 
     @Nullable
-    @Bind({R.id.overview_title, R.id.overview_year, R.id.overview_content_heading, R.id
+    @Bind({R.id.overview_title, R.id.overview_year, R.id
             .review_content_heading, R.id
             .trailers_content_heading})
     List<TextView> titleLists;
 
 
+    @Bind({R.id.detail_content_heading_genre_tv, R.id.detail_content_heading_rating_tv, R.id.detail_content_heading_runtime_tv, R.id.detail_overview_card_ratings, R.id
+            .detail_genre_tv, R.id.detail_time_tv})
+    List<TextView> extraDetailsList;
+
+
     @Nullable
-    @Bind({R.id.detail_overview_card_content,
-            R.id.review_by_text, R.id.review_content,
+    @Bind({R.id.detail_overview_card_content, R.id.review_content, R.id.review_by,
             R.id.no_trailers_tv, R.id.no_reviews_tv})
     List<TextView> contentLists;
 
@@ -403,9 +383,9 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
                                     if (titleAndFabColors == null) {
                                         titleAndFabColors = lightMutedSwatch;
                                     }
-                                    setupTitleSubtitle(backgroundAndContentColors);
-                                    setupSubtitle(vibrantSwatch);
-                                    setupToolbarStatusBar(titleAndFabColors);
+                                    setDarkColorWork(backgroundAndContentColors);
+                                    setLightColorWork(titleAndFabColors);
+
                                 }
                             });
                             return false;
@@ -415,17 +395,44 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         }
 
     }
-    private void setupTitleSubtitle(Swatch swatch) {
-/*    private void setupToolbarStatusBar(Swatch swatch) {*/
+
+    private void setDarkColorWork(Swatch swatch) {
         if (swatch != null) {
             int color = swatch.getRgb();
             mToolbar.setBackgroundColor(color);
-
+            mStatusBarColor = color;
             ButterKnife.apply(titleLists, titleTextColorChange, color);
             ButterKnife.apply(dividerLists, dividerColorChange, color);
+            if (mCollapsingToolbar != null) {
+                mCollapsingToolbar.setStatusBarScrimColor(color);
+            }
+            if (!isTablet && Build.VERSION.SDK_INT >= Build.VERSION_CODES
+                    .LOLLIPOP) {
+                getActivity().getWindow().setNavigationBarColor(color);
+            }
         }
 
     }
+
+
+    private void setLightColorWork(Swatch swatch) {
+        if (swatch != null) {
+            int color = swatch.getRgb();
+            toolbarHeaderView.getTitle().setTextColor(color);
+            toolbarHeaderView.getSubTitle().setTextColor(color);
+            floatHeaderView.getTitle().setTextColor(color);
+            detailContainer.setBackgroundColor(color);
+            changeBackgroundColorEvent(color);
+            reviewAuthorColor = swatch.getBodyTextColor();
+            reviewContentColor = swatch.getBodyTextColor();
+
+            ButterKnife.apply(extraDetailsList, titleTextColorChange, color);
+            ButterKnife.apply(contentLists, titleTextColorChange, reviewContentColor);
+            paintAllReviews(reviewsContainer);
+        }
+
+    }
+
 
     public static final ButterKnife.Setter<TextView, Integer> titleTextColorChange = new ButterKnife
             .Setter<TextView, Integer>() {
@@ -443,46 +450,11 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         }
     };
 
-    private void setupSubtitle(Swatch swatch) {
-    }
-
-/*    private void setupTitleSubtitle(Swatch swatch) {*/
-private void setupToolbarStatusBar(Swatch swatch) {
-        if (swatch != null) {
-            int color = swatch.getRgb();
-
-            toolbarHeaderView.getTitle().setTextColor(color);
-            toolbarHeaderView.getSubTitle().setTextColor(color);
-            floatHeaderView.getTitle().setTextColor(color);
-            detailContainer.setBackgroundColor(color);
-            reviewAuthorColor = swatch.getTitleTextColor();
-            reviewContentColor = swatch.getBodyTextColor();
-            mStatusBarColor = color;
-            if (mCollapsingToolbar != null) {
-                //mCollapsingToolbar.setContentScrimColor(swatch.getRgb());
-                mCollapsingToolbar.setStatusBarScrimColor(color);
-            }
-            if (!isTablet && Build.VERSION.SDK_INT >= Build.VERSION_CODES
-                    .LOLLIPOP) {
-
-                getActivity().getWindow().setNavigationBarColor(color);
-            }
-            ButterKnife.apply(contentLists, titleTextColorChange, reviewContentColor);
-
-        }
-        initLoaders();
-    }
-
     private void setupDetails() {
         if (mMovie != null) {
-            // set the title in the toolbar
-            //mCollapsingToolbar.setTitle(mMovie.title);
             movieOverviewContentTv.setText(mMovie.overview);
             movieRatingsTv.setText(Double.toString(mMovie.averageVote));
 
-            //movieOriginalTitleTv.setText(mMovie.originalTitle);
-            //movieReleaseDateTv.setText(mMovie.releaseDate);
-            //movieOriginalLanguageTv.setText(mMovie.originalLanguage);
             movieGenreTv.setText(MoviesConstants.getGenresList(mMovie.genreIds));
 
             overviewTitleTv.setText(mMovie.title);
@@ -511,8 +483,8 @@ private void setupToolbarStatusBar(Swatch swatch) {
 /*        final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);*/
-        toolbarHeaderView.bindTo(mMovie.title, mMovie.tagline);
-        floatHeaderView.bindTo("", "");
+        //toolbarHeaderView.bindTo(mMovie.title, mMovie.tagline);
+        //floatHeaderView.bindTo("", "");
         mAppBarLayout.addOnOffsetChangedListener(this);
         if (!isTablet) {
             //for creating home button
@@ -525,8 +497,6 @@ private void setupToolbarStatusBar(Swatch swatch) {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         trailerRecyclerView.setNestedScrollingEnabled(false);
-
-
     }
 
     @Override
@@ -539,9 +509,15 @@ private void setupToolbarStatusBar(Swatch swatch) {
         super.onResume();
         Debug.c();
 
-        //initLoaders();
+        initLoaders();
         //changeToDynamicColor();
 
+    }
+
+    private void changeBackgroundColorEvent(int backgroundColor) {
+        if (isTablet) {
+            BusProvider.getInstance().post(new DetailBackgroundColorChangeEvent(backgroundColor));
+        }
     }
 
     private void changeToDynamicColor() {
@@ -567,9 +543,7 @@ private void setupToolbarStatusBar(Swatch swatch) {
                         getActivity().getWindow().setNavigationBarColor(navLightColor);
                     }
                     Debug.e("Is tablet : " + isTablet, false);
-                    if (isTablet) {
-                        BusProvider.getInstance().post(new DetailBackgroundColorChangeEvent(backgroundColor));
-                    }
+                    changeBackgroundColorEvent(backgroundColor);
                 }
             });
         }
@@ -730,7 +704,8 @@ private void setupToolbarStatusBar(Swatch swatch) {
                     final View reviewView = inflater.inflate(R.layout.review_layout, reviewsContainer, false);
                     TextView reviewAuthor = ButterKnife.findById(reviewView, R.id.review_by);
                     TextView reviewContent = ButterKnife.findById(reviewView, R.id.review_content);
-                    reviewAuthor.setText(review.author);
+                    reviewAuthor.setText(getResources().getString(R.string.review_by_author,
+                            review.author));
                     reviewAuthor.setTextColor(reviewAuthorColor);
                     reviewContent.setText(review.content);
                     reviewContent.setTextColor(reviewContentColor);
@@ -739,6 +714,7 @@ private void setupToolbarStatusBar(Swatch swatch) {
                         final View dividerView = inflater.inflate(R.layout.divider_content,
                                 reviewsContainer, false);
                         View divider = ButterKnife.findById(dividerView, R.id.divider_content);
+                        divider.setBackgroundColor(mStatusBarColor);
                         reviewsContainer.addView(divider);
                     }
                 }
@@ -755,6 +731,23 @@ private void setupToolbarStatusBar(Swatch swatch) {
         reviewsProgressbar.setVisibility(View.GONE);
     }
 
+    private void paintAllReviews(ViewGroup viewGroup) {
+        if (viewGroup != null) {
+            int count = viewGroup.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View view = viewGroup.getChildAt(i);
+                if (view instanceof ViewGroup) {
+                    paintAllReviews((ViewGroup) view);
+                } else if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(reviewContentColor);
+                } else if (view != null) {
+                    //divider
+                    view.setBackgroundColor(mStatusBarColor);
+                }
+            }
+        }
+
+    }
 
     private void addTrailers(TrailerList result) {
         if (result.getError() == Error.SUCCESS) {
@@ -852,10 +845,6 @@ private void setupToolbarStatusBar(Swatch swatch) {
         Debug.e("favourite movie details updates : " + result, false);
     }
     // END
-
-    public void onBackPressed() {
-        Debug.c();
-    }
 
     boolean tinted = true;
 

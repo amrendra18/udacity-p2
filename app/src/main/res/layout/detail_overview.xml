@@ -6,6 +6,8 @@
     android:orientation="vertical">
 
 
+
+
     <LinearLayout
         android:id="@+id/title_container"
         style="@style/FillContainer"
@@ -20,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="Movie Name"
             android:textColor="@android:color/white"
-            android:textSize="24dp"
+            android:textSize="20dp"
             />
 
         <com.amrendra.popularmovies.app.views.MovieTaglineTextView
@@ -29,92 +31,105 @@
             android:layout_height="wrap_content"
             android:text="2015"
             android:textColor="@android:color/white"
-            android:textSize="18dp"
+            android:textSize="16dp"
             />
 
     </LinearLayout>
+
+<!--    <include
+        layout="@layout/overview_heading_layout"/>-->
 
     <LinearLayout
         android:id="@+id/preview_details_container"
         style="@style/FillContainer"
         android:layout_gravity="center"
-        android:layout_marginBottom="15dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginBottom="4dp"
         android:orientation="horizontal"
-        android:padding="5dp">
+        android:padding="4dp">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
+            <com.amrendra.popularmovies.app.views.ContentHeadingTextView
+                android:id="@+id/detail_content_heading_rating_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:text="Rating"/>
+                android:text="Rating"
+                android:textAllCaps="true"
+                android:textSize="16dp"/>
 
-            <TextView
+            <com.amrendra.popularmovies.app.views.ContentHeadingTextView
                 android:id="@+id/detail_overview_card_ratings"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:text="7.8"/>
+                android:text="7.8"
+                android:textSize="14dp"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Runtime"/>
-
-            <TextView
-                android:id="@+id/detail_time_tv"
+            <com.amrendra.popularmovies.app.views.ContentHeadingTextView
+                android:id="@+id/detail_content_heading_runtime_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:text="129 mins"/>
+                android:text="Length"
+                android:textAllCaps="true"
+                android:textSize="16dp"/>
+
+            <com.amrendra.popularmovies.app.views.ContentHeadingTextView
+                android:id="@+id/detail_time_tv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="129 mins"
+                android:textSize="14dp"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="2"
-
             android:orientation="vertical">
 
-            <TextView
+            <com.amrendra.popularmovies.app.views.ContentHeadingTextView
+                android:id="@+id/detail_content_heading_genre_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:text="Genres"/>
+                android:text="Genre"
+                android:textAllCaps="true"
+                android:textSize="16dp"/>
 
-            <TextView
+            <com.amrendra.popularmovies.app.views.ContentHeadingTextView
                 android:id="@+id/detail_genre_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:text="Action Sci-Fi Comedy"/>
+                android:text="Action Sci-Fi Comedy"
+                android:textSize="14dp"/>
 
         </LinearLayout>
 
     </LinearLayout>
 
-
-    <include
-        layout="@layout/overview_heading_layout"/>
 
     <com.amrendra.popularmovies.app.views.OverviewContentTextView
         android:id="@+id/detail_overview_card_content"
@@ -122,134 +137,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14dp"/>
-
-    <!--    <include layout="@layout/divider"/>
-
-        <LinearLayout
-            style="@style/FillContainer"
-            android:orientation="vertical"
-            android:padding="@dimen/detail_card_table_padding">
-
-            <LinearLayout
-                style="@style/FillContainer"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TableEntry1"
-                    android:text="@string/original_title"/>
-
-                <TextView
-                    android:id="@+id/detail_orginal_title_tv"
-                    style="@style/TableEntry2"/>
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/FillContainer"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TableEntry1"
-                    android:text="@string/release_date"/>
-
-                <TextView
-                    android:id="@+id/detail_release_date_tv"
-                    style="@style/TableEntry2"/>
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/FillContainer"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TableEntry1"
-                    android:text="@string/imdb"/>
-
-                <TextView
-                    android:id="@+id/detail_imdb_tv"
-                    style="@style/TableEntry2"/>
-            </LinearLayout>
-
-
-            <LinearLayout
-                style="@style/FillContainer"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TableEntry1"
-                    android:text="@string/homepage"/>
-
-                <TextView
-                    android:id="@+id/detail_homepage_tv"
-                    style="@style/TableEntry2"/>
-            </LinearLayout>
-
-
-            <LinearLayout
-                style="@style/FillContainer"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TableEntry1"
-                    android:text="@string/revenue"/>
-
-                <TextView
-                    android:id="@+id/detail_revenue_tv"
-                    style="@style/TableEntry2"/>
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/FillContainer"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TableEntry1"
-                    android:text="@string/time"/>
-
-                <TextView
-                    android:id="@+id/detail_time_tv"
-                    style="@style/TableEntry2"/>
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/FillContainer"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TableEntry1"
-                    android:text="@string/tagline"/>
-
-                <TextView
-                    android:id="@+id/detail_tagline_tv"
-                    style="@style/TableEntry2"/>
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/FillContainer"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TableEntry1"
-                    android:text="@string/original_language"/>
-
-                <TextView
-                    android:id="@+id/detail_orginal_language_tv"
-                    style="@style/TableEntry2"/>
-            </LinearLayout>
-
-
-            <LinearLayout
-                style="@style/FillContainer"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TableEntry1"
-                    android:text="@string/genre"/>
-
-                <TextView
-                    android:id="@+id/detail_genre_tv"
-                    style="@style/TableEntry2"/>
-            </LinearLayout>
-
-        </LinearLayout>-->
 
 </LinearLayout>

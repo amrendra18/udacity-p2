@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
+    android:id="@+id/detail_fragment_coordinator_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/detail_fragment_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <include
+        android:id="@+id/app_bar_layout"
+        layout="@layout/detail_toolbar"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/detail_content_fragment_nested_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:id="@+id/full_content_detail_fragment"
+            style="@style/FillContainer"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/detail_overview_card"
+                layout="@layout/detail_overview"/>
+
+            <include
+                android:id="@+id/detail_trailer_card"
+                layout="@layout/detail_trailers"/>
+
+            <include
+                android:id="@+id/detail_review_card"
+                layout="@layout/detail_reviews"/>
+        </LinearLayout>
 
 
-        <include
-            android:id="@+id/app_bar_layout"
-            layout="@layout/detail_toolbar"/>
+    </android.support.v4.widget.NestedScrollView>
 
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/detail_content_fragment_nested_scroll"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:transitionGroup="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <LinearLayout
-                android:id="@+id/full_content_detail_fragment"
-                style="@style/FillContainer"
-                android:orientation="vertical">
-
-                <include
-                    android:id="@+id/detail_overview_card"
-                    layout="@layout/detail_overview"/>
-
-                <include
-                    android:id="@+id/detail_trailer_card"
-                    layout="@layout/detail_trailers"/>
-
-                <include
-                    android:id="@+id/detail_review_card"
-                    layout="@layout/detail_reviews"/>
-            </LinearLayout>
-
-
-        </android.support.v4.widget.NestedScrollView>
-
+    <include
+        android:id="@+id/float_header_view"
+        layout="@layout/title_tagline_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.amrendra.popularmovies.app.views.ViewBehavior"
+        />
 
 </android.support.design.widget.CoordinatorLayout>
 

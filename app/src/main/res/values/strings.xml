@@ -40,6 +40,8 @@
     <string name="error_detail_reviews" translatable="false"><xliff:g example="Network Error" id="review_error">%1$s</xliff:g> in fetching reviews.</string>
     <string name="error_detail_trailers" translatable="false"><xliff:g example="Network Error" id="trailer_error">%1$s</xliff:g> in fetching Trailers.</string>
 
+    <string name="review_by_author" translatable="false">By: <xliff:g example="Amrendra Kumar " id="review_by_author">%1$s</xliff:g></string>
+
     <string name="release_date" translatable="false">Release Date</string>
     <string name="original_title" translatable="false">Original Title</string>
     <string name="original_language" translatable="false">Original Language</string>

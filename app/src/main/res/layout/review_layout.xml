@@ -4,36 +4,20 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <LinearLayout
-        style="@style/FillContainer"
-        android:orientation="horizontal">
+    <com.amrendra.popularmovies.app.views.ReviewContentTextView
+        android:id="@+id/review_by"
+        style="@style/CardContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14dp"
+        android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/review_by_text"
-            style="@style/CardContent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/review_by"
-            android:textAllCaps="true"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/review_by"
-            style="@style/CardContent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textStyle="bold"/>
-
-    </LinearLayout>
-
-
-    <TextView
+    <com.amrendra.popularmovies.app.views.ReviewContentTextView
         android:id="@+id/review_content"
         style="@style/CardContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-<!--    <include layout="@layout/divider"/>-->
+    <!--    <include layout="@layout/divider"/>-->
 
 </LinearLayout>

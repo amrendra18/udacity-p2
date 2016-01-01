@@ -7,7 +7,7 @@
 
     <include layout="@layout/trailers_heading_layout"/>
 
-    <TextView
+    <com.amrendra.popularmovies.app.views.ReviewContentTextView
         android:id="@+id/no_trailers_tv"
         style="@style/CardContent"
         android:layout_width="match_parent"

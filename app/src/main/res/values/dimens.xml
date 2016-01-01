@@ -2,8 +2,18 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+    <dimen name="header_view_start_margin_left">16dp</dimen>
+    <dimen name="header_view_end_margin_left">40dp</dimen>
+    <dimen name="header_view_end_margin_right">14dp</dimen>
+
+    <dimen name="header_view_start_margin_bottom">14dp</dimen>
+
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="spinner_width">125dp</dimen>
+
+    <dimen name="toolbar_height">100dp</dimen>
 
     <!-- Grid Recycler View :: Main Fragment-->
     <dimen name="grid_screen_parent_padding">2dp</dimen>

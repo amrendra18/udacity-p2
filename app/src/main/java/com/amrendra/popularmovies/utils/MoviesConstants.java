@@ -35,7 +35,6 @@ public class MoviesConstants {
     public static final String GET_SEARCH_MOVIE_URL = "/3/search/movie";
 
 
-
     // api parameters
     public static final String API_KEY = "api_key";
     public static final String SORT_BY = "sort_by";
@@ -55,6 +54,10 @@ public class MoviesConstants {
     // trailers
     public static final String TRAILER_VIDEO_URL = "http://www.youtube.com/watch?v=";
     public static final String TRAILER_IMAGE_URL = "http://img.youtube.com/vi/%s/0.jpg";
+
+
+    public static final String MOVIE_TITLE_FONT = "Lobster.otf";
+    public static final String MOVIE_SUBTITLE_FONT = "Sail.otf";
 
 
     // since there are limited genres, and dont change often (read ever)

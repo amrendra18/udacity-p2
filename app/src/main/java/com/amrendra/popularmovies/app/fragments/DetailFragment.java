@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -18,7 +19,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter;
 import com.amrendra.popularmovies.adapter.TrailerViewAdapter.TrailerCallback;
+import com.amrendra.popularmovies.app.views.TitleTaglineView;
 import com.amrendra.popularmovies.bus.BusProvider;
 import com.amrendra.popularmovies.db.MovieContract;
 import com.amrendra.popularmovies.events.DetailBackgroundColorChangeEvent;
@@ -64,7 +65,7 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailFragment extends Fragment implements TrailerCallback, FavouriteQueryHandler.OnQueryCompleteListener {
+public class DetailFragment extends Fragment implements TrailerCallback, FavouriteQueryHandler.OnQueryCompleteListener, AppBarLayout.OnOffsetChangedListener {
 
     public static final String TAG = "detailFragment";
 
@@ -84,6 +85,18 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     @Nullable
     @Bind((R.id.collapsing_toolbar))
     CollapsingToolbarLayout mCollapsingToolbar;
+
+    @Bind(R.id.app_bar_layout)
+    AppBarLayout mAppBarLayout;
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
+    @Bind(R.id.toolbar_header_view)
+    TitleTaglineView toolbarHeaderView;
+
+    @Bind(R.id.float_header_view)
+    TitleTaglineView floatHeaderView;
 
     @Bind(R.id.movie_poster_image)
     ImageView posterImageView;
@@ -166,6 +179,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
     private boolean isTablet = false;
 
+    private boolean isHideToolbarView = false;
+
     private FavouriteQueryHandler mFavouriteQueryHandler;
 
     public DetailFragment() {
@@ -196,6 +211,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
     public void selectMovie() {
@@ -316,7 +332,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     private void setupDetails() {
         if (mMovie != null) {
             // set the title in the toolbar
-            mCollapsingToolbar.setTitle(mMovie.title);
+            //mCollapsingToolbar.setTitle(mMovie.title);
             movieOverviewContentTv.setText(mMovie.overview);
             movieRatingsTv.setText(Double.toString(mMovie.averageVote) + "/10");
 
@@ -341,17 +357,20 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             movieRevenueTv.setText(Long.toString(mMovie.revenue));
             movieTimeTv.setText(Integer.toString(mMovie.runtime));
             movieTaglineTv.setText(mMovie.tagline);
-
+            toolbarHeaderView.bindTo(mMovie.title, mMovie.tagline);
         }
     }
 
     private void addBackHomeArrow(View rootView) {
+/*        final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(toolbar);*/
+        toolbarHeaderView.bindTo(mMovie.title, "");
+        floatHeaderView.bindTo(mMovie.title, "");
+        mAppBarLayout.addOnOffsetChangedListener(this);
         if (!isTablet) {
             //for creating home button
-            final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            activity.setSupportActionBar(toolbar);
-            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            //activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -686,5 +705,22 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
     public void onBackPressed() {
         Debug.c();
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
+
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(offset) / (float) maxScroll;
+
+        if (percentage == 1f && isHideToolbarView) {
+            toolbarHeaderView.setVisibility(View.VISIBLE);
+            isHideToolbarView = !isHideToolbarView;
+            floatHeaderView.setVisibility(View.INVISIBLE);
+        } else if (percentage < 1f && !isHideToolbarView) {
+            toolbarHeaderView.setVisibility(View.INVISIBLE);
+            isHideToolbarView = !isHideToolbarView;
+            floatHeaderView.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -11,11 +11,12 @@
         android:id="@+id/app_bar_layout"
         layout="@layout/detail_toolbar"/>
 
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/detail_content_fragment_nested_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:transitionGroup="true"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -38,6 +39,14 @@
 
 
     </android.support.v4.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/float_header_view"
+        layout="@layout/title_tagline_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.amrendra.popularmovies.app.views.ViewBehavior"
+        />
 
 </android.support.design.widget.CoordinatorLayout>
 

@@ -32,10 +32,14 @@ public class MoviesConstants {
     public static final String GET_TRAILERS_URL = "/3/movie/{id}/videos";
     public static final String GET_GENRES_URL = "/3/genre/movie/list";
     public static final String GET_MOVIE_DETAIL_URL = "/3/movie/{id}";
+    public static final String GET_SEARCH_MOVIE_URL = "/3/search/movie";
+
+
 
     // api parameters
     public static final String API_KEY = "api_key";
     public static final String SORT_BY = "sort_by";
+    public static final String QUERY = "query";
     public static final String PAGE = "page";
     public static final String ID = "id";
 

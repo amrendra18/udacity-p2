@@ -40,4 +40,10 @@ public interface MoviesEndPointInterface {
             .API_KEY) String apiKey);
 
 
+    @GET(MoviesConstants.GET_SEARCH_MOVIE_URL)
+    Call<MovieList> getSearchedMovieList(@Query(MoviesConstants.API_KEY) String apiKey,
+                                         @Query(MoviesConstants.QUERY) String query, @Query(MoviesConstants
+            .PAGE) int
+                                                 page);
+
 }

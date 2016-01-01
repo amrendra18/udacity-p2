@@ -1,9 +1,7 @@
 package com.amrendra.popularmovies.app.activities;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -103,21 +101,21 @@ public class MainActivity extends AppCompatActivity {
             DetailFragment detailFragment = DetailFragment.getInstance(bundle, true);
             fragmentTransaction.replace(R.id.detail_activity_container, detailFragment, DetailFragment.TAG).commit();
         } else {
-            ActivityOptions options = null;
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra(AppConstants.MOVIE_SHARE, movie);
+            intent.putExtra(AppConstants.MOVIE_BITMAP_SHARE, bitmap);
+            intent.putExtra(AppConstants.MOVIE_IDX_SHARE, positionInAdapter);
+/*            ActivityOptions options = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Debug.e("Animation", false);
                 options = ActivityOptions.
                         makeSceneTransitionAnimation(this, view, AppConstants.SHARED_IMAGE_VIEW);
             }
-            Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra(AppConstants.MOVIE_SHARE, movie);
-            intent.putExtra(AppConstants.MOVIE_BITMAP_SHARE, bitmap);
-            intent.putExtra(AppConstants.MOVIE_IDX_SHARE, positionInAdapter);
             if (options != null) {
                 startActivity(intent, options.toBundle());
-            } else {
-                startActivity(intent);
-            }
+            } else {*/
+            startActivity(intent);
+            /*}*/
         }
     }
 }

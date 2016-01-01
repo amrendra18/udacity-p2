@@ -19,7 +19,7 @@
         <ImageView
             android:id="@+id/movie_poster_image"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="300dp"
             android:adjustViewBounds="true"
             android:fitsSystemWindows="true"
             android:scaleType="fitXY"
@@ -36,7 +36,6 @@
                 layout="@layout/title_tagline_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/header_view_end_margin_right"
                 android:visibility="gone"
                 />
 

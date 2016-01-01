@@ -205,7 +205,7 @@ public class MainFragment extends Fragment implements AdapterView
         movieGridRecyleView.setAdapter(mMovieGridAdapter);
 
         // Will add later :P
-        // movieGridRecyleView.addOnScrollListener(endlessScrollListener);
+        movieGridRecyleView.addOnScrollListener(endlessScrollListener);
 
         Spinner spinner = (Spinner) getActivity().findViewById(R.id.toolbar_spinner);
         final CustomSpinnerAdapter spinnerAdapter = new CustomSpinnerAdapter(getActivity());

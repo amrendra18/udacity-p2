@@ -4,11 +4,11 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amrendra.popularmovies.R;
-import com.amrendra.popularmovies.logger.Debug;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -60,14 +60,21 @@ public class TitleTaglineView extends LinearLayout {
 
     private void hideOrSetText(TextView tv, String text) {
         if (text == null || text.equals("")) {
-            tv.setVisibility(INVISIBLE);
+            tv.setVisibility(View.GONE);
         } else {
             tv.setText(text);
             if (tv.getVisibility() != VISIBLE) {
                 tv.setVisibility(VISIBLE);
             }
         }
-        Debug.e("TAG : " + text, false);
+    }
+
+    public TextView getTitle() {
+        return title;
+    }
+
+    public TextView getSubTitle() {
+        return subTitle;
     }
 }
 

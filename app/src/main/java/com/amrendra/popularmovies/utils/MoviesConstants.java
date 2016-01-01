@@ -25,6 +25,7 @@ public class MoviesConstants {
 
     public final static String IMAGE_SIZE_SMALL = "w185/";
     public final static String IMAGE_SIZE_LARGE = "w500/";
+    public final static String IMAGE_SIZE_EXTRA_LARGE = "w780/";
 
     // end points urls
     public static final String GET_MOVIES_URL = "/3/discover/movie";

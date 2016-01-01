@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -20,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
+import android.support.v7.graphics.Palette.Swatch;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -55,7 +57,11 @@ import com.amrendra.popularmovies.model.Trailer;
 import com.amrendra.popularmovies.model.TrailerList;
 import com.amrendra.popularmovies.utils.AppConstants;
 import com.amrendra.popularmovies.utils.Error;
+import com.amrendra.popularmovies.utils.GraphicsUtils;
 import com.amrendra.popularmovies.utils.MoviesConstants;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.List;
 
@@ -75,6 +81,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
     private int idx = -1;
     boolean isAlreadyFavouriteMovie = false;
+
+    private int mStatusBarColor = Color.BLUE;
 
     @Bind(R.id.full_content_detail_fragment)
     LinearLayout fullContainer;
@@ -298,6 +306,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         Debug.c();
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
+        mStatusBarColor = ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark);
         Bundle passedBundle = getArguments();
         if (passedBundle == null) {
             selectMovie();
@@ -321,10 +330,88 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         mMovie = (Movie) bundle.get(AppConstants.MOVIE_SHARE);
 
         if (mMovie != null) {
-            // set the poster for now
-            // later get high resolution pic and replace silently ;-)
             posterImageView.setImageBitmap((Bitmap) bundle.get(AppConstants
                     .MOVIE_BITMAP_SHARE));
+
+            String posterUrl = MoviesConstants.API_IMAGE_BASE_URL + MoviesConstants
+                    .IMAGE_SIZE_LARGE + mMovie.posterPath;
+
+            Glide.with(getActivity())
+                    .load(posterUrl).asBitmap()
+                    .placeholder(posterImageView.getDrawable())
+                    .listener(new RequestListener<String, Bitmap>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(Palette palette) {
+                                    Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
+                                    Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
+                                    Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
+                                    Swatch lightMutedSwatch = palette.getLightMutedSwatch();
+                                    Swatch vibrantSwatch = palette.getVibrantSwatch();
+
+                                    Swatch backgroundAndContentColors = darkVibrantSwatch;
+
+                                    if (backgroundAndContentColors == null) {
+                                        backgroundAndContentColors = darkMutedSwatch;
+                                    }
+
+                                    Swatch titleAndFabColors = lightVibrantSwatch;
+
+                                    if (titleAndFabColors == null) {
+                                        titleAndFabColors = lightMutedSwatch;
+                                    }
+                                    setupTitleSubtitle(backgroundAndContentColors);
+                                    setupSubtitle(vibrantSwatch);
+                                    setupToolbarStatusBar(titleAndFabColors);
+                                }
+                            });
+                            return false;
+                        }
+                    })
+                    .into(posterImageView);
+        }
+
+    }
+
+    private void setupToolbarStatusBar(Swatch swatch) {
+        if (swatch != null) {
+            int color = swatch.getRgb();
+            mToolbar.setBackgroundColor(color);
+
+        }
+    }
+
+    private void setupSubtitle(Swatch swatch) {
+        if (swatch != null) {
+            int color = swatch.getRgb();
+
+        }
+    }
+
+    private void setupTitleSubtitle(Swatch swatch) {
+        if (swatch != null) {
+            int color = swatch.getRgb();
+            toolbarHeaderView.getTitle().setTextColor(color);
+            toolbarHeaderView.getSubTitle().setTextColor(color);
+            floatHeaderView.getTitle().setTextColor(color);
+            detailContainer.setBackgroundColor(color);
+            mStatusBarColor = color;
+            if (mCollapsingToolbar != null) {
+                //mCollapsingToolbar.setContentScrimColor(swatch.getRgb());
+                mCollapsingToolbar.setStatusBarScrimColor(color);
+            }
+            if (!isTablet && Build.VERSION.SDK_INT >= Build.VERSION_CODES
+                    .LOLLIPOP) {
+
+                getActivity().getWindow().setNavigationBarColor(color);
+            }
         }
 
     }
@@ -339,14 +426,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             movieOriginalTitleTv.setText(mMovie.originalTitle);
             movieReleaseDateTv.setText(mMovie.releaseDate);
             movieOriginalLanguageTv.setText(mMovie.originalLanguage);
-
-
-            movieImdbTv.setText(mMovie.imdbid);
-            movieHomepageTv.setText(mMovie.homepage);
-            movieRevenueTv.setText(Long.toString(mMovie.revenue));
-            movieTimeTv.setText(Integer.toString(mMovie.runtime));
-            movieTaglineTv.setText(mMovie.tagline);
             movieGenreTv.setText(MoviesConstants.getGenresList(mMovie.genreIds));
+            setUpFineDetails();
         }
     }
 
@@ -365,7 +446,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 /*        final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);*/
-        toolbarHeaderView.bindTo(mMovie.title, "");
+        toolbarHeaderView.bindTo(mMovie.title, mMovie.tagline);
         floatHeaderView.bindTo(mMovie.title, "");
         mAppBarLayout.addOnOffsetChangedListener(this);
         if (!isTablet) {
@@ -394,7 +475,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         Debug.c();
 
         initLoaders();
-        changeToDynamicColor();
+        //changeToDynamicColor();
 
     }
 
@@ -409,8 +490,10 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
                     int whiteColor = ContextCompat.getColor(getActivity(), R.color.background);
                     int navLightColor = palette.getVibrantColor(currentColor);
                     int navDarkColor = palette.getDarkVibrantColor(currentColor);
-                    mCollapsingToolbar.setContentScrimColor(navLightColor);
-                    mCollapsingToolbar.setStatusBarScrimColor(navDarkColor);
+                    if (mCollapsingToolbar != null) {
+                        mCollapsingToolbar.setContentScrimColor(navLightColor);
+                        mCollapsingToolbar.setStatusBarScrimColor(navDarkColor);
+                    }
                     int backgroundColor = palette.getLightVibrantColor(whiteColor);
                     detailContainer.setBackgroundColor(backgroundColor);
 
@@ -707,6 +790,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         Debug.c();
     }
 
+    boolean tinted = true;
+
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
 
@@ -714,13 +799,23 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         float percentage = (float) Math.abs(offset) / (float) maxScroll;
 
         if (percentage == 1f && isHideToolbarView) {
+            mToolbar.setVisibility(View.VISIBLE);
             toolbarHeaderView.setVisibility(View.VISIBLE);
             isHideToolbarView = !isHideToolbarView;
             floatHeaderView.setVisibility(View.INVISIBLE);
+            if (tinted) {
+                tinted = false;
+                GraphicsUtils.statusBarRemoveTint(getActivity());
+            }
         } else if (percentage < 1f && !isHideToolbarView) {
+            mToolbar.setVisibility(View.GONE);
             toolbarHeaderView.setVisibility(View.INVISIBLE);
             isHideToolbarView = !isHideToolbarView;
             floatHeaderView.setVisibility(View.VISIBLE);
+            if (!tinted) {
+                GraphicsUtils.statusBarTinted(getActivity());
+                tinted = true;
+            }
         }
     }
 }

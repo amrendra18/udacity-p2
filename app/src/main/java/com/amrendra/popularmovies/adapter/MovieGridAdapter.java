@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.amrendra.popularmovies.R;
-import com.amrendra.popularmovies.app.activities.MainActivity;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
 import com.amrendra.popularmovies.utils.MoviesConstants;
@@ -161,19 +159,12 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
                     int pos = getAdapterPosition();
                     Debug.e("OnClick : " + pos, false);
                     Movie movie = movieList.get(pos);
+                    Bitmap posterBitmap = null;
                     if (movie.isLoaded()) {
-                        Bitmap posterBitmap = ((BitmapDrawable) gridMoviePosterImage.getDrawable()).getBitmap();
-                        onMovieViewClickListener.onClickMovieThumbnail(movieList.get(pos),
-                                posterBitmap, v, pos);
-                    } else {
-                        Snackbar snackbar = Snackbar
-                                .make(((MainActivity) mContext).findViewById(R.id
-                                                .main_activity_coordinator_layout),
-                                        mContext.getResources().getString(R.string
-                                                .movie_loading, movie.title),
-                                        Snackbar.LENGTH_SHORT);
-                        snackbar.show();
+                        posterBitmap = ((BitmapDrawable) gridMoviePosterImage.getDrawable()).getBitmap();
                     }
+                    onMovieViewClickListener.onClickMovieThumbnail(movieList.get(pos),
+                            posterBitmap, v, pos);
 
                 }
             });

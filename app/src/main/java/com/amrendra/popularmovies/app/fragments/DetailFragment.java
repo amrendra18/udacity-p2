@@ -352,8 +352,10 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         if (mMovie != null) {
             Bitmap bitmap = (Bitmap) bundle.get(AppConstants
                     .MOVIE_BITMAP_SHARE);
-            posterImageView.setImageBitmap(bitmap);
-            setupDynamicColor(bitmap);
+            if (bitmap != null) {
+                posterImageView.setImageBitmap(bitmap);
+                setupDynamicColor(bitmap);
+            }
 
             String posterUrl = MoviesConstants.API_IMAGE_BASE_URL + MoviesConstants
                     .IMAGE_SIZE_LARGE + mMovie.posterPath;
@@ -533,35 +535,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             BusProvider.getInstance().post(new DetailBackgroundColorChangeEvent(backgroundColor));
         }
     }
-
-/*    private void changeToDynamicColor() {
-        if (mMovie != null) {
-            Bitmap posterBitmap = ((BitmapDrawable) posterImageView.getDrawable()).getBitmap();
-            Palette.from(posterBitmap).generate(new Palette.PaletteAsyncListener() {
-                @Override
-                public void onGenerated(Palette palette) {
-                    Debug.e("Changing colors", false);
-                    int currentColor = ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark);
-                    int whiteColor = ContextCompat.getColor(getActivity(), R.color.background);
-                    int navLightColor = palette.getVibrantColor(currentColor);
-                    int navDarkColor = palette.getDarkVibrantColor(currentColor);
-                    if (mCollapsingToolbar != null) {
-                        mCollapsingToolbar.setContentScrimColor(navLightColor);
-                        mCollapsingToolbar.setStatusBarScrimColor(navDarkColor);
-                    }
-                    int backgroundColor = palette.getLightVibrantColor(whiteColor);
-                    detailContainer.setBackgroundColor(backgroundColor);
-
-                    if (!isTablet && Build.VERSION.SDK_INT >= Build.VERSION_CODES
-                            .LOLLIPOP) {
-                        getActivity().getWindow().setNavigationBarColor(navLightColor);
-                    }
-                    Debug.e("Is tablet : " + isTablet, false);
-                    changeBackgroundColorEvent(backgroundColor);
-                }
-            });
-        }
-    }*/
 
     private void initLoaders() {
         if (mMovie != null) {

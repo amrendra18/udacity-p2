@@ -52,14 +52,11 @@ import butterknife.ButterKnife;
  */
 public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieViewClickListener, SearchView.OnQueryTextListener {
 
-    public static final String TAG_MAIN_FRAGMENT = "main_fragment";
-
     private static final int MOVIE_LOADER = 0;
     private static final int FAVOURITE_LOADER = MOVIE_LOADER + 1;
     private static final int SEARCH_LOADER = FAVOURITE_LOADER + 1;
 
     private int mSelectedPosition = -1;
-    private int lastClickedMovieIndex = -1;
     private int mCurrentPage = 1;
     private int pageToBeLoaded = -1;
     private MovieGridAdapter mMovieGridAdapter;
@@ -88,7 +85,6 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     @Override
     public void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view, int position) {
         Debug.c();
-        lastClickedMovieIndex = position;
         // Notify to activity that a thumbnail has been clicked
         BusProvider.getInstance().post(new MovieThumbnailClickEvent(movie, bitmap, view, position));
     }
@@ -119,12 +115,6 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try {
-            //movieClickCallback = (MovieClickCallback) context;
-        } catch (ClassCastException ex) {
-            throw new IllegalStateException("Any Activity having Main Fragment must implement " +
-                    "MainFragment.MovieClickCallback");
-        }
         Debug.c();
     }
 
@@ -586,10 +576,10 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
                     mMovieGridAdapter.resetMovieList(list);
                 }
                 errorMessage = getResources().getString(R.string.load_search_results,
-                        searchString, data.page);
+                        searchString);
             } else {
                 errorMessage = getResources().getString(R.string.error_load_search_results,
-                        searchString, data.page);
+                        searchString);
 
             }
             Snackbar snackbar = Snackbar

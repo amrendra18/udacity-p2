@@ -13,7 +13,7 @@
     <string name="action_sort_popularity" translatable="false">Popular</string>
     <string name="action_sort_year" translatable="false">Highest Rated</string>
     <string name="action_sort_favourite" translatable="false">Favourites</string>
-    <string name="action_search" translatable="false">Search</string>
+    <string name="action_search" translatable="false">User Search</string>
     <string name="search_title" translatable="false">Search here</string>
     <!-- sort by -->
     <string name="sort_popularity_label" translatable="false">Popular</string>
@@ -37,9 +37,9 @@
     <string name="no_detail_reviews" translatable="false">No reviews!!</string>
     <string name="no_detail_trailers" translatable="false">No Trailers!!</string>
 
-    <string name="load_search_results" translatable="false">Search results for Movie <xliff:g example="Iron Man" id="load_search_results_name">%1$s</xliff:g>. Page-No : <xliff:g example="2" id="load_search_results_page">%2$s</xliff:g></string>
+    <string name="load_search_results" translatable="false">Search results for <xliff:g example="Iron Man" id="load_search_results_name">%1$s</xliff:g>. Page-No : <xliff:g example="2" id="load_search_results_page">%2$s</xliff:g></string>
 
-    <string name="error_load_search_results" translatable="false">Error in loading search results for Movie <xliff:g example="Iron Man" id="load_search_results_name">%1$s</xliff:g>. Page-No : <xliff:g example="2" id="load_search_results_page">%2$s</xliff:g></string>
+    <string name="error_load_search_results" translatable="false">Error in loading search results for <xliff:g example="Iron Man" id="load_search_results_name">%1$s</xliff:g>.</string>
 
 
     <string name="error_movie_list" translatable="false"><xliff:g example="Network Error" id="movie_error">%1$s</xliff:g> in fetching movies.</string>

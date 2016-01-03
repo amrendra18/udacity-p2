@@ -114,17 +114,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(AppConstants.MOVIE_SHARE, movie);
             intent.putExtra(AppConstants.MOVIE_BITMAP_SHARE, bitmap);
             intent.putExtra(AppConstants.MOVIE_IDX_SHARE, positionInAdapter);
-/*            ActivityOptions options = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Debug.e("Animation", false);
-                options = ActivityOptions.
-                        makeSceneTransitionAnimation(this, view, AppConstants.SHARED_IMAGE_VIEW);
-            }
-            if (options != null) {
-                startActivity(intent, options.toBundle());
-            } else {*/
             startActivity(intent);
-            /*}*/
         }
     }
 }

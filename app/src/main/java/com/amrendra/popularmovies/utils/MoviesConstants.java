@@ -23,7 +23,7 @@ public class MoviesConstants {
     public static final String API_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
 
 
-    public final static String IMAGE_SIZE_SMALL = "w185/";
+    public final static String IMAGE_SIZE_SMALL = "w300/";
     public final static String IMAGE_SIZE_LARGE = "w500/";
     public final static String IMAGE_SIZE_EXTRA_LARGE = "w780/";
 

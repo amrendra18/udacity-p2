@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 public class Debug {
-    private static final Boolean DEBUG = true;
+    private static final Boolean DEBUG = false;
     private static final String TAG = "PopularMovies";
 
     private static String getMsg(String msg) {

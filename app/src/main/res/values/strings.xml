@@ -31,6 +31,7 @@
     <string name="detail_trailer" translatable="false">Trailers</string>
     <string name="detail_reviews" translatable="false">Reviews</string>
 
+    <string name="movie_loading" translatable="false">Please wait while movie <xliff:g example="Iron Man" id="load_search_results_name">%1$s</xliff:g> is loaded.</string>
 
     <string name="review_by" translatable="false">By:</string>
     <string name="no_detail_reviews" translatable="false">No reviews!!</string>

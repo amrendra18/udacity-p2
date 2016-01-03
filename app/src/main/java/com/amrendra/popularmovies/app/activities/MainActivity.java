@@ -2,12 +2,14 @@ package com.amrendra.popularmovies.app.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.app.fragments.DetailFragment;
@@ -17,6 +19,7 @@ import com.amrendra.popularmovies.events.MovieThumbnailClickEvent;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
 import com.amrendra.popularmovies.utils.AppConstants;
+import com.amrendra.popularmovies.utils.MoviesConstants;
 import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
@@ -36,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        TextView titleTextView = (TextView) toolbar.getChildAt(0);
+        titleTextView.setTypeface(Typeface.createFromAsset(getAssets(), MoviesConstants.MOVIE_TITLE_FONT));
 
         BusProvider.getInstance().register(this);
 

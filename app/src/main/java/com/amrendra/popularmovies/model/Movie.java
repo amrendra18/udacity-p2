@@ -64,6 +64,17 @@ public class Movie implements Parcelable {
     @SerializedName("genre_ids")
     public ArrayList<Integer> genreIds;
 
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
+    }
+
+    boolean loaded = false;
+
     public Movie() {
 
     }
@@ -227,5 +238,6 @@ public class Movie implements Parcelable {
         }
         return list;
     }
+
 
 }

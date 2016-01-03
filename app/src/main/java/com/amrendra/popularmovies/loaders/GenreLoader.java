@@ -16,6 +16,11 @@ import retrofit.Response;
 /**
  * Created by Amrendra Kumar on 10/12/15.
  */
+
+/*
+    Todo: Remove the hardcoded genre values, and fetch them from server, on app start.
+ */
+@SuppressWarnings("unused")
 public class GenreLoader extends CustomLoader<GenreList> {
 
     public GenreLoader(Context context) {

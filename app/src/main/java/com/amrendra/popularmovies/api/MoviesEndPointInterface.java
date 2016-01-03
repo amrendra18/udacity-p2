@@ -18,32 +18,40 @@ import retrofit.http.Query;
 public interface MoviesEndPointInterface {
 
     @GET(MoviesConstants.GET_MOVIES_URL)
-    Call<MovieList> getMovieList(@Query(MoviesConstants.API_KEY) String apiKey,
-                                 @Query(MoviesConstants.SORT_BY) String sortBy, @Query(MoviesConstants.PAGE) int
-                                         page, @Query(MoviesConstants.VOTE_COUNT_GTE) int vote_count);
+    Call<MovieList> getMovieList(
+            @Query(MoviesConstants.API_KEY) String apiKey,
+            @Query(MoviesConstants.SORT_BY) String sortBy,
+            @Query(MoviesConstants.PAGE) int page,
+            @Query(MoviesConstants.VOTE_COUNT_GTE) int vote_count
+    );
 
     @GET(MoviesConstants.GET_REVIEWS_URL)
-    Call<ReviewList> getReviewsList(@Path(MoviesConstants.ID) long movie, @Query(MoviesConstants.API_KEY) String
-            apiKey);
+    Call<ReviewList> getReviewsList(
+            @Path(MoviesConstants.ID) long movie,
+            @Query(MoviesConstants.API_KEY) String apiKey
+    );
 
     @GET(MoviesConstants.GET_TRAILERS_URL)
-    Call<TrailerList> getTrailersList(@Path(MoviesConstants.ID) long movie, @Query(MoviesConstants
-            .API_KEY)
-    String apiKey);
+    Call<TrailerList> getTrailersList(
+            @Path(MoviesConstants.ID) long movie,
+            @Query(MoviesConstants.API_KEY) String apiKey
+    );
 
     @GET(MoviesConstants.GET_GENRES_URL)
-    Call<GenreList> getGenresList(@Query(MoviesConstants
-            .API_KEY) String apiKey);
+    Call<GenreList> getGenresList(
+            @Query(MoviesConstants.API_KEY) String apiKey
+    );
 
     @GET(MoviesConstants.GET_MOVIE_DETAIL_URL)
-    Call<Movie> getMovieDetails(@Path(MoviesConstants.ID) long movie, @Query(MoviesConstants
-            .API_KEY) String apiKey);
-
+    Call<Movie> getMovieDetails(
+            @Path(MoviesConstants.ID) long movie,
+            @Query(MoviesConstants.API_KEY) String apiKey
+    );
 
     @GET(MoviesConstants.GET_SEARCH_MOVIE_URL)
-    Call<MovieList> getSearchedMovieList(@Query(MoviesConstants.API_KEY) String apiKey,
-                                         @Query(MoviesConstants.QUERY) String query, @Query(MoviesConstants
-            .PAGE) int
-                                                 page);
-
+    Call<MovieList> getSearchedMovieList(
+            @Query(MoviesConstants.API_KEY) String apiKey,
+            @Query(MoviesConstants.QUERY) String query,
+            @Query(MoviesConstants.PAGE) int page
+    );
 }

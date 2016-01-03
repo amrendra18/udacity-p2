@@ -17,6 +17,13 @@ import com.amrendra.popularmovies.logger.Debug;
 
 public class MovieProvider extends ContentProvider {
 
+    /*
+    Todo:
+    1. Store Reviews, Trailers, & Genre information in DB for better user experience
+    Currently only basic details are stored for favourite movies.
+    Reviews & Trailers are loaded at runtime, fetched from server
+     */
+
     private static final int MOVIES = 100;
     private static final int MOVIE_WITH_ID = 101;
 
@@ -162,10 +169,6 @@ public class MovieProvider extends ContentProvider {
         }
     }
 
-    private Cursor getReviewsForMovie(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
-    }
-
 
     private Cursor getTrailersForMovie(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         return null;
@@ -173,6 +176,8 @@ public class MovieProvider extends ContentProvider {
 
 
     private Cursor getGenreDetail(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        //since genre are limited & not changing, hard coded them
+        // Todo : fetch Genre from server, and save it in DB
         return null;
     }
 
@@ -252,8 +257,7 @@ public class MovieProvider extends ContentProvider {
                 Debug.e("ERROR : " + uri, false);
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-
-        getContext().getContentResolver().notifyChange(uri, null);
+        notify(uri);
         return returnUri;
     }
 
@@ -285,7 +289,7 @@ public class MovieProvider extends ContentProvider {
         }
         // Because a null deletes all rows
         if (deleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            notify(uri);
         }
         return deleted;
     }
@@ -307,7 +311,7 @@ public class MovieProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            notify(uri);
         }
         return rowsUpdated;
     }
@@ -349,7 +353,15 @@ public class MovieProvider extends ContentProvider {
         } finally {
             db.endTransaction();
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        notify(uri);
         return inserted;
+    }
+
+    private void notify(Uri uri) {
+        try {
+            getContext().getContentResolver().notifyChange(uri, null);
+        } catch (NullPointerException e) {
+            Debug.e(e.getMessage(), false);
+        }
     }
 }

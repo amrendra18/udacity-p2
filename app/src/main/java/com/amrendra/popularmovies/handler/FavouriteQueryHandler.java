@@ -34,8 +34,6 @@ public class FavouriteQueryHandler extends AsyncQueryHandler {
     protected void onInsertComplete(int token, Object cookie, Uri uri) {
         if (mListener != null && mListener.get() != null) {
             mListener.get().onInsertComplete(uri);
-        } else {
-
         }
     }
 
@@ -43,8 +41,6 @@ public class FavouriteQueryHandler extends AsyncQueryHandler {
     protected void onUpdateComplete(int token, Object cookie, int result) {
         if (mListener != null && mListener.get() != null) {
             mListener.get().onUpdateComplete(result);
-        } else {
-
         }
     }
 
@@ -52,8 +48,6 @@ public class FavouriteQueryHandler extends AsyncQueryHandler {
     protected void onDeleteComplete(int token, Object cookie, int result) {
         if (mListener != null && mListener.get() != null) {
             mListener.get().onDeleteComplete(result);
-        } else {
-
         }
     }
 

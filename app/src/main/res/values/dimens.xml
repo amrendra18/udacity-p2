@@ -77,6 +77,8 @@
     <dimen name="review_content_text_size">16sp</dimen>
 
     <dimen name="fav_border_width">0dp</dimen>
+    <dimen name="fav_fav_right_margin">16dp</dimen>
     <dimen name="share_fav_right_margin">64dp</dimen>
+
     <dimen name="border_stick_left_width">6dp</dimen>
 </resources>

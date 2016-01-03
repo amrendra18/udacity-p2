@@ -1,6 +1,5 @@
 package com.amrendra.popularmovies.app.fragments;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,7 +7,6 @@ import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -77,11 +75,9 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     SearchView searchView;
     MenuItem searchMenuItem;
 
-    int navColor;
-
     String currentSortingBy;
-    //private MovieClickCallback movieClickCallback;
     GridLayoutManager mGridLayoutManager;
+    String searchString = null;
 
     private EndlessScrollListener endlessScrollListener;
 
@@ -111,12 +107,6 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
 
 
     public MainFragment() {
-        Debug.c();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
         Debug.c();
     }
 
@@ -244,19 +234,10 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Debug.c();
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Debug.c();
-
         int gridColumns = getResources().getInteger(R.integer.grid_columns);
-        navColor = ContextCompat.getColor(getActivity(), (R.color.colorPrimaryTransparentNav));
-
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark);
         mSwipeRefreshLayout.setProgressViewOffset(true, 200, 500);
         mSwipeRefreshLayout.setEnabled(false);
@@ -276,8 +257,7 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
             restoredMovies = savedInstanceState.getParcelableArrayList(AppConstants
                     .MOVIE_LIST_PARCEL);
             mCurrentPage = savedInstanceState.getInt(AppConstants.CURRENT_PAGE);
-            Debug.e("restoring state : " + mSelectedPosition + " size : " + restoredMovies.size()
-                    + " page : " + mCurrentPage, false);
+            Debug.e("restoring state : " + mSelectedPosition + " page : " + mCurrentPage, false);
             restored = true;
         } else {
             restoredMovies = new ArrayList<>();
@@ -285,7 +265,7 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
             mCurrentPage = 1;
         }
 
-        mMovieGridAdapter = new MovieGridAdapter(restoredMovies, navColor, getActivity(),
+        mMovieGridAdapter = new MovieGridAdapter(restoredMovies, getActivity(),
                 this);
         movieGridRecyleView.setAdapter(mMovieGridAdapter);
 
@@ -341,13 +321,6 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
         }
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Debug.c();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -372,19 +345,6 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
             PreferenceManager.getInstance(getActivity()).writeValue(AppConstants.MOVIE_SEARCH_STRING,
                     searchString);
         }
-        Debug.c();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Debug.c();
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
         Debug.c();
     }
 
@@ -524,8 +484,6 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
         }
     }
 
-    String searchString = null;
-
     @Override
     public boolean onQueryTextSubmit(String query) {
         Debug.e("Query : " + query, false);
@@ -613,7 +571,6 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
                         BusProvider.getInstance().post(new MovieThumbnailClickEvent(movie, null));
                     }
                 });
-
             }
         }
     }

@@ -17,8 +17,6 @@ import retrofit.Response;
  * Created by Amrendra Kumar on 28/11/15.
  */
 public class TrailersLoader extends CustomLoader<TrailerList> {
-
-    // Note: Be careful not to leak resources here
     long movieId;
 
     public TrailersLoader(Context context, long movieId) {

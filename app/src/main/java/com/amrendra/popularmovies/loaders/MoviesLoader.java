@@ -18,8 +18,6 @@ import retrofit.Response;
  * Created by Amrendra Kumar on 28/11/15.
  */
 public class MoviesLoader extends CustomLoader<MovieList> {
-
-    // Note: Be careful not to leak resources here
     String sortBy;
     int page;
     int vote_count = MoviesConstants.VOTE_COUNT_DEFAULT;

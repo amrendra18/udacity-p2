@@ -80,17 +80,16 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     private static final int TRAILER_LOADER = REVIEWS_LOADER + 1;
 
     boolean isAlreadyFavouriteMovie = false;
-
     private int mStatusBarColor = Color.BLUE;
     private int reviewContentColor = Color.WHITE;
     private int reviewAuthorColor = Color.YELLOW;
 
     TrailerViewAdapter trailerAdapter;
-
+    boolean tinted = true;
     boolean toolbarShown = false;
 
     /*
-    Warning:
+    Todo: Resolve the error
     There is some issue with ButterKnife binding, throwing random NPE for tablets
     Reporting the issue to Butterknife github page
 
@@ -180,11 +179,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     public void onAttach(Context context) {
         mFavouriteQueryHandler = new FavouriteQueryHandler(context.getContentResolver(), this);
         super.onAttach(context);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     public void selectMovie() {
@@ -487,10 +481,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         trailerRecyclerView.setNestedScrollingEnabled(false);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
 
     @Override
     public void onResume() {
@@ -545,30 +535,10 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         }
     }
 
-
-    @Override
-    public void onPause() {
-        Debug.c();
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-    }
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
     }
 
     private LoaderManager.LoaderCallbacks<Movie> movieDetailsLoaderCallbacks
@@ -805,8 +775,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         Debug.e("favourite movie details updates : " + result, false);
     }
     // END
-
-    boolean tinted = true;
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {

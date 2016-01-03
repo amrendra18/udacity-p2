@@ -31,8 +31,6 @@ import butterknife.ButterKnife;
 public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.ViewHolder> {
 
     private List<Movie> movieList = new ArrayList<>();
-
-    private int defaultColor;
     private Context mContext;
 
     public interface OnMovieViewClickListener {
@@ -42,10 +40,9 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     private OnMovieViewClickListener onMovieViewClickListener;
 
 
-    public MovieGridAdapter(@NonNull List<Movie> movieList, int defaultColor, @NonNull Context context,
+    public MovieGridAdapter(@NonNull List<Movie> movieList, @NonNull Context context,
                             OnMovieViewClickListener listener) {
         this.movieList = movieList;
-        this.defaultColor = defaultColor;
         this.mContext = context;
         this.onMovieViewClickListener = listener;
     }

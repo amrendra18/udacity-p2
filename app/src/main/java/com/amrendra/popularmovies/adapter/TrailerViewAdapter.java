@@ -61,9 +61,6 @@ public class TrailerViewAdapter extends RecyclerView.Adapter<TrailerViewAdapter.
                 .placeholder(R.drawable.place_holder)
                 .into(holder.trailerImage);
 
-        // set the image
-        // set the onclick listener
-
         holder.trailerCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

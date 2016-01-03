@@ -17,8 +17,6 @@ import retrofit.Response;
  * Created by Amrendra Kumar on 28/11/15.
  */
 public class ReviewsLoader extends CustomLoader<ReviewList> {
-
-    // Note: Be careful not to leak resources here
     long movieId;
 
     public ReviewsLoader(Context context, long movieId) {

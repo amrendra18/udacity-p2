@@ -57,25 +57,6 @@ public class MainActivity extends AppCompatActivity {
         Debug.e("TABLET : " + mTwoPane, false);
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Debug.c();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Debug.c();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Debug.c();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

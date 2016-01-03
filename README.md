@@ -7,9 +7,11 @@ In app/build.gradle replace **"COPY YOUR MOVIE DB API KEY HERE"** with your API 
 
 ## Preview
 
+![Preview Video](../master/preview/filmie1.gif)   
+![Preview Video](../master/preview/filmie2.gif)
+![Preview Video](../master/preview/filmie3.gif)
+
 App demo [here](https://www.youtube.com/watch?v=UMyvkUhAgsY)
-
-
 
 ## Third Party Libraries Used
 
@@ -22,12 +24,12 @@ App demo [here](https://www.youtube.com/watch?v=UMyvkUhAgsY)
 
 ## Learning Resources(Acknowledgement)
 
-1. Parcelable Vs Serializable [Link](http://www.developerphil.com/parcelable-vs-serializable/)
-2. Loaders [Link](http://www.slideshare.net/cbeyls/android-loaders-reloaded)
-3. Content Providers [Link](http://www.grokkingandroid.com/android-tutorial-writing-your-own-content-provider/)
-4. Sync Adapter [Udacity Sunshine](https://www.udacity.com/course/viewer#!/c-ud853-nd)
-5. Custom typeface & textviews [Link](https://futurestud.io/blog/custom-fonts-on-android-extending-textview)
-6. SubtitleCoordinator [Link](https://github.com/harcoPro/SubtitleCoordinatorLayoutExample)
+- [Parcelable Vs Serializable] [Link](http://www.developerphil.com/parcelable-vs-serializable/)
+- [Loaders] [Link](http://www.slideshare.net/cbeyls/android-loaders-reloaded)
+- [Content Providers] [Link](http://www.grokkingandroid.com/android-tutorial-writing-your-own-content-provider/)
+- [Sync Adapter] [Udacity Sunshine](https://www.udacity.com/course/viewer#!/c-ud853-nd)
+- [Custom typeface & textviews] [Link](https://futurestud.io/blog/custom-fonts-on-android-extending-textview)
+- [SubtitleCoordinator] [Link](https://github.com/harcoPro/SubtitleCoordinatorLayoutExample)
 
 ## Fonts Credits
 

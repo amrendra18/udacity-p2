@@ -15,6 +15,7 @@
         android:id="@+id/grid_item_movie_poster_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_column_height"
-        android:scaleType="fitXY" />
+        android:contentDescription="@string/movie_thumbnails"
+        android:scaleType="fitXY"/>
 
 </android.support.v7.widget.CardView>

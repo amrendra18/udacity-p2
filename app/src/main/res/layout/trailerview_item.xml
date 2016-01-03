@@ -16,6 +16,7 @@
         android:id="@+id/trailerview_image"
         android:layout_width="@dimen/trailerview_width"
         android:layout_height="@dimen/trailerview_height"
+        android:contentDescription="@string/trailer_desc"
         android:scaleType="fitXY"/>
 
     <FrameLayout
@@ -27,6 +28,7 @@
             android:layout_width="@dimen/trailerview_width"
             android:layout_height="@dimen/trailerview_height"
             android:layout_gravity="center"
+            android:contentDescription="@string/trailer_desc"
             android:scaleType="centerInside"
             android:src="@drawable/play_button"/>
 

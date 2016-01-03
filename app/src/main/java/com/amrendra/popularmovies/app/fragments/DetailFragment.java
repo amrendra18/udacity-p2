@@ -704,6 +704,11 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     }
 
     private void playTrailer(String key) {
+        Snackbar snackbar = Snackbar.make(mDetailFragmentCoordinatorLayout, getResources()
+                        .getString(R.string.playing_trailer),
+                Snackbar
+                        .LENGTH_LONG);
+        snackbar.show();
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + key));
             intent.putExtra("force_fullscreen", true);

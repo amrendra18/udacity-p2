@@ -60,6 +60,8 @@
     <string name="genre" translatable="false">Genre</string>
     <string name="rating" translatable="false">Rating</string>
 
-
+    <string name="playing_trailer">Please wait while we load trailer</string>
     <string name="poster_desc">Movie Poster</string>
+    <string name="trailer_desc">Trailer image</string>
+    <string name="movie_thumbnails">Movie Thumbnails</string>
 </resources>

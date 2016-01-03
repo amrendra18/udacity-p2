@@ -7,6 +7,9 @@ In app/build.gradle replace **"COPY YOUR MOVIE DB API KEY HERE"** with your API 
 
 ## Preview
 
+App demo [here](https://www.youtube.com/watch?v=UMyvkUhAgsY)
+
+
 
 ## Third Party Libraries Used
 
@@ -26,6 +29,12 @@ In app/build.gradle replace **"COPY YOUR MOVIE DB API KEY HERE"** with your API 
 5. Custom typeface & textviews [Link](https://futurestud.io/blog/custom-fonts-on-android-extending-textview)
 6. SubtitleCoordinator [Link](https://github.com/harcoPro/SubtitleCoordinatorLayoutExample)
 
+## Fonts Credits
+
+- [Lobster](http://www.dafont.com/lobster.font)
+- [Kaushan](http://www.fontsquirrel.com/fonts/kaushan-script)
+- [Tusj](http://www.fontsquirrel.com/fonts/fff-tusj)
+- [bree](http://www.fontsquirrel.com/fonts/bree-serif)
 
 ## Previous Work
 

@@ -8,9 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,12 +31,14 @@ import com.amrendra.popularmovies.events.MovieThumbnailClickEvent;
 import com.amrendra.popularmovies.listener.EndlessScrollListener;
 import com.amrendra.popularmovies.loaders.FavouriteLoader;
 import com.amrendra.popularmovies.loaders.MoviesLoader;
+import com.amrendra.popularmovies.loaders.SearchMovieLoader;
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
 import com.amrendra.popularmovies.model.MovieList;
 import com.amrendra.popularmovies.utils.AppConstants;
 import com.amrendra.popularmovies.utils.Error;
 import com.amrendra.popularmovies.utils.MoviesConstants;
+import com.amrendra.popularmovies.utils.PreferenceManager;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -46,12 +50,13 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieViewClickListener {
+public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieViewClickListener, SearchView.OnQueryTextListener {
 
     public static final String TAG_MAIN_FRAGMENT = "main_fragment";
 
     private static final int MOVIE_LOADER = 0;
     private static final int FAVOURITE_LOADER = MOVIE_LOADER + 1;
+    private static final int SEARCH_LOADER = FAVOURITE_LOADER + 1;
 
     private int mSelectedPosition = -1;
     private int lastClickedMovieIndex = -1;
@@ -68,6 +73,9 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
 
     @Bind(R.id.fragment_main_framelayout)
     FrameLayout mainFragmentFrameLayout;
+
+    SearchView searchView;
+    MenuItem searchMenuItem;
 
     int navColor;
 
@@ -131,14 +139,35 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main_fragment_menu, menu);
+        searchMenuItem = menu.findItem(R.id.action_sort_search);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        Debug.c();
+        searchView.setOnQueryTextListener(this);
+        Debug.e(searchItem.toString(), false);
         currentSortingBy = MoviesConstants.getSortOrder(getActivity());
 
         if (currentSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
             menu.findItem(R.id.action_sort_favourite).setChecked(true);
         } else if (currentSortingBy.equals(MoviesConstants.SORT_BY_POPULARITY)) {
             menu.findItem(R.id.action_sort_popularity).setChecked(true);
-        } else {
+        } else if (currentSortingBy.equals(MoviesConstants.SORT_BY_RATINGS)) {
             menu.findItem(R.id.action_sort_year).setChecked(true);
+        } else {
+            searchMenuItem.setChecked(true);
+            Debug.e(searchString, false);
+        }
+
+        if (currentSortingBy.equals(MoviesConstants.SORT_BY_SEACRH)) {
+            searchString = PreferenceManager.getInstance(getActivity()).readValue(AppConstants.MOVIE_SEARCH_STRING, "");
+            Debug.e("Submitting : " + searchString, false);
+            if (searchString.length() > 0) {
+                searchView.setIconified(false);
+                searchView.setQuery(searchString, true);
+                searchView.clearFocus();
+            } else {
+                searchView.requestFocus();
+            }
         }
     }
 
@@ -156,12 +185,23 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
             case R.id.action_sort_year:
                 nextSorting = MoviesConstants.SORT_BY_RATINGS;
                 break;
+            case R.id.action_sort_search:
+                searchView.setFocusable(true);
+                searchView.setIconified(false);
+                item.setChecked(true);
+                currentSortingBy = MoviesConstants.SORT_BY_SEACRH;
+                MoviesConstants.saveSortOrder(getActivity(), currentSortingBy);
+                return super.onOptionsItemSelected(item);
             default:
         }
         item.setChecked(true);
         Debug.e("current Sorting : " + currentSortingBy, false);
         Debug.e("next Sorting : " + nextSorting, false);
         if (nextSorting != null && !nextSorting.equals(currentSortingBy)) {
+            searchString = "";
+            searchView.setIconified(true);
+            searchView.onActionViewCollapsed();
+            searchView.clearFocus();
             //need to change the loader
             currentSortingBy = nextSorting;
             mMovieGridAdapter.clearMovies();
@@ -272,14 +312,25 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
             bundle = new Bundle();
         }
         String sortBy = MoviesConstants.getSortOrder(getActivity());
-
         bundle.putString(AppConstants.GRID_VIEW_SORTING_TYPE, sortBy);
+        bundle.putString(AppConstants.MOVIE_SEARCH_STRING, searchString);
         if (sortBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
             Debug.e("will start favourite loader", false);
             initFavouriteLoader(bundle);
+        } else if (sortBy.equals(MoviesConstants.SORT_BY_SEACRH)) {
+            Debug.e("will start search movie loader", false);
+            initSearchMovieLoader(bundle);
         } else {
             Debug.e("will start movie loader", false);
             initMovieLoader(bundle);
+        }
+    }
+
+    private void initSearchMovieLoader(Bundle bundle) {
+        if (getLoaderManager().getLoader(SEARCH_LOADER) == null) {
+            getLoaderManager().initLoader(SEARCH_LOADER, bundle, searchMovieLoaderCallbacks);
+        } else {
+            getLoaderManager().restartLoader(SEARCH_LOADER, bundle, searchMovieLoaderCallbacks);
         }
     }
 
@@ -310,11 +361,30 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     public void onResume() {
         super.onResume();
         Debug.c();
+        currentSortingBy = MoviesConstants.getSortOrder(getActivity());
+        if (currentSortingBy.equals(MoviesConstants.SORT_BY_SEACRH)) {
+            if (searchView != null) {
+                searchString = PreferenceManager.getInstance(getActivity()).readValue(AppConstants.MOVIE_SEARCH_STRING, "");
+                Debug.e("Submitting : " + searchString, false);
+                if (searchString.length() > 0) {
+                    searchView.setQuery(searchString, false);
+                }
+                searchView.clearFocus();
+            }
+        } else if (currentSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
+            if (shouldReloadFav) {
+                restartLoader(null);
+            }
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (searchString != null) {
+            PreferenceManager.getInstance(getActivity()).writeValue(AppConstants.MOVIE_SEARCH_STRING,
+                    searchString);
+        }
         Debug.c();
     }
 
@@ -334,6 +404,7 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     @Override
     public void onDestroy() {
         super.onDestroy();
+        BusProvider.getInstance().unregister(this);
         Debug.c();
     }
 
@@ -446,28 +517,93 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
         }
     };
 
+
     @Subscribe
     public void onFavouriteMovieAdd(FavouriteMovieAddEvent event) {
         Debug.c();
-        Movie movie = event.getMovie();
-        String currentSortBy = MoviesConstants.getSortOrder(getActivity());
-        if (currentSortBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
-            Debug.c();
-            mMovieGridAdapter.addMovie(movie);
-        }
-
+        shouldReloadFav = true;
     }
+
+    boolean shouldReloadFav = false;
 
     @Subscribe
     public void onFavouriteMovieDelete(FavouriteMovieDeleteEvent event) {
         Debug.c();
-        int idx = event.getIdx();
-        String currentSortBy = MoviesConstants.getSortOrder(getActivity());
-        if (currentSortBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
-            Debug.e("Deleting movie : " + idx, false);
-            mMovieGridAdapter.deleteMovie(idx);
-        }
+        shouldReloadFav = true;
     }
 
+    String searchString = null;
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Debug.e("Query : " + query, false);
+        searchMenuItem.setChecked(true);
+        searchString = query;
+        //need to change the loader
+        currentSortingBy = MoviesConstants.SORT_BY_SEACRH;
+        MoviesConstants.saveSortOrder(getActivity(), MoviesConstants.SORT_BY_SEACRH);
+        mMovieGridAdapter.clearMovies();
+        initEndlessScroll(1);
+        restartLoader(null);
+        movieGridRecyleView.scrollToPosition(0);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+    private LoaderManager.LoaderCallbacks<MovieList> searchMovieLoaderCallbacks
+            = new LoaderManager.LoaderCallbacks<MovieList>() {
+        @Override
+        public Loader<MovieList> onCreateLoader(int id, Bundle args) {
+            Debug.c();
+            mSwipeRefreshLayout.setRefreshing(true);
+            int page = 1;
+            String search = "iron man";
+            if (args != null) {
+                page = args.getInt(AppConstants.CURRENT_PAGE, page);
+                search = args.getString(AppConstants.MOVIE_SEARCH_STRING);
+            }
+            pageToBeLoaded = page;
+            Debug.e("REQUESTING  : page:" + page + " search: " + search, false);
+            return new SearchMovieLoader(getActivity(), search, page);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<MovieList> loader, MovieList data) {
+            Debug.c();
+            String errorMessage;
+            if (data.getError() == Error.SUCCESS) {
+                List<Movie> list = data.results;
+                mCurrentPage = data.page;
+                Debug.e("LOADED page : " + mCurrentPage, false);
+                Debug.e(data.toString(), false);
+                if (data.page > 1) {
+                    mMovieGridAdapter.addMovies(list);
+                } else {
+                    mMovieGridAdapter.resetMovieList(list);
+                }
+                errorMessage = getResources().getString(R.string.load_search_results,
+                        searchString, data.page);
+            } else {
+                errorMessage = getResources().getString(R.string.error_load_search_results,
+                        searchString, data.page);
+
+            }
+            Snackbar snackbar = Snackbar
+                    .make(getActivity().findViewById(R.id.main_activity_coordinator_layout), errorMessage,
+                            Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            // hide refresh at last
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<MovieList> loader) {
+            Debug.c();
+            mMovieGridAdapter.clearMovies();
+        }
+    };
 }

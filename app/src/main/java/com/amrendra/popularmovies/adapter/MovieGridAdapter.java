@@ -126,6 +126,13 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
 
     }
 
+    public Movie lastMovie() {
+        if (!movieList.isEmpty()) {
+            return movieList.get(movieList.size() - 1);
+        }
+        return null;
+    }
+
     public void clearMovies() {
         if (!movieList.isEmpty()) {
             movieList.clear();

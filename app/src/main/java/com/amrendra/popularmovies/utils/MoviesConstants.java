@@ -47,6 +47,7 @@ public class MoviesConstants {
     public static final String SORT_BY_POPULARITY = "popularity.desc";
     public static final String SORT_BY_RATINGS = "vote_average.desc";
     public static final String SORT_BY_FAVOURITES = "show_favourites";
+    public static final String SORT_BY_SEACRH = "search_movies";
 
     // by default fetching movies whose vote count > 200, so that we have good results
     public static final String VOTE_COUNT_GTE = "vote_count.gte";

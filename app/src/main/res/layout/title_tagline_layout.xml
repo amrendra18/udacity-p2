@@ -5,23 +5,18 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <!-- Title -->
     <com.amrendra.popularmovies.app.views.MovieTitleTextView
         android:id="@+id/header_view_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
-        android:textSize="20dp"
-        />
+        android:textSize="@dimen/movie_title_text_size"/>
 
-    <!-- Subtitle -->
     <com.amrendra.popularmovies.app.views.MovieTaglineTextView
         android:id="@+id/header_view_sub_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
-        android:textSize="14dp"
-        />
-
+        android:textSize="@dimen/movie_subtitle_text_size"/>
 
 </com.amrendra.popularmovies.app.views.TitleTaglineView>

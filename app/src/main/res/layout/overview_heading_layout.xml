@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginBottom="4dp"
-              android:layout_marginTop="4dp"
+              android:layout_marginBottom="@dimen/title_layout_margin_bottom"
+              android:layout_marginTop="@dimen/title_layout_margin_top"
               android:orientation="horizontal">
 
     <View
         android:id="@+id/overview_divider_view_left"
-        android:layout_width="5dp"
+        android:layout_width="@dimen/border_stick_left_width"
         android:layout_height="@dimen/divider_heading_height"
         android:layout_gravity="center"
         android:background="@color/colorBB"/>

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     style="@style/FillContainer"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/trailer_height"
             android:layout_gravity="center"
-            android:paddingTop="8dp"/>
+            android:paddingTop="@dimen/trailerlayout_padding"/>
 
     </LinearLayout>
 

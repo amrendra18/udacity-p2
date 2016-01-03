@@ -58,5 +58,8 @@
     <string name="time" translatable="false">Length</string>
     <string name="tagline" translatable="false">Tagline</string>
     <string name="genre" translatable="false">Genre</string>
+    <string name="rating" translatable="false">Rating</string>
 
+
+    <string name="poster_desc">Movie Poster</string>
 </resources>

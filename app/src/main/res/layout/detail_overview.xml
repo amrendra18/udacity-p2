@@ -3,49 +3,42 @@
 <LinearLayout
     style="@style/FillContainer"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
-
-
-
 
     <LinearLayout
         android:id="@+id/title_container"
         style="@style/FillContainer"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginBottom="@dimen/title_layout_margin_bottom"
+        android:layout_marginTop="@dimen/title_layout_margin_top"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="@dimen/title_layout_padding">
 
         <com.amrendra.popularmovies.app.views.MovieTitleTextView
             android:id="@+id/overview_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Movie Name"
-            android:textColor="@android:color/white"
-            android:textSize="20dp"
-            />
+            android:textSize="@dimen/movie_title_overview_text_size"
+            tools:text="Movie Name"/>
 
         <com.amrendra.popularmovies.app.views.MovieTaglineTextView
             android:id="@+id/overview_year"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="2015"
-            android:textColor="@android:color/white"
-            android:textSize="16dp"
-            />
+            android:textSize="@dimen/movie_year_overview_text_size"
+            tools:text="2015"/>
 
     </LinearLayout>
 
-<!--    <include
-        layout="@layout/overview_heading_layout"/>-->
 
     <LinearLayout
         android:id="@+id/preview_details_container"
         style="@style/FillContainer"
         android:layout_gravity="center"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="@dimen/title_layout_margin_bottom"
+        android:baselineAligned="false"
         android:orientation="horizontal"
-        android:padding="4dp">
+        android:padding="@dimen/title_layout_padding">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -55,22 +48,13 @@
 
             <com.amrendra.popularmovies.app.views.ContentHeadingTextView
                 android:id="@+id/detail_content_heading_rating_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:text="Rating"
-                android:textAllCaps="true"
-                android:textSize="16dp"/>
+                style="@style/TableEntryHead"
+                android:text="@string/rating"/>
 
             <com.amrendra.popularmovies.app.views.ContentHeadingTextView
                 android:id="@+id/detail_overview_card_ratings"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:text="7.8"
-                android:textSize="14dp"/>
+                style="@style/TableEntryRow"
+                tools:text="7.8"/>
 
         </LinearLayout>
 
@@ -82,22 +66,13 @@
 
             <com.amrendra.popularmovies.app.views.ContentHeadingTextView
                 android:id="@+id/detail_content_heading_runtime_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:text="Length"
-                android:textAllCaps="true"
-                android:textSize="16dp"/>
+                style="@style/TableEntryHead"
+                android:text="@string/time"/>
 
             <com.amrendra.popularmovies.app.views.ContentHeadingTextView
                 android:id="@+id/detail_time_tv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:text="129 mins"
-                android:textSize="14dp"/>
+                style="@style/TableEntryRow"
+                tools:text="129 mins"/>
 
         </LinearLayout>
 
@@ -109,33 +84,21 @@
 
             <com.amrendra.popularmovies.app.views.ContentHeadingTextView
                 android:id="@+id/detail_content_heading_genre_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:text="Genre"
-                android:textAllCaps="true"
-                android:textSize="16dp"/>
+                style="@style/TableEntryHead"
+                android:text="@string/genre"/>
 
             <com.amrendra.popularmovies.app.views.ContentHeadingTextView
                 android:id="@+id/detail_genre_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:text="Action Sci-Fi Comedy"
-                android:textSize="14dp"/>
-
+                style="@style/TableEntryRow"
+                tools:text="Action Sci-Fi Comedy"/>
         </LinearLayout>
-
     </LinearLayout>
-
 
     <com.amrendra.popularmovies.app.views.OverviewContentTextView
         android:id="@+id/detail_overview_card_content"
         style="@style/CardContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14dp"/>
+        android:textSize="@dimen/content_text_size"/>
 
 </LinearLayout>

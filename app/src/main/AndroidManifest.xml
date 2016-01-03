@@ -32,10 +32,6 @@
                 android:value="com.amrendra.popularmovies.app.activities.MainActivity"/>
         </activity>
 
-        <service
-            android:name=".services.FetchGenresService"
-            android:enabled="true"/>
-
         <provider
             android:name=".db.MovieProvider"
             android:authorities="@string/contentauthority"

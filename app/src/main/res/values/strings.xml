@@ -41,7 +41,7 @@
 
     <string name="error_load_search_results" translatable="false">Error in loading search results for <xliff:g example="Iron Man" id="load_search_results_name">%1$s</xliff:g>.</string>
 
-
+    <string name="select_movie" translatable="false">Please select a movie</string>
     <string name="error_movie_list" translatable="false"><xliff:g example="Network Error" id="movie_error">%1$s</xliff:g> in fetching movies.</string>
     <string name="error_movie_list_more" translatable="false"><xliff:g example="Network Error" id="movie_error">%1$s</xliff:g> in fetching more movies.</string>
     <string name="error_detail_reviews" translatable="false"><xliff:g example="Network Error" id="review_error">%1$s</xliff:g> in fetching reviews.</string>

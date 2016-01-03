@@ -1,7 +1,6 @@
 package com.amrendra.popularmovies.events;
 
 import android.graphics.Bitmap;
-import android.view.View;
 
 import com.amrendra.popularmovies.logger.Debug;
 import com.amrendra.popularmovies.model.Movie;
@@ -12,13 +11,11 @@ import com.amrendra.popularmovies.model.Movie;
 public final class MovieThumbnailClickEvent {
     Movie mMovie;
     Bitmap mBitmap;
-    View mView;
 
-    public MovieThumbnailClickEvent(Movie movie, Bitmap bitmap, View view) {
+    public MovieThumbnailClickEvent(Movie movie, Bitmap bitmap) {
         Debug.c();
         mMovie = movie;
         mBitmap = bitmap;
-        mView = view;
     }
 
     public Movie getMovie() {
@@ -27,9 +24,5 @@ public final class MovieThumbnailClickEvent {
 
     public Bitmap getBitmap() {
         return mBitmap;
-    }
-
-    public View getView() {
-        return mView;
     }
 }

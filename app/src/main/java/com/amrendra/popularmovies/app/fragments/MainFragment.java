@@ -3,6 +3,8 @@ package com.amrendra.popularmovies.app.fragments;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -23,6 +25,7 @@ import android.widget.FrameLayout;
 
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.adapter.MovieGridAdapter;
+import com.amrendra.popularmovies.app.activities.MainActivity;
 import com.amrendra.popularmovies.bus.BusProvider;
 import com.amrendra.popularmovies.events.DetailBackgroundColorChangeEvent;
 import com.amrendra.popularmovies.events.FavouriteMovieAddEvent;
@@ -83,9 +86,9 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     private EndlessScrollListener endlessScrollListener;
 
     @Override
-    public void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view) {
+    public void onClickMovieThumbnail(Movie movie, Bitmap bitmap) {
         Debug.c();
-        BusProvider.getInstance().post(new MovieThumbnailClickEvent(movie, bitmap, view));
+        BusProvider.getInstance().post(new MovieThumbnailClickEvent(movie, bitmap));
     }
 
         /*
@@ -187,7 +190,6 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
         Debug.e("current Sorting : " + currentSortingBy, false);
         Debug.e("next Sorting : " + nextSorting, false);
         if (nextSorting != null && !nextSorting.equals(currentSortingBy)) {
-            searchString = "";
             searchView.setIconified(true);
             searchView.onActionViewCollapsed();
             searchView.clearFocus();
@@ -442,6 +444,7 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
                 } else {
                     mMovieGridAdapter.resetMovieList(list);
                 }
+                checkForNewLoad(data.page);
             } else {
                 String errorMessage;
                 if (pageToBeLoaded > 1) {
@@ -491,6 +494,7 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
             Debug.c();
             if (data != null) {
                 mMovieGridAdapter.resetMovieList(data);
+                checkForNewLoad(1);
             }
             mSwipeRefreshLayout.setRefreshing(false);
         }
@@ -573,6 +577,7 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
                 } else {
                     mMovieGridAdapter.resetMovieList(list);
                 }
+                checkForNewLoad(data.page);
                 errorMessage = getResources().getString(R.string.load_search_results,
                         searchString);
             } else {
@@ -594,4 +599,22 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
             mMovieGridAdapter.clearMovies();
         }
     };
+
+    private void checkForNewLoad(int page) {
+        boolean twoPane = ((MainActivity) getActivity()).isTwoPane();
+        Debug.e("page : " + page + " twoPane: " + twoPane, false);
+        if (page == 1 && twoPane) {
+            final Movie movie = mMovieGridAdapter.firstMovie();
+            if (movie != null) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        BusProvider.getInstance().post(new MovieThumbnailClickEvent(movie, null));
+                    }
+                });
+
+            }
+        }
+    }
 }

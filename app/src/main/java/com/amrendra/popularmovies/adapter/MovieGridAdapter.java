@@ -36,7 +36,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     private Context mContext;
 
     public interface OnMovieViewClickListener {
-        void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view);
+        void onClickMovieThumbnail(Movie movie, Bitmap bitmap);
     }
 
     private OnMovieViewClickListener onMovieViewClickListener;
@@ -60,12 +60,9 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Movie movie = movieList.get(position);
-        //holder.gridMovieNameTv.setText(movie.title);
+
         String imageUrl = MoviesConstants.API_IMAGE_BASE_URL + MoviesConstants.IMAGE_SIZE_SMALL +
                 movie.posterPath;
-/*        LayerDrawable bgDrawable = (LayerDrawable) holder.gridMovieNameTv.getBackground();
-        final GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.shape_id);*/
-
         Glide.with(mContext)
                 .load(imageUrl).asBitmap()
                 .placeholder(R.drawable.place_holder)
@@ -111,9 +108,9 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
 
     }
 
-    public Movie lastMovie() {
+    public Movie firstMovie(){
         if (!movieList.isEmpty()) {
-            return movieList.get(movieList.size() - 1);
+            return movieList.get(0);
         }
         return null;
     }
@@ -124,23 +121,6 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
             notifyDataSetChanged();
         }
     }
-
-    public void addMovie(Movie movie) {
-        Debug.c();
-        int pos = movieList.size();
-        movieList.add(movie);
-        notifyItemInserted(pos);
-    }
-
-    public void deleteMovie(int pos) {
-        Debug.c();
-        //if (pos >= 0 && pos <= movieList.size() - 1) {
-        movieList.remove(pos);
-        notifyDataSetChanged();
-        //notifyItemRemoved(pos);
-        //}
-    }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.grid_item_movie_poster_image)
@@ -164,7 +144,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
                         posterBitmap = ((BitmapDrawable) gridMoviePosterImage.getDrawable()).getBitmap();
                     }
                     onMovieViewClickListener.onClickMovieThumbnail(movieList.get(pos),
-                            posterBitmap, v);
+                            posterBitmap);
 
                 }
             });

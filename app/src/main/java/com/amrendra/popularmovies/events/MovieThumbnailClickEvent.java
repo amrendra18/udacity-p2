@@ -13,14 +13,12 @@ public final class MovieThumbnailClickEvent {
     Movie mMovie;
     Bitmap mBitmap;
     View mView;
-    int position;
 
-    public MovieThumbnailClickEvent(Movie movie, Bitmap bitmap, View view, int position) {
+    public MovieThumbnailClickEvent(Movie movie, Bitmap bitmap, View view) {
         Debug.c();
         mMovie = movie;
         mBitmap = bitmap;
         mView = view;
-        this.position = position;
     }
 
     public Movie getMovie() {
@@ -33,9 +31,5 @@ public final class MovieThumbnailClickEvent {
 
     public View getView() {
         return mView;
-    }
-
-    public int getPosition() {
-        return position;
     }
 }

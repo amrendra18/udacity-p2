@@ -36,7 +36,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     private Context mContext;
 
     public interface OnMovieViewClickListener {
-        void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view, int position);
+        void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view);
     }
 
     private OnMovieViewClickListener onMovieViewClickListener;
@@ -164,7 +164,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
                         posterBitmap = ((BitmapDrawable) gridMoviePosterImage.getDrawable()).getBitmap();
                     }
                     onMovieViewClickListener.onClickMovieThumbnail(movieList.get(pos),
-                            posterBitmap, v, pos);
+                            posterBitmap, v);
 
                 }
             });

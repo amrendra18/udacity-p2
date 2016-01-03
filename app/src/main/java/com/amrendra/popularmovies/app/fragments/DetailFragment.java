@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -21,7 +20,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.graphics.Palette.Swatch;
 import android.support.v7.widget.LinearLayoutManager;
@@ -69,7 +67,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -82,7 +79,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     private static final int REVIEWS_LOADER = DETAIL_LOADER + 1;
     private static final int TRAILER_LOADER = REVIEWS_LOADER + 1;
 
-    private int idx = -1;
     boolean isAlreadyFavouriteMovie = false;
 
     private int mStatusBarColor = Color.BLUE;
@@ -93,95 +89,102 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
     boolean toolbarShown = false;
 
-    @Bind(R.id.favourite_float_button)
+    /*
+    Warning:
+    There is some issue with ButterKnife binding, throwing random NPE
+    Reporting the issue to Butterknife github page
+
+    Issue is totally random in nature & happens with different views & not always.
+    Issue doesnt exists if I use findViewById
+     */
+
+    //@Bind(R.id.favourite_float_button)
     FloatingActionButton floatingFavouriteActionButton;
 
-    @OnClick(R.id.favourite_float_button)
+/*    @OnClick(R.id.favourite_float_button)
     public void favButtonClicked(View view) {
         addFavourite();
-    }
+    }*/
 
-    @Bind(R.id.share_float_button)
+    //@Bind(R.id.share_float_button)
     FloatingActionButton floatingShareActionButton;
 
-    @OnClick(R.id.share_float_button)
+/*    @OnClick(R.id.share_float_button)
     public void shareButtonClicked(View view) {
         shareMovie();
-    }
+    }*/
 
-    @Bind(R.id.full_content_detail_fragment)
+    //@Bind(R.id.full_content_detail_fragment)
     LinearLayout fullContainer;
 
-    @Bind(R.id.detail_fragment_coordinator_layout)
+    //@Bind(R.id.detail_fragment_coordinator_layout)
     CoordinatorLayout mDetailFragmentCoordinatorLayout;
 
-    @Nullable
-    @Bind((R.id.collapsing_toolbar))
+    //@Nullable
+    //@Bind((R.id.collapsing_toolbar))
     CollapsingToolbarLayout mCollapsingToolbar;
 
-    @Bind(R.id.app_bar_layout)
+    //@Bind(R.id.app_bar_layout)
     AppBarLayout mAppBarLayout;
 
-    @Bind(R.id.toolbar)
+    //@Bind(R.id.toolbarFragment)
     Toolbar mToolbar;
 
-    @Bind(R.id.toolbar_header_view)
+    //@Bind(R.id.toolbar_header_view)
     TitleTaglineView toolbarHeaderView;
 
-/*    @Bind(R.id.float_header_view)
-    TitleTaglineView floatHeaderView;*/
 
-    @Bind(R.id.movie_poster_image)
+    //@Bind(R.id.movie_poster_image)
     ImageView posterImageView;
 
-    @Bind(R.id.detail_content_fragment_nested_scroll)
+    //@Bind(R.id.detail_content_fragment_nested_scroll)
     NestedScrollView detailContainer;
 
 
     // Overview Card
 
-    @Bind(R.id.overview_title)
+    //@Bind(R.id.overview_title)
     MovieTitleTextView overviewTitleTv;
 
-    @Bind(R.id.overview_year)
+    //@Bind(R.id.overview_year)
     MovieTaglineTextView overviewYearTv;
 
-    @Bind(R.id.detail_overview_card_ratings)
+    //@Bind(R.id.detail_overview_card_ratings)
     TextView movieRatingsTv;
 
-    @Bind(R.id.detail_overview_card_content)
+    //@Bind(R.id.detail_overview_card_content)
     TextView movieOverviewContentTv;
 
 
-    @Bind(R.id.detail_time_tv)
+    //@Bind(R.id.detail_time_tv)
     TextView movieTimeTv;
 
-    @Bind(R.id.detail_genre_tv)
+    //@Bind(R.id.detail_genre_tv)
     TextView movieGenreTv;
 
     // End Overview Card
 
 
     // Reviews Card
-    @Bind(R.id.review_progressbar)
+    //@Bind(R.id.review_progressbar)
     ProgressBar reviewsProgressbar;
 
-    @Bind(R.id.no_reviews_tv)
+    //@Bind(R.id.no_reviews_tv)
     TextView noReviewsTv;
 
-    @Bind(R.id.reviews_container)
+    //@Bind(R.id.reviews_container)
     LinearLayout reviewsContainer;
     // End : Reviews Card
 
 
     // Trailers Card
-    @Bind(R.id.trailers_progressbar)
+    //@Bind(R.id.trailers_progressbar)
     ProgressBar trailerProgressbar;
 
-    @Bind(R.id.no_trailers_tv)
+    //@Bind(R.id.no_trailers_tv)
     TextView noTrailerTv;
 
-    @Bind(R.id.trailer_recyvlerview)
+    //@Bind(R.id.trailer_recyvlerview)
     RecyclerView trailerRecyclerView;
     // End : Trailer Card
 
@@ -219,7 +222,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     List<Review> mReviewList = null;
     List<Trailer> mTrailerList = null;
 
-    private boolean isTablet = false;
 
     private boolean isHideToolbarView = false;
 
@@ -230,19 +232,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     }
 
 
-    public void setTablet(boolean isTablet) {
-        this.isTablet = isTablet;
-    }
-
-
-    public static DetailFragment getInstance(Bundle bundle, boolean tablet) {
-        DetailFragment fragment = new DetailFragment();
-        fragment.setArguments(bundle);
-        fragment.setTablet(tablet);
-        Debug.c();
-        return fragment;
-    }
-
     @Override
     public void onAttach(Context context) {
         mFavouriteQueryHandler = new FavouriteQueryHandler(context.getContentResolver(), this);
@@ -252,7 +241,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setHasOptionsMenu(true);
     }
 
     public void selectMovie() {
@@ -318,37 +306,60 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
                              Bundle savedInstanceState) {
         Debug.c();
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        ButterKnife.bind(this, rootView);
-        mStatusBarColor = ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark);
-        Bundle passedBundle = getArguments();
-        if (passedBundle == null) {
-            selectMovie();
-        } else {
-            mMovie = (Movie) passedBundle.get(AppConstants.MOVIE_SHARE);
-            idx = (int) passedBundle.get(AppConstants.MOVIE_IDX_SHARE);
-            Debug.e("Movie with : " + idx, false);
-            if (mMovie != null) {
-                setupPosterImage(passedBundle);
-                setupDetails();
-            } else {
-                selectMovie();
+
+        mToolbar = (Toolbar) rootView.findViewById(R.id.toolbarFragment);
+        floatingFavouriteActionButton = (FloatingActionButton) rootView.findViewById(R.id.favourite_float_button);
+        floatingShareActionButton = (FloatingActionButton) rootView.findViewById(R.id.share_float_button);
+        floatingFavouriteActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addFavourite();
             }
-        }
-        addBackHomeArrow(rootView);
-        setFavouriteButtonImage();
-        trailerAdapter = new TrailerViewAdapter(new ArrayList<Trailer>(),
-                getActivity(), this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
-                .HORIZONTAL, false);
-        trailerRecyclerView.setLayoutManager(layoutManager);
-        trailerRecyclerView.setAdapter(trailerAdapter);
+        });
+        floatingShareActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareMovie();
+            }
+        });
+
+        fullContainer = (LinearLayout) rootView.findViewById(R.id.full_content_detail_fragment);
+        mDetailFragmentCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.detail_fragment_coordinator_layout);
+        mCollapsingToolbar = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsing_toolbar);
+
+        mAppBarLayout = (AppBarLayout) rootView.findViewById(R.id.app_bar_layout);
+
+        toolbarHeaderView = (TitleTaglineView) rootView.findViewById(R.id.toolbar_header_view);
+
+        posterImageView = (ImageView) rootView.findViewById(R.id.movie_poster_image);
+
+        detailContainer = (NestedScrollView) rootView.findViewById(R.id.detail_content_fragment_nested_scroll);
+
+        overviewTitleTv = (MovieTitleTextView) rootView.findViewById(R.id.overview_title);
+        overviewYearTv = (MovieTaglineTextView) rootView.findViewById(R.id.overview_year);
+        movieRatingsTv = (TextView) rootView.findViewById(R.id.detail_overview_card_ratings);
+        movieOverviewContentTv = (TextView) rootView.findViewById(R.id.detail_overview_card_content);
+
+        movieTimeTv = (TextView) rootView.findViewById(R.id.detail_time_tv);
+        movieGenreTv = (TextView) rootView.findViewById(R.id.detail_genre_tv);
+
+        reviewsProgressbar = (ProgressBar) rootView.findViewById(R.id.review_progressbar);
+
+        noReviewsTv = (TextView) rootView.findViewById(R.id.no_reviews_tv);
+
+        reviewsContainer = (LinearLayout) rootView.findViewById(R.id.reviews_container);
+
+        trailerProgressbar = (ProgressBar) rootView.findViewById(R.id.trailers_progressbar);
+
+        noTrailerTv = (TextView) rootView.findViewById(R.id.no_trailers_tv);
+
+        trailerRecyclerView = (RecyclerView) rootView.findViewById(R.id.trailer_recyvlerview);
+
+        ButterKnife.bind(this, rootView);
         return rootView;
     }
 
     private void setupPosterImage(Bundle bundle) {
-        // fetch the movie
-        mMovie = (Movie) bundle.get(AppConstants.MOVIE_SHARE);
-
         if (mMovie != null) {
             Bitmap bitmap = (Bitmap) bundle.get(AppConstants
                     .MOVIE_BITMAP_SHARE);
@@ -389,14 +400,11 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
                 Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
                 Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
                 Swatch lightMutedSwatch = palette.getLightMutedSwatch();
-                Swatch vibrantSwatch = palette.getVibrantSwatch();
 
                 Swatch backgroundAndContentColors = darkVibrantSwatch;
-
                 if (backgroundAndContentColors == null) {
                     backgroundAndContentColors = darkMutedSwatch;
                 }
-
                 Swatch titleAndFabColors = lightVibrantSwatch;
 
                 if (titleAndFabColors == null) {
@@ -411,19 +419,21 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     private void setDarkColorWork(Swatch swatch) {
         if (swatch != null) {
             int color = swatch.getRgb();
-            mToolbar.setBackgroundColor(color);
+
             mStatusBarColor = color;
-            ButterKnife.apply(titleLists, titleTextColorChange, color);
-            ButterKnife.apply(dividerLists, dividerColorChange, color);
+
+            // butterknife is throwing NPEs, so have to perform null check
+            if (titleLists != null) {
+                ButterKnife.apply(titleLists, titleTextColorChange, color);
+            }
+            if (dividerLists != null) {
+                ButterKnife.apply(dividerLists, dividerColorChange, color);
+
+            }
             floatingFavouriteActionButton.setBackgroundTintList(ColorStateList.valueOf(color));
             floatingShareActionButton.setBackgroundTintList(ColorStateList.valueOf(color));
-            if (mCollapsingToolbar != null) {
-                mCollapsingToolbar.setStatusBarScrimColor(color);
-            }
-            if (!isTablet && Build.VERSION.SDK_INT >= Build.VERSION_CODES
-                    .LOLLIPOP) {
-                //getActivity().getWindow().setNavigationBarColor(color);
-            }
+            mToolbar.setBackgroundColor(color);
+            mCollapsingToolbar.setStatusBarScrimColor(color);
         }
 
     }
@@ -434,7 +444,6 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             int color = swatch.getRgb();
             toolbarHeaderView.getTitle().setTextColor(color);
             toolbarHeaderView.getSubTitle().setTextColor(color);
-            //floatHeaderView.getTitle().setTextColor(color);
             detailContainer.setBackgroundColor(color);
             changeBackgroundColorEvent(color);
             floatingFavouriteActionButton.setRippleColor(color);
@@ -442,8 +451,12 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             reviewAuthorColor = swatch.getBodyTextColor();
             reviewContentColor = swatch.getBodyTextColor();
 
-            ButterKnife.apply(extraDetailsList, titleTextColorChange, color);
-            ButterKnife.apply(contentLists, titleTextColorChange, reviewContentColor);
+            if (extraDetailsList != null) {
+                ButterKnife.apply(extraDetailsList, titleTextColorChange, color);
+            }
+            if (contentLists != null) {
+                ButterKnife.apply(contentLists, titleTextColorChange, reviewContentColor);
+            }
             paintAllReviews(reviewsContainer);
         }
 
@@ -481,28 +494,13 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
     private void setUpFineDetails() {
         if (mMovie != null) {
-            //movieImdbTv.setText(mMovie.imdbid);
-            //movieHomepageTv.setText(mMovie.homepage);
-            //movieRevenueTv.setText(Long.toString(mMovie.revenue));
             int movieTime = mMovie.runtime;
             String toSet = "-";
             if (movieTime != 0) {
                 toSet = Integer.toString(movieTime) + " mins";
             }
             movieTimeTv.setText(toSet);
-            //movieTaglineTv.setText(mMovie.tagline);
             toolbarHeaderView.bindTo(mMovie.title, mMovie.tagline);
-        }
-    }
-
-    private void addBackHomeArrow(View rootView) {
-        //final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        //activity.setSupportActionBar(mToolbar);
-        mAppBarLayout.addOnOffsetChangedListener(this);
-        if (!isTablet) {
-            //for creating home button
-            //activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -510,6 +508,29 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        mStatusBarColor = ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark);
+        Bundle passedBundle = getArguments();
+        if (passedBundle == null) {
+            selectMovie();
+        } else {
+            mMovie = (Movie) passedBundle.get(AppConstants.MOVIE_SHARE);
+            if (mMovie != null) {
+                Debug.e("Movie detail : " + mMovie.title, false);
+                setupPosterImage(passedBundle);
+                setupDetails();
+            } else {
+                selectMovie();
+            }
+        }
+        mAppBarLayout.addOnOffsetChangedListener(this);
+        setFavouriteButtonImage();
+        trailerAdapter = new TrailerViewAdapter(new ArrayList<Trailer>(),
+                getActivity(), this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
+                .HORIZONTAL, false);
+        trailerRecyclerView.setLayoutManager(layoutManager);
+        trailerRecyclerView.setAdapter(trailerAdapter);
         trailerRecyclerView.setNestedScrollingEnabled(false);
     }
 
@@ -531,9 +552,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     }
 
     private void changeBackgroundColorEvent(int backgroundColor) {
-        if (isTablet) {
-            BusProvider.getInstance().post(new DetailBackgroundColorChangeEvent(backgroundColor));
-        }
+        BusProvider.getInstance().post(new DetailBackgroundColorChangeEvent(backgroundColor));
     }
 
     private void initLoaders() {
@@ -581,13 +600,14 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+
     }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        ButterKnife.unbind(this);
     }
 
     @Override
@@ -761,12 +781,12 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     private void playTrailer(String key) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + key));
-            //intent.putExtra("force_fullscreen", true);
+            intent.putExtra("force_fullscreen", true);
             startActivity(intent);
         } catch (ActivityNotFoundException ex) {
             Intent intent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(MoviesConstants.TRAILER_VIDEO_URL + key));
-            //intent.putExtra("force_fullscreen", true);
+            intent.putExtra("force_fullscreen", true);
             startActivity(intent);
         }
     }
@@ -802,7 +822,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         } else {
             isAlreadyFavouriteMovie = true;
             message = mMovie.title + " added to favourites!";
-            BusProvider.getInstance().post(new FavouriteMovieAddEvent(mMovie, idx));
+            BusProvider.getInstance().post(new FavouriteMovieAddEvent(mMovie));
         }
         setFavouriteButtonImage();
         Snackbar snackbar = Snackbar.make(mDetailFragmentCoordinatorLayout, message, Snackbar.LENGTH_LONG);
@@ -816,7 +836,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         if (result == 1) {
             message = mMovie.title + " removed from favourites!";
             isAlreadyFavouriteMovie = false;
-            BusProvider.getInstance().post(new FavouriteMovieDeleteEvent(idx));
+            BusProvider.getInstance().post(new FavouriteMovieDeleteEvent());
         } else {
             message = "Error in removing " + mMovie.title + " from favourites!";
         }

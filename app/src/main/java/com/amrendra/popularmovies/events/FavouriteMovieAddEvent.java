@@ -9,19 +9,13 @@ import com.amrendra.popularmovies.model.Movie;
 public final class FavouriteMovieAddEvent {
 
     Movie mMovie;
-    int idx;
 
-    public FavouriteMovieAddEvent(Movie movie, int idx) {
+    public FavouriteMovieAddEvent(Movie movie) {
         mMovie = movie;
-        idx = idx;
         Debug.c();
     }
 
     public Movie getMovie() {
         return mMovie;
-    }
-
-    public int getIdx() {
-        return idx;
     }
 }

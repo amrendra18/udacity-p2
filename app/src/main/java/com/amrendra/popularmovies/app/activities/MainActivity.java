@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TextView;
 
 import com.amrendra.popularmovies.R;
@@ -25,39 +23,40 @@ import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity {
-    boolean tablet = false;
-    int movieSelection = 0;
+    boolean mTwoPane = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_activity_main);
         setSupportActionBar(toolbar);
         TextView titleTextView = (TextView) toolbar.getChildAt(0);
         titleTextView.setTypeface(Typeface.createFromAsset(getAssets(), MoviesConstants.MOVIE_TITLE_FONT));
 
-        BusProvider.getInstance().register(this);
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setIcon(R.mipmap.ic_launcher);
+        }
 
+        BusProvider.getInstance().register(this);
 
         if (findViewById(R.id.detail_activity_container) != null) {
-            tablet = true;
-            movieSelection = 0;
-            DetailFragment detailFragment = DetailFragment.getInstance(savedInstanceState, true);
-            addDetailFragment(detailFragment);
+            mTwoPane = true;
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.detail_activity_container, new DetailFragment(), DetailFragment.TAG)
+                        .commit();
+            }
         } else {
-            tablet = false;
+            mTwoPane = false;
         }
-        Debug.e("TABLET : " + tablet, false);
+        Debug.e("TABLET : " + mTwoPane, false);
     }
 
-    private void addDetailFragment(DetailFragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.detail_activity_container, fragment, DetailFragment.TAG).commit();
-    }
 
     @Override
     protected void onResume() {
@@ -89,24 +88,21 @@ public class MainActivity extends AppCompatActivity {
         Debug.c();
         Movie movie = event.getMovie();
         Bitmap bitmap = event.getBitmap();
-        View view = event.getView();
-        int positionInAdapter = event.getPosition();
         Debug.e("Movie clicked : " + movie.title, false);
-        if (tablet) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if (mTwoPane) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(AppConstants.MOVIE_SHARE, movie);
             bundle.putParcelable(AppConstants.MOVIE_BITMAP_SHARE, bitmap);
-            bundle.putInt(AppConstants.MOVIE_IDX_SHARE, positionInAdapter);
-            DetailFragment detailFragment = DetailFragment.getInstance(bundle, true);
-            fragmentTransaction.replace(R.id.detail_activity_container, detailFragment, DetailFragment.TAG).commit();
+            DetailFragment detailFragment = new DetailFragment();
+            detailFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.detail_activity_container, detailFragment, DetailFragment.TAG).commit();
         } else {
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra(AppConstants.MOVIE_SHARE, movie);
             intent.putExtra(AppConstants.MOVIE_BITMAP_SHARE, bitmap);
-            intent.putExtra(AppConstants.MOVIE_IDX_SHARE, positionInAdapter);
             startActivity(intent);
         }
     }
+
 }

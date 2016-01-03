@@ -69,7 +69,7 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     public SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Bind(R.id.fragment_main_framelayout)
-    FrameLayout mainFragmentFrameLayout;
+    public FrameLayout mainFragmentFrameLayout;
 
     SearchView searchView;
     MenuItem searchMenuItem;
@@ -83,10 +83,9 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     private EndlessScrollListener endlessScrollListener;
 
     @Override
-    public void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view, int position) {
+    public void onClickMovieThumbnail(Movie movie, Bitmap bitmap, View view) {
         Debug.c();
-        // Notify to activity that a thumbnail has been clicked
-        BusProvider.getInstance().post(new MovieThumbnailClickEvent(movie, bitmap, view, position));
+        BusProvider.getInstance().post(new MovieThumbnailClickEvent(movie, bitmap, view));
     }
 
         /*
@@ -361,10 +360,6 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
                 }
                 searchView.clearFocus();
             }
-        } else if (currentSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
-            if (shouldReloadFav) {
-                restartLoader(null);
-            }
         }
     }
 
@@ -511,15 +506,18 @@ public class MainFragment extends Fragment implements MovieGridAdapter.OnMovieVi
     @Subscribe
     public void onFavouriteMovieAdd(FavouriteMovieAddEvent event) {
         Debug.c();
-        shouldReloadFav = true;
+        if (currentSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
+            restartLoader(null);
+        }
     }
 
-    boolean shouldReloadFav = false;
 
     @Subscribe
     public void onFavouriteMovieDelete(FavouriteMovieDeleteEvent event) {
         Debug.c();
-        shouldReloadFav = true;
+        if (currentSortingBy.equals(MoviesConstants.SORT_BY_FAVOURITES)) {
+            restartLoader(null);
+        }
     }
 
     String searchString = null;

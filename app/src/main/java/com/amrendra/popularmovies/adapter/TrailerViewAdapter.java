@@ -1,6 +1,7 @@
 package com.amrendra.popularmovies.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -69,6 +70,15 @@ public class TrailerViewAdapter extends RecyclerView.Adapter<TrailerViewAdapter.
                 mTrailerCallback.onClickTrailerThumbnail(trailer.key);
             }
         });
+    }
+
+    public void addTrailer(@NonNull List<Trailer> data) {
+        if (!data.isEmpty()) {
+            int currentSize = mTrailerList.size();
+            int added = data.size();
+            mTrailerList.addAll(data);
+            notifyItemRangeInserted(currentSize, added);
+        }
     }
 
     @Override

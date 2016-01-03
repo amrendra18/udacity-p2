@@ -64,6 +64,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -87,6 +88,8 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
     private int mStatusBarColor = Color.BLUE;
     private int reviewContentColor = Color.WHITE;
     private int reviewAuthorColor = Color.YELLOW;
+
+    TrailerViewAdapter trailerAdapter;
 
     boolean toolbarShown = false;
 
@@ -333,6 +336,12 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         }
         addBackHomeArrow(rootView);
         setFavouriteButtonImage();
+        trailerAdapter = new TrailerViewAdapter(new ArrayList<Trailer>(),
+                getActivity(), this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
+                .HORIZONTAL, false);
+        trailerRecyclerView.setLayoutManager(layoutManager);
+        trailerRecyclerView.setAdapter(trailerAdapter);
         return rootView;
     }
 
@@ -341,8 +350,10 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
         mMovie = (Movie) bundle.get(AppConstants.MOVIE_SHARE);
 
         if (mMovie != null) {
-            posterImageView.setImageBitmap((Bitmap) bundle.get(AppConstants
-                    .MOVIE_BITMAP_SHARE));
+            Bitmap bitmap = (Bitmap) bundle.get(AppConstants
+                    .MOVIE_BITMAP_SHARE);
+            posterImageView.setImageBitmap(bitmap);
+            setupDynamicColor(bitmap);
 
             String posterUrl = MoviesConstants.API_IMAGE_BASE_URL + MoviesConstants
                     .IMAGE_SIZE_LARGE + mMovie.posterPath;
@@ -358,37 +369,41 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
 
                         @Override
                         public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
-                                @Override
-                                public void onGenerated(Palette palette) {
-                                    Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
-                                    Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
-                                    Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
-                                    Swatch lightMutedSwatch = palette.getLightMutedSwatch();
-                                    Swatch vibrantSwatch = palette.getVibrantSwatch();
-
-                                    Swatch backgroundAndContentColors = darkVibrantSwatch;
-
-                                    if (backgroundAndContentColors == null) {
-                                        backgroundAndContentColors = darkMutedSwatch;
-                                    }
-
-                                    Swatch titleAndFabColors = lightVibrantSwatch;
-
-                                    if (titleAndFabColors == null) {
-                                        titleAndFabColors = lightMutedSwatch;
-                                    }
-                                    setDarkColorWork(backgroundAndContentColors);
-                                    setLightColorWork(titleAndFabColors);
-
-                                }
-                            });
+                            setupDynamicColor(resource);
                             return false;
                         }
                     })
                     .into(posterImageView);
         }
 
+    }
+
+
+    private void setupDynamicColor(Bitmap resource) {
+        Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
+                Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
+                Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
+                Swatch lightMutedSwatch = palette.getLightMutedSwatch();
+                Swatch vibrantSwatch = palette.getVibrantSwatch();
+
+                Swatch backgroundAndContentColors = darkVibrantSwatch;
+
+                if (backgroundAndContentColors == null) {
+                    backgroundAndContentColors = darkMutedSwatch;
+                }
+
+                Swatch titleAndFabColors = lightVibrantSwatch;
+
+                if (titleAndFabColors == null) {
+                    titleAndFabColors = lightMutedSwatch;
+                }
+                setDarkColorWork(backgroundAndContentColors);
+                setLightColorWork(titleAndFabColors);
+            }
+        });
     }
 
     private void setDarkColorWork(Swatch swatch) {
@@ -755,11 +770,7 @@ public class DetailFragment extends Fragment implements TrailerCallback, Favouri
             mTrailerList = trailerList;
             if (!(trailerList == null || trailerList.isEmpty())) {
                 noTrailerTv.setVisibility(View.GONE);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
-                        .HORIZONTAL, false);
-                trailerRecyclerView.setLayoutManager(layoutManager);
-                TrailerViewAdapter adapter = new TrailerViewAdapter(trailerList, getActivity(), this);
-                trailerRecyclerView.setAdapter(adapter);
+                trailerAdapter.addTrailer(trailerList);
             } else {
                 noTrailerTv.setText(getResources().getText(R.string.no_detail_trailers));
                 noTrailerTv.setVisibility(View.VISIBLE);

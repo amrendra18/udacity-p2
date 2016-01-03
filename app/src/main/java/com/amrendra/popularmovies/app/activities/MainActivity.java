@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.amrendra.popularmovies.R;
 import com.amrendra.popularmovies.app.fragments.DetailFragment;
-import com.amrendra.popularmovies.app.fragments.MainFragment;
 import com.amrendra.popularmovies.bus.BusProvider;
 import com.amrendra.popularmovies.events.MovieThumbnailClickEvent;
 import com.amrendra.popularmovies.logger.Debug;
@@ -26,9 +25,6 @@ import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity {
-
-    MainFragment mMainFragment;
-
     boolean tablet = false;
     int movieSelection = 0;
 
@@ -37,16 +33,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_activity_main);
         setSupportActionBar(toolbar);
         TextView titleTextView = (TextView) toolbar.getChildAt(0);
         titleTextView.setTypeface(Typeface.createFromAsset(getAssets(), MoviesConstants.MOVIE_TITLE_FONT));
 
         BusProvider.getInstance().register(this);
-
-/*        mMainFragment =
-                (MainFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_main);*/
-
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
 

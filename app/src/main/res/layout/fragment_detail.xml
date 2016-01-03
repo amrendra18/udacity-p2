@@ -39,14 +39,6 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <!--    <include
-            android:id="@+id/float_header_view"
-            layout="@layout/title_tagline_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="com.amrendra.popularmovies.app.views.ViewBehavior"
-            />-->
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/favourite_float_button"
         android:layout_width="wrap_content"
@@ -66,10 +58,10 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="64dp"
         android:src="@drawable/share"
+        app:borderWidth="0dp"
         app:fabSize="mini"
         app:layout_anchor="@+id/favourite_float_button"
         app:layout_anchorGravity="left|center|end"
-        app:borderWidth="0dp"
         app:rippleColor="#F06292"/>
 
 </android.support.design.widget.CoordinatorLayout>

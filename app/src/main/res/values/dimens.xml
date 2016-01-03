@@ -16,15 +16,15 @@
     <dimen name="toolbar_height">100dp</dimen>
 
     <!-- Grid Recycler View :: Main Fragment-->
-    <dimen name="grid_screen_parent_padding">4dp</dimen>
+    <dimen name="grid_screen_parent_padding">1dp</dimen>
     <dimen name="grid_column_height">250dp</dimen>
     <dimen name="grid_column_bottom_nav_height">48dp</dimen>
     <dimen name="grid_column_move_name_text_size">14sp</dimen>
-    <dimen name="grid_card_view_padding">3dp</dimen>
+    <dimen name="grid_card_view_padding">1dp</dimen>
     <dimen name="grid_card_view_elevation">3dp</dimen>
-    <dimen name="grid_card_view_corner_radius">3dp</dimen>
+    <dimen name="grid_card_view_corner_radius">1dp</dimen>
     <dimen name="grid_card_view_nav_stroke_width">1dp</dimen>
-    <dimen name="grid_card_view_margin">2dp</dimen>
+    <dimen name="grid_card_view_margin">1dp</dimen>
     <dimen name="grid_card_textview_margin">2dp</dimen>
 
 

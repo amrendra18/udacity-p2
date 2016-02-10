@@ -1,4 +1,5 @@
-# Filmie
+# Filmie [![Build Status](https://travis-ci.org/thecodegame/udacity-p2.svg?branch=master)](https://travis-ci.org/thecodegame/udacity-p2)
+
 Movie browsing app, made using [themoviedb](https://www.themoviedb.org/) api,
 as part of Udacity : Popular Movies (Part-2)
 

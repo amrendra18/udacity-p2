@@ -24,6 +24,11 @@ android {
             it.buildConfigField 'String', 'THE_MOVIE_DB_API_KEY_TOKEN', "$THE_MOVIE_DB_API_KEY"
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {

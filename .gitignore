@@ -1,13 +1,4 @@
-# apk files
-*.apk
-*.ap_
-
-# dex files
-*.dex
-
 # built/generate files
-bin/
-gen/
 build/
 app/build/
 
@@ -15,13 +6,7 @@ app/build/
 local.properties
 
 # AndroidStudio project files
-/.idea/libraries/
-/.idea/misc.xml
-/.idea/workspace.xml
-.idea/libraries/
-.idea/misc.xml
-.idea/workspace.xml
-/.gradle/
+.idea/
 .gradle/
 
 # iml files

@@ -1,6 +1,12 @@
 apply plugin: 'com.android.application'
 
-def MOVIE_KEY = System.getenv("MOVIE_KEY") as String ?: themoviedbapikey
+def isCiServer = (System.getenv().containsKey("TRAVIS"))
+def MOVIE_KEY;
+if (isCiServer) {
+    MOVIE_KEY = System.getenv("MOVIE_KEY") as String;
+} else {
+    MOVIE_KEY = themoviedbapikey;
+}
 def THE_MOVIE_DB_API_KEY = '"' + MOVIE_KEY + '"' ?: '"COPY_YOUR_MOVIE_DB_API_KEY_HERE"';
 
 android {

@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
-
-def THE_MOVIE_DB_API_KEY = '"' + themoviedbapikey + '"' ?: '"COPY YOUR MOVIE DB API KEY HERE"';
+def MOVIE_KEY = System.getenv("MOVIE_KEY") as String ?: themoviedbapikey
+def THE_MOVIE_DB_API_KEY = '"' + MOVIE_KEY + '"' ?: '"COPY_YOUR_MOVIE_DB_API_KEY_HERE"';
 
 android {
     compileSdkVersion 23

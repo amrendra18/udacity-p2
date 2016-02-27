@@ -1,4 +1,4 @@
-# Filmie [![Build Status](https://travis-ci.org/thecodegame/udacity-p2.svg?branch=master)](https://travis-ci.org/thecodegame/udacity-p2)
+# Filmie [![Build Status](https://travis-ci.org/amrendra18/udacity-p2.svg?branch=master)](https://travis-ci.org/amrendra18/udacity-p2)
 
 Movie browsing app, made using [themoviedb](https://www.themoviedb.org/) api,
 as part of Udacity : Popular Movies (Part-2)
@@ -41,4 +41,4 @@ App demo [here](https://www.youtube.com/watch?v=UMyvkUhAgsY)
 
 ## Previous Work
 
-Part-1 [here](https://github.com/thecodegame/udacity-p1)
+Part-1 [here](https://github.com/amrendra18/udacity-p1)

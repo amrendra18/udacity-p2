@@ -42,7 +42,3 @@ App demo [here](https://www.youtube.com/watch?v=UMyvkUhAgsY)
 ## Previous Work
 
 Part-1 [here](https://github.com/amrendra18/udacity-p1)
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/amrendra18/udacity-p2/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
